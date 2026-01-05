@@ -1,0 +1,21 @@
+#include "../EDC.h"
+EDC_REC srEDCRec;
+int	ginTrans_ClientFd;
+int inETHERNET_Open(void);
+int inETHERNET_END(void);
+int inETHERNET_Cofig_Get(unsigned char , unsigned char *, unsigned char *);
+int inETHERNET_Cofig_Set(unsigned char , unsigned char *, unsigned char );
+int inETHERNET_DisConnect_By_Native(void);
+int inETHERNET_DisConnect_Flow(void);
+int inETHERNET_Connect_By_Native(char *, char *);
+int inETHERNET_Connect_Flow(char *, char *);
+int inETHERNET_SetConfig(void);
+int inETHERNET_Initial(void);
+int inETHERNET_Get_Status(unsigned int *);
+int inETHERNET_Watch_Status(void);
+void EthernetPing(const char*);
+int inETHERNET_Send(unsigned char *, int , int );
+int inETHERNET_Send_Data_Flow(unsigned char* , unsigned short );
+int inETHERNET_Send_Ready_Flow(void);
+int inETHERNET_Send_Ready_By_Native(int );
+int inETHERNET_Send_Data_By_Native(int , unsigned char* , unsigned short );

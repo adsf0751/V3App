@@ -1,0 +1,5 @@
+1.mmci跑UI資料夾裡面要更新的mci
+2.把另一邊壓好的mci複製到UI資料夾
+3.UI資料夾和mmci一起複製到UI_HALF
+4.壓縮成UI_HALF.zip，移除UI資料夾和mmci
+5.將UI_HALF cap產生出UI_HALF.cap和UI_HALF.mci
