@@ -15,18 +15,22 @@
     </logicalFolder>
     <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
       <logicalFolder name="COMM" displayName="COMM" projectFiles="true">
-        <itemPath>SOURCE/Ethernet.c</itemPath>
-        <itemPath>SOURCE/Ethernet.h</itemPath>
+        <itemPath>SOURCE/COMM/Ethernet.c</itemPath>
+        <itemPath>SOURCE/COMM/Ethernet.h</itemPath>
       </logicalFolder>
       <logicalFolder name="DISPLAY" displayName="DISPLAY" projectFiles="true">
-        <itemPath>SOURCE/Display.c</itemPath>
-        <itemPath>SOURCE/Display.h</itemPath>
+        <itemPath>SOURCE/DISPLAY/Display.c</itemPath>
+        <itemPath>SOURCE/DISPLAY/Display.h</itemPath>
       </logicalFolder>
-      <logicalFolder name="FUNC" displayName="FUNC" projectFiles="true">
-        <itemPath>SOURCE/CPT.c</itemPath>
-        <itemPath>SOURCE/CPT.h</itemPath>
-        <itemPath>SOURCE/File.c</itemPath>
-        <itemPath>SOURCE/File.h</itemPath>
+      <logicalFolder name="FUNCTION" displayName="FUNCTION" projectFiles="true">
+        <itemPath>SOURCE/FUNCTION/File.c</itemPath>
+        <itemPath>SOURCE/FUNCTION/File.h</itemPath>
+        <itemPath>SOURCE/FUNCTION/Function.c</itemPath>
+        <itemPath>SOURCE/FUNCTION/Function.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="NCCC" displayName="NCCC" projectFiles="true">
+        <itemPath>SOURCE/NCCCats.c</itemPath>
+        <itemPath>SOURCE/NCCC/NCCCats.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -107,21 +111,25 @@
       </item>
       <item path="PrtMsg.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="SOURCE/CPT.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/COMM/Ethernet.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/CPT.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/COMM/Ethernet.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="SOURCE/Display.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/DISPLAY/Display.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/Display.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/DISPLAY/Display.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="SOURCE/Ethernet.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/FUNCTION/File.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/Ethernet.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/FUNCTION/File.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="SOURCE/File.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/FUNCTION/Function.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/File.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/FUNCTION/Function.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/NCCC/NCCCats.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/NCCCats.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Trans.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -189,21 +197,25 @@
       </item>
       <item path="PrtMsg.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="SOURCE/CPT.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/COMM/Ethernet.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/CPT.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/COMM/Ethernet.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="SOURCE/Display.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/DISPLAY/Display.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/Display.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/DISPLAY/Display.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="SOURCE/Ethernet.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/FUNCTION/File.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/Ethernet.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/FUNCTION/File.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="SOURCE/File.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/FUNCTION/Function.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/File.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/FUNCTION/Function.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/NCCC/NCCCats.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/NCCCats.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Trans.h" ex="false" tool="3" flavor2="0">
       </item>

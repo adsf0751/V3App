@@ -8,8 +8,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/MyProject/V3App/V3App/EDC.h</file>
-            <file>file:/C:/MyProject/V3App/V3App/appmain.c</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/NCCCats.c</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/Function.c</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/NCCC/NCCCats.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/COMM/Ethernet.c</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/COMM/Ethernet.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/Trans.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/appmain.c</file>
         </group>
     </open-files>
 </project-private>
