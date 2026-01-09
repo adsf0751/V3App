@@ -35,10 +35,11 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/SOURCE/CPT.o \
-	${OBJECTDIR}/SOURCE/Display.o \
-	${OBJECTDIR}/SOURCE/Ethernet.o \
-	${OBJECTDIR}/SOURCE/File.o \
+	${OBJECTDIR}/SOURCE/COMM/Ethernet.o \
+	${OBJECTDIR}/SOURCE/DISPLAY/Display.o \
+	${OBJECTDIR}/SOURCE/FUNCTION/File.o \
+	${OBJECTDIR}/SOURCE/FUNCTION/Function.o \
+	${OBJECTDIR}/SOURCE/NCCCats.o \
 	${OBJECTDIR}/appmain.o
 
 
@@ -66,21 +67,25 @@ dist/V3/Debug/V3App.exe: ${OBJECTFILES}
 	${MKDIR} -p dist/V3/Debug
 	arm-brcm-linux-gnueabi-g++ -o dist/V3/Debug/V3App ${OBJECTFILES} ${LDLIBSOPTIONS} -L . "-L${SDKV3LIB}" "-L${SDKV3LIBN}"
 
-${OBJECTDIR}/SOURCE/CPT.o: SOURCE/CPT.c
-	${MKDIR} -p ${OBJECTDIR}/SOURCE
-	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/CPT.o SOURCE/CPT.c
+${OBJECTDIR}/SOURCE/COMM/Ethernet.o: SOURCE/COMM/Ethernet.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/COMM
+	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/COMM/Ethernet.o SOURCE/COMM/Ethernet.c
 
-${OBJECTDIR}/SOURCE/Display.o: SOURCE/Display.c
-	${MKDIR} -p ${OBJECTDIR}/SOURCE
-	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/Display.o SOURCE/Display.c
+${OBJECTDIR}/SOURCE/DISPLAY/Display.o: SOURCE/DISPLAY/Display.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/DISPLAY
+	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/DISPLAY/Display.o SOURCE/DISPLAY/Display.c
 
-${OBJECTDIR}/SOURCE/Ethernet.o: SOURCE/Ethernet.c
-	${MKDIR} -p ${OBJECTDIR}/SOURCE
-	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/Ethernet.o SOURCE/Ethernet.c
+${OBJECTDIR}/SOURCE/FUNCTION/File.o: SOURCE/FUNCTION/File.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
+	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/File.o SOURCE/FUNCTION/File.c
 
-${OBJECTDIR}/SOURCE/File.o: SOURCE/File.c
+${OBJECTDIR}/SOURCE/FUNCTION/Function.o: SOURCE/FUNCTION/Function.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
+	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/Function.o SOURCE/FUNCTION/Function.c
+
+${OBJECTDIR}/SOURCE/NCCCats.o: SOURCE/NCCCats.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE
-	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/File.o SOURCE/File.c
+	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/NCCCats.o SOURCE/NCCCats.c
 
 ${OBJECTDIR}/appmain.o: appmain.c
 	${MKDIR} -p ${OBJECTDIR}
