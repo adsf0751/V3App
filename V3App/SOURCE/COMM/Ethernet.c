@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
-#include "../DISPLAY/Display.h"
+#include <unistd.h>
 #include "../../Trans.h"
-#include "../FUNCTION/CPT.h"
-#include "../../EDC.h"
+#include "../DISPLAY/Display.h"
+#include "Ethernet.h"
 extern int ginTrans_ClientFd;
 extern CPT_REC srCPTRec;
 extern EDC_REC srEDCRec;
@@ -23,7 +23,33 @@ char mask[] = "255.255.254.0"; //Mask
 char gateWay[] = "10.105.109.254"; //Gateway IP
 char hostIp[] = "10.105.108.43"; //Server IP
 char hostPort[] = "18012"; //Server Port
+/*
+Function        :inGetHostIPPrimary
+Date&Time       :
+Describe        :
+*/
+int inGetHostIPPrimary(char* szHostIPPrimary)
+{
+        /* 傳進的指標 不得為空  長度需大於0 小於規定最大值 */
+        if (szHostIPPrimary == NULL || strlen(srCPTRec.szHostIPPrimary) <= 0 || strlen(srCPTRec.szHostIPPrimary) > 15)
+        {
+                return (VS_ERROR);
+        }
+        memcpy(&szHostIPPrimary[0], &srCPTRec.szHostIPPrimary[0], strlen(srCPTRec.szHostIPPrimary));
 
+        return (VS_SUCCESS);
+}
+int inGetHostPortNoPrimary(char* szHostPortNoPrimary)
+{
+        /* 傳進的指標 不得為空  長度需大於0 小於規定最大值 */
+        if (szHostPortNoPrimary == NULL || strlen(srCPTRec.szHostPortNoPrimary) <= 0 || strlen(srCPTRec.szHostPortNoPrimary) > 5)
+        {
+                return (VS_ERROR);
+        }
+        memcpy(&szHostPortNoPrimary[0], &srCPTRec.szHostPortNoPrimary[0], strlen(srCPTRec.szHostPortNoPrimary));
+
+        return (VS_SUCCESS);
+}
 int inETHERNET_Open() {
     char szDebugMsg[100 + 1];
     unsigned short usRetVal;
@@ -101,14 +127,14 @@ int inETHERNET_DisConnect_By_Native()
 	char		szDebugMsg[100 + 1];
 		
 //	/* 防呆，小於0會存取到錯的記憶體 */
-//	if (ginTrans_ClientFd > 0)
-//	{
-//		inRetVal = close(ginTrans_ClientFd);
-//	}
-//	else
-//	{
-//		inRetVal = VS_ERROR;
-//	}
+	if (ginTrans_ClientFd > 0)
+	{
+		inRetVal = close(ginTrans_ClientFd);
+	}
+	else
+	{
+		inRetVal = VS_ERROR;
+	}
 	
 	if (inRetVal == 0)
 	{
@@ -119,7 +145,6 @@ int inETHERNET_DisConnect_By_Native()
 	{
 		return (VS_ERROR);
 	}
-		
 	return (VS_SUCCESS);
 }
 
@@ -242,7 +267,7 @@ int inETHERNET_Connect_By_Native(char *szHostIP, char *szPort)
 		if (inRetVal == 0)
 		{
                     //inETHERNET_Watch_Status();
-                    printf("connect succcessed,ClientFd is %d\n",ginTrans_ClientFd);
+                    printf("socket connect succcessed!!,ClientFd is %d\n",ginTrans_ClientFd);
                     
 		}
 		else
@@ -1145,9 +1170,7 @@ int inETHERNET_Send(unsigned char *uszSendBuff, int inSendSize, int inSendTimeou
 //				continue;
 			}
 			else
-                            printf("send data successed\n");
-                            printf("socket disconnected ,ClientFd is %d\n",ginTrans_ClientFd);
-                            close(ginTrans_ClientFd);
+                            printf("send data successed\n"); 
 //				break;
 		}
 //	}
@@ -1157,4 +1180,324 @@ int inETHERNET_Send(unsigned char *uszSendBuff, int inSendSize, int inSendTimeou
 //                inLogPrintf(AT, "inETHERNET_Send() END!");
 
         return (VS_SUCCESS);
+}
+
+/*
+Function        :inETHERNET_Receive_Ready_By_Native
+Date&Time       :2017/8/1 下午 3:10
+Describe        :
+*/
+int inETHERNET_Receive_Ready_By_Native(int inFileHandle, unsigned short *usLen)
+{
+	fd_set		stRfd;			/* 用來判斷是否可以讀的Fd */
+	struct timeval	stTimeVal;
+	
+	stTimeVal.tv_sec = 0;
+	stTimeVal.tv_usec = 0;
+	
+	/* 將 set 整個清為零。 */
+	FD_ZERO(&stRfd);
+	/* 將 fd 新增到 set。 */
+	FD_SET(inFileHandle, &stRfd);
+	
+	/* 初始化 */
+	*usLen = 0;
+	/* nfds is the highest-numbered file descriptor in any of the three sets, plus 1. FD最高位再加一 */
+	/* 若Timeout仍未有Fd，則回傳0 */
+	select(inFileHandle + 1, &stRfd, NULL, NULL, &stTimeVal);
+	if (FD_ISSET(inFileHandle, &stRfd))
+	{
+		/* Native沒有check功能，所以直接設大一點，等到read時再根據實際回傳讀取 */
+		*usLen = _COMM_RECEIVE_MAX_LENGTH_;
+	}
+	else
+	{
+		return (VS_ERROR);
+	}
+	
+	return (VS_SUCCESS);
+}
+/*
+Function        :inETHERNET_Receive_Ready_Flow
+Date&Time       :2017/8/1 下午 2:47
+Describe        :目前只有虹堡API才有receive check的功能，用native沒辦法實做，所以決定不使用
+ */
+int inETHERNET_Receive_Ready_Flow(unsigned short *usLen)
+{
+	int		inRetVal;
+	unsigned short	usBufferMaxLen = 0;
+
+//	if (ginEthernetFlow == _ETHERNET_FLOW_IFES_)
+//	{
+//                if (_TLS_API_WAY_ == _TLS_API_WAY_OPENSSL_)
+//                {
+//                        inRetVal = inETHERNET_Receive_Ready_TLS_OPENSSL(&gSsl, usLen);
+//                }
+//                else
+//                {
+//                        inRetVal = inETHERNET_Receive_Ready_TLS_CTOS(guiSSL_ID, usLen);
+//                }
+//	}
+	/* 用native方式建Socket，之後要優化再考慮使用(優點自己決定Timeout等等細微設定) */
+//	else if (ginEthernetFlow == _ETHERNET_FLOW_NATIVE_)
+//	{
+		inRetVal = inETHERNET_Receive_Ready_By_Native(ginTrans_ClientFd, usLen);
+//	}
+//	else
+//	{
+//		usBufferMaxLen = *usLen;
+//		inRetVal = inETHERNET_Receive_Ready(usLen);
+//		if (*usLen > usBufferMaxLen)
+//		{
+//			*usLen = usBufferMaxLen;
+//		}
+//	}
+	
+	return (inRetVal);
+}
+/*
+Function        :inETHERNET_Receive_Data_By_Native
+Date&Time       :2017/8/1 下午 3:45
+Describe        :
+*/
+int inETHERNET_Receive_Data_By_Native(int inFileHandle, unsigned char* uszData, unsigned short *usLen)
+{
+	int	inTempLen = 0;
+	
+	
+	inTempLen = recv(inFileHandle, uszData, *usLen, 0);
+	
+	/* 如果回傳-1會變成65535，所以要做安全檢核 */
+	if (inTempLen > 0)
+	{
+            printf("receive successed, ret length is %d\n",inTempLen);
+            *usLen = (unsigned short)inTempLen;
+	}
+	else
+	{
+            *usLen = 0;
+		
+//		char	szDebugMsg[100 + 1];
+//		if (ginDebug == VS_TRUE)
+//		{
+//			memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+//			sprintf(szDebugMsg, "recv Errno: %d", errno);
+//			inLogPrintf(AT, szDebugMsg);
+//		}
+		
+		return (VS_ERROR);
+	}
+
+	
+	
+	return (VS_SUCCESS);
+}
+
+/*
+Function        :inETHERNET_Receive_Data_Flow
+Date&Time       :2017/8/1 下午 3:43
+Describe        :分流
+*/
+int inETHERNET_Receive_Data_Flow(unsigned char* uszData, unsigned short *usLen)
+{
+	int	inRetVal = VS_ERROR;
+	
+//	if (ginEthernetFlow == _ETHERNET_FLOW_IFES_)
+//	{
+//                if (_TLS_API_WAY_ == _TLS_API_WAY_OPENSSL_)
+//                {
+//                    inRetVal = inETHERNET_Receive_Data_TLS_OPENSSL(&gSsl, uszData, usLen);
+//                }
+//                else
+//                {
+//                    inRetVal = inETHERNET_Receive_Data_TLS_CTOS(guiSSL_ID, uszData, usLen);
+//                }
+//	}
+	/* 用native方式建Socket，之後要優化再考慮使用(優點自己決定Timeout等等細微設定) */
+//	else if (ginEthernetFlow == _ETHERNET_FLOW_NATIVE_)
+//	{
+		inRetVal = inETHERNET_Receive_Data_By_Native(ginTrans_ClientFd, uszData, usLen);
+//	}
+//	else
+//	{
+//		inRetVal = inETHERNET_Receive_Data(uszData, usLen);
+//	}
+	
+	
+	return (inRetVal);
+}
+
+/*
+Function        :inETHERNET_Receive
+Date&Time       :2017/7/18 下午 5:55
+Describe        :
+*/
+int inETHERNET_Receive(unsigned char *uszReceiveBuff, int inReceiveSize, int inReceiveTimeout)
+{
+	int		inRetVal = 0;
+        int     	inReceivelen = 0;			/* Comport當前收到的長度 */
+        int     	inDataLength = 0;			/* 收到的資料長度(不含Head) */
+	int		inExpectLength = 0;
+        char    	szDataHead[1 + 1];
+//        char    	szDebugMsg[_DEBUG_MESSAGE_SIZE_ + 1];   /* debug message */
+        unsigned char 	uszRawBuffer[inReceiveSize + 1];
+	unsigned short 	usOutputLen = 0;			/* 目前comport可以讀取的資料長度 */
+	
+        /* inETHERNET_Receive() START! */
+	memset(uszRawBuffer, 0x00, sizeof(uszRawBuffer));
+
+        /* 設定接收Timeout時間 */
+	if (inReceiveTimeout != 0)
+                inDISP_Timer_Start(_TIMER_NEXSYS_1_, inReceiveTimeout);
+
+	/* 第一段先收到comport沒資料為止，或Timeout */
+	while (1)
+	{
+		if (inReceiveTimeout != 0)
+                {
+                        if (inTimerGet(_TIMER_NEXSYS_1_) == VS_SUCCESS)
+                        {
+                            printf("inETHERNET_Receive TimeOut 1\n");
+                            return (VS_TIMEOUT);
+                        }
+                }
+		
+		/* 設定為剩餘的Buffer空間大小，才符合API的用法 */
+		usOutputLen = inReceiveSize - inReceivelen;
+		
+		if (inETHERNET_Receive_Ready_Flow(&usOutputLen) == VS_SUCCESS)
+		{
+			inRetVal = inETHERNET_Receive_Data_Flow(&uszRawBuffer[inReceivelen], &usOutputLen);
+			if (inRetVal == VS_SUCCESS)
+			{
+                                printf("inETHERNET_Receive_Data_Flow successed\n");
+				inReceivelen = inReceivelen + (int)usOutputLen;
+			}
+		}
+
+		/* 沒有可以收的就跳出去(usOutputLen == 0代表沒有可已從buffer中讀取的資料) */
+		if (inReceivelen > 0 && usOutputLen == 0)
+		{
+			break;
+		}
+	}
+        memcpy(&uszReceiveBuff[0],&uszRawBuffer[0],inReceivelen);
+        return inReceivelen;
+        /* Get HeadFormat */
+	/*	範例:Size = 1024
+	 * 	H:0x04 0x00
+	 *	B:0x10 0x24
+	 */
+//        memset(szDataHead, 0x00, sizeof(szDataHead));
+//        if (inGetTCPHeadFormat(szDataHead) == VS_ERROR)
+//        {
+//                /* inGetTCPHeadFormat ERROR */
+//                /* debug */
+//                if (ginDebug == VS_TRUE)
+//		{
+//			inLogPrintf(AT, "inGetTCPHeadFormat() ERROR!!");
+//		}
+//		inUtility_StoreTraceLog_OneStep("inGetTCPHeadFormat() ERROR!!");
+//
+//                return (VS_ERROR);
+//        }
+//	
+//	/* 如果有收到，就解析Head的封包長度並確認是否全收到 */
+//	/* 因為封包欄位佔2bytes，所以至少應該收到2byte */
+//	if (inReceivelen >= 2)
+//	{
+//		/* 根據Head算出預期長度 */
+//		if (szDataHead[0] == 'H')
+//		{
+//			inExpectLength = uszRawBuffer[0] * 256 + uszRawBuffer[1];
+//		}
+//		else
+//		{
+//			inExpectLength = ((uszRawBuffer[0] / 16 * 10 + uszRawBuffer[0] % 16 ) * 100) + (uszRawBuffer[1] / 16 * 10 + uszRawBuffer[1] % 16);
+//		}
+//		
+//		if (ginISODebug == VS_TRUE)
+//		{
+//			inPRINT_ChineseFont("----------------------------------------",_PRT_ISO_);
+//			memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+//			sprintf(szDebugMsg, "%02X %02X :length = %d", uszRawBuffer[0], uszRawBuffer[1], inExpectLength);
+//			inPRINT_ChineseFont_Format(szDebugMsg, "  ", 34, _PRT_ISO_);
+//			inPRINT_ChineseFont("----------------------------------------", _PRT_ISO_);
+//		}
+//		if (ginDebug == VS_TRUE)
+//		{
+//			inLogPrintf(AT, "----------------------------------------");
+//			memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+//			sprintf(szDebugMsg, "%02X %02X :length = %d", uszRawBuffer[0], uszRawBuffer[1], inExpectLength);
+//			inLogPrintf(AT, szDebugMsg);
+//			inLogPrintf(AT, "----------------------------------------");
+//		}
+//
+//		
+//		memcpy(&uszReceiveBuff[inDataLength], &uszRawBuffer[2], inReceivelen - 2);
+//		/* inDataLength為目前收到的封包數 */
+//		inDataLength += inReceivelen - 2;
+//		
+//		/* 比對目前接收的長度(含Length)是否與主機下的長度一致(inDataLength = inExpectLength)，若小於應接收長度則繼續接收剩下的封包 */
+//		while (inDataLength < inExpectLength)
+//		{
+//			/* 準備收下一次，清空暫存Buffer */
+//			inReceivelen = 0;
+//			memset(uszRawBuffer, 0x00, sizeof(uszRawBuffer));
+//			
+//                        while (1)
+//                        {
+//				/* Timeout的話 */
+//                                if (inReceiveTimeout != 0)
+//                                {
+//                                        if (inTimerGet(_TIMER_NEXSYS_1_) == VS_SUCCESS)
+//                                        {
+//						if (ginDebug == VS_TRUE)
+//						{
+//							if (inReceiveTimeout != 0)
+//							{
+//								inLogPrintf(AT, "inETHERNET_Receive TimeOut 2");
+//								memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+//								sprintf(szDebugMsg, "Receve Len: %d", inDataLength);
+//								inLogPrintf(AT, szDebugMsg);
+//							}
+//
+//							inUtility_StoreTraceLog_OneStep("inETHERNET_Receive TimeOut 2");
+//						}
+//                                                return (VS_TIMEOUT);
+//                                        }
+//                                }
+//
+//				/* 設定為剩餘的Buffer空間大小，才符合API的用法 */
+//				usOutputLen = inReceiveSize - inReceivelen;
+//				
+//				if (inETHERNET_Receive_Ready_Flow(&usOutputLen) == VS_SUCCESS)
+//				{
+//					inRetVal = inETHERNET_Receive_Data_Flow(&uszRawBuffer[inReceivelen], &usOutputLen);
+//					if (inRetVal == VS_SUCCESS)
+//					{
+//						inReceivelen = inReceivelen + (int)usOutputLen;
+//					}
+//				}
+//
+//				/* 沒有可以收的就跳出去(usOutputLen == 0代表沒有可已從buffer中讀取的資料) */
+//				if (inReceivelen > 0 && usOutputLen == 0)
+//				{
+//					break;
+//				}
+//                        }
+//
+//                        memcpy(&uszReceiveBuff[inDataLength], &uszRawBuffer[0], inReceivelen);
+//                        inDataLength += inReceivelen;
+//		}
+//
+//	}
+//	/* 連Head都沒收到 */
+//	else
+//	{
+//		return (VS_ERROR);
+//	}
+	     
+
+	return (inDataLength);
 }

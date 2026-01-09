@@ -1,6 +1,8 @@
 #include "../../Trans.h" // FOR VS_ERROR/VS_SUCCESS
 #include <stdio.h> // FOR NULL
 #include "Function.h" //FOR _PADDING_RIGHT_ /_PADDING_LEFT_
+#include <string.h>
+#include <stdlib.h>
 /*
 Function	:inFunc_ASCII_to_BCD
 Date&Time	:2015/7/13 下午 2:02

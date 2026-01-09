@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../../Trans.h"
 #include "Display.h"
+#include "../FUNCTION/File.h"
 /*
 Function	:inPutGraphic
 Date&Time	:2015/6/7 下午 5:09

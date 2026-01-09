@@ -5,6 +5,19 @@ typedef struct
         unsigned char uszDispAscii; /* 是否顯示其 ASCII 字元 */
         int inFieldLen; /* Field Len */
 } ISO_FIELD_TYPE_NCCC_ATS_TABLE;
+typedef struct
+{
+        int inFieldNum; /* Field Number */
+//        int inFieldType; /* Field Type */
+        int isDispAscii; /* 是否顯示其 ASCII 字元 */
+        int inFieldLen; /* Field Len */
+        int inFormat;
+} MY_FIELD_TYPE_TABLE;
+#define EMPTY 0
+#define LLVAR 2
+#define LLLVAR 3
+
+
 
 #define _NCCC_ATS_CHECK_BIT_MAP_(x, b)	((x) & (1U<<(b)))
 
@@ -34,3 +47,4 @@ typedef struct
 #define BYTE unsigned char
 
 int myPackData(BYTE *uszPackBuf);
+int myUnPackData(BYTE *rawDataBuf ,int inReceiveSize);

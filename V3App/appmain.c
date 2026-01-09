@@ -691,7 +691,12 @@ int main(int argc, char *argv[]) {
     FONT_ATTRIB srFont_Attrib;
     TRANSACTION_OBJECT pobTran;
 //    inFunc_ls("-R -l", _AP_ROOT_PATH_);
+    
     BYTE uszPackBuf[984];
+    BYTE uszRecvPacket[_NCCC_ATS_ISO_SEND_ + 1];
+    int  inReceiveTimeout = 10;
+    int	 inReceiveSize = _COMM_RECEIVE_MAX_LENGTH_;
+    
     memset(uszPackBuf,0x00,sizeof(uszPackBuf));
     
     int inCnt = myPackData(uszPackBuf);
@@ -700,6 +705,21 @@ int main(int argc, char *argv[]) {
     inETHERNET_SetConfig();
     
     inETHERNET_Send(uszPackBuf,inCnt,0);
+    inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
+    
+    if(inReceiveSize > 0 )
+    {
+        myUnPackData( uszRecvPacket , inReceiveSize);
+    }
+    
+    if(inETHERNET_END() == VS_SUCCESS)
+    {
+        printf("socket disconnect successed!!\n");
+    }
+    else
+    {
+        printf("socket disconnect failed!!\n");
+    }
 //    EthernetPing(hostIp);
     
     pobTran.srBRec.inPrintOption = _PRT_CUST_;
@@ -727,8 +747,7 @@ int main(int argc, char *argv[]) {
     CTOS_FontTTFSelectStyle(d_FONT_DEVICE_PRINTER, d_FONT_STYLE_NORMAL);
 
     inPRINT_Buffer_Initial(uszBuffer, _BUFFER_MAX_LINE_, &srFont_Attrib, &srBhandle);
-
-   
+    
     CTOS_LCDTClearDisplay();
 
     //    if ((inRetVal = inCREDIT_PRINT_Logo_ByBuffer(&pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)

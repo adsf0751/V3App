@@ -34,6 +34,233 @@ ISO_FIELD_TYPE_NCCC_ATS_TABLE srNCCC_ATS_ISOFieldType[] =
 //        {64,            _NCCC_ATS_ISO_BCD_,         VS_FALSE,       16},
 //        {0,             _NCCC_ATS_ISO_BCD_,         VS_FALSE,       0},  /* 最後一組一定要放 0 */
 };
+MY_FIELD_TYPE_TABLE myFieldTable[] =
+{
+    { 0,  VS_FALSE, 0, EMPTY },
+    { 1,  VS_FALSE, 0, EMPTY },
+    { 2,  VS_FALSE, 0, EMPTY },
+    { 3,  VS_FALSE, 3, EMPTY },
+    { 4,  VS_FALSE, 6, EMPTY },
+    { 5,  VS_FALSE, 0, EMPTY },
+    { 6,  VS_FALSE, 0, EMPTY },
+    { 7,  VS_FALSE, 0, EMPTY },
+    { 8,  VS_FALSE, 0, EMPTY },
+    { 9,  VS_FALSE, 0, EMPTY },
+    {10,  VS_FALSE, 0, EMPTY },
+    {11,  VS_FALSE, 3, EMPTY },
+    {12,  VS_FALSE, 3, EMPTY },
+    {13,  VS_FALSE, 2, EMPTY },
+    {14,  VS_FALSE, 0, EMPTY },
+    {15,  VS_FALSE, 0, EMPTY },
+    {16,  VS_FALSE, 0, EMPTY },
+    {17,  VS_FALSE, 0, EMPTY },
+    {18,  VS_FALSE, 0, EMPTY },
+    {19,  VS_FALSE, 0, EMPTY },
+    {20,  VS_FALSE, 0, EMPTY },
+    {21,  VS_FALSE, 0, EMPTY },
+    {22,  VS_FALSE, 0, EMPTY },
+    {23,  VS_FALSE, 0, EMPTY },
+    {24,  VS_FALSE, 2, EMPTY },
+    {25,  VS_FALSE, 0, EMPTY },
+    {26,  VS_FALSE, 0, EMPTY },
+    {27,  VS_FALSE, 0, EMPTY },
+    {28,  VS_FALSE, 0, EMPTY },
+    {29,  VS_FALSE, 0, EMPTY },
+    {30,  VS_FALSE, 0, EMPTY },
+    {31,  VS_FALSE, 0, EMPTY },
+
+    {32,  VS_FALSE, 2, LLVAR },
+    {33,  VS_FALSE, 0, EMPTY },
+    {34,  VS_FALSE, 0, EMPTY },
+    {35,  VS_FALSE, 0, LLVAR },
+    {36,  VS_FALSE, 0, EMPTY },
+    {37,  VS_TRUE, 12, EMPTY },
+    {38,  VS_TRUE,  6, EMPTY },
+    {39,  VS_TRUE,  2, EMPTY },
+    {40,  VS_FALSE, 0, EMPTY },
+    {41,  VS_TRUE,  8, EMPTY },
+    {42,  VS_FALSE, 0, EMPTY },
+    {43,  VS_FALSE, 0, EMPTY },
+    {44,  VS_FALSE, 0, EMPTY },
+    {45,  VS_FALSE, 0, EMPTY },
+    {46,  VS_FALSE, 0, EMPTY },
+    {47,  VS_FALSE, 0, EMPTY },
+
+    {48,  VS_FALSE, 0, LLLVAR },
+    {49,  VS_FALSE, 0, LLLVAR },
+    {50,  VS_FALSE, 0, LLLVAR },
+    {51,  VS_FALSE, 0, LLLVAR },
+    {52,  VS_FALSE, 0, LLLVAR },
+    {53,  VS_FALSE, 0, LLLVAR },
+    {54,  VS_FALSE, 0, LLLVAR },
+    {55,  VS_FALSE, 0, LLLVAR },
+    {56,  VS_FALSE, 0, LLLVAR },
+    {57,  VS_FALSE, 0, LLLVAR },
+    {58,  VS_FALSE, 0, LLLVAR },
+    {59,  VS_TRUE,  0, LLLVAR },
+    {60,  VS_FALSE, 0, LLLVAR },
+    {61,  VS_FALSE, 0, LLLVAR },
+    {62,  VS_FALSE, 0, LLLVAR },
+    {63,  VS_FALSE, 0, LLLVAR },
+
+    {64,  VS_FALSE, 0, EMPTY },
+};
+
+
+void myCusPrint(char *fieldName,int len,char *data)
+{
+    printf("[% 6s] [%3d] [%s]\n",fieldName,len,data);
+}
+/*
+ Describe        :根據isDispAscii旗標判斷 傳入的byte顯示為ascii or byte
+ */
+void myGetString(BYTE* inBuffer,int* idx,int len ,char *outBuffer,int isDispAscii)
+{
+    memset(&outBuffer[0],0x00,strlen(outBuffer));
+//    printf("idx is %d , len is %d\n",*idx,len);
+    char strData[2+1];
+    int i ;
+    if(isDispAscii)
+    {
+        memcpy(&outBuffer[0],&inBuffer[*idx],len);
+        outBuffer[len] = '\0';
+    }
+    else
+    {
+        for(i=0;i<len;i++)
+        {
+            memset(strData,0x00,3);
+            sprintf(strData,"%02X",inBuffer[*idx+i]);
+            strcat(outBuffer,strData);
+        }       
+    }
+
+    *idx = *idx + len;
+}
+int myUnPackData(BYTE *rawDataBuffer ,int inReceiveSize)
+{
+    int msgLength = (rawDataBuffer[0]<<8) | rawDataBuffer[1];
+
+    int  indexTable[64];
+    memset(&indexTable[0],0x00,64);
+    int filedCnt = 1;
+    char tempBuffer[100+1];
+    memset(&tempBuffer[0],0x00,100+1);
+    int szField = 0;
+    int idxField =0;
+    int inCnt = 2;
+    int i,j;
+    char subTagName[100];
+    int subTagLen = 0;
+    if(msgLength == (inReceiveSize-2) )
+    {   
+        printf("msgLength is Valid\n");
+        printf("\n\n Receive Buffer is : \n");
+        for(i=0;i<inReceiveSize;i++)
+        {
+            printf("0x%02x\t",rawDataBuffer[i]);
+        }
+        printf("\n\n");
+        memset(&tempBuffer[0],0x00,100+1);
+        //Message Length
+        sprintf(tempBuffer,"%d",msgLength);
+        myCusPrint(" Len   ",msgLength,tempBuffer);
+        
+        //Transport Protocol Data Unit (TPDU)
+        myGetString(rawDataBuffer,&inCnt,5,tempBuffer,VS_FALSE);
+        myCusPrint(" TPDU  ",5,tempBuffer);
+        
+        //Message Type Identifier(MTI)
+        myGetString(rawDataBuffer,&inCnt,2,tempBuffer,VS_FALSE);
+        myCusPrint(" MTI   ",2,tempBuffer);
+        
+        //Primary Bit Map
+        for(i=0;i<8;i++)
+        {    
+            unsigned char *arr = malloc(sizeof(unsigned char)*2);
+            arr[0] = (rawDataBuffer[inCnt+i] &0xF0) >> 4;
+            arr[1] =  rawDataBuffer[inCnt+i] &0x0F;  
+//            printf("0x%02x 0x%02x\n",arr[0],arr[1]);
+            for(j =3;j>=0;j--)
+            {
+                if((arr[0] >> j) & 0x01 )
+                {
+//                    printf("filedCnt = %d\n",filedCnt);
+                    indexTable[idxField++] = filedCnt;
+                }
+                filedCnt++;
+            }
+            for(j =3;j>=0;j--)
+            {
+                if((arr[1] >> j) & 0x01 )
+                {
+//                    printf("filedCnt = %d\n",filedCnt);
+                    indexTable[idxField++] = filedCnt;
+                }
+                filedCnt++;
+            }
+            free(arr);
+        }
+        myGetString(rawDataBuffer,&inCnt,8,tempBuffer,VS_FALSE);
+        myCusPrint(" Bitmap",8,tempBuffer); 
+        
+        char strFieldName[4+1];
+        szField = idxField;
+        for(i=0;i<szField;i++)
+        {
+            idxField = indexTable[i];
+            if(myFieldTable[idxField].inFormat == EMPTY)
+            {
+                myGetString(rawDataBuffer,&inCnt,myFieldTable[idxField].inFieldLen,tempBuffer,myFieldTable[idxField].isDispAscii);
+                
+                memset(strFieldName,0x00,5);
+                sprintf(strFieldName,"F_%02d",idxField);
+
+                myCusPrint(strFieldName,myFieldTable[idxField].inFieldLen,tempBuffer); 
+            }
+            else if(myFieldTable[idxField].inFormat == LLVAR)
+            {
+                printf("---------F_%02d return length is 0x%02X\n",idxField,rawDataBuffer[inCnt++]);
+                
+                myGetString(rawDataBuffer,&inCnt,myFieldTable[idxField].inFieldLen,tempBuffer,myFieldTable[idxField].isDispAscii);
+                
+                memset(strFieldName,0x00,5);
+                sprintf(strFieldName,"F_%02d",idxField);
+
+                myCusPrint(strFieldName,myFieldTable[idxField].inFieldLen,tempBuffer); 
+            }
+            else // LLLVAR
+            {
+                memset(tempBuffer,0x00,strlen(tempBuffer));
+                printf("---------F_%02d return total length is 0x%02X 0x%02X\n",idxField,rawDataBuffer[inCnt],rawDataBuffer[inCnt+1]);
+                inFunc_BCD_to_ASCII(tempBuffer, &rawDataBuffer[inCnt], 2);
+                int fieldTotalLen = atoi(tempBuffer);
+                //printf("fieldTotalLen is %d\n",fieldTotalLen);
+                inCnt+=2;
+                while(fieldTotalLen > 0)
+                {
+//                    printf("fieldTotalLen is %d\n",fieldTotalLen);
+//                    printf("-------tag name is %c%c\n",rawDataBuffer[inCnt],rawDataBuffer[inCnt+1]);
+                    myGetString(rawDataBuffer,&inCnt,2,subTagName,myFieldTable[idxField].isDispAscii);
+                    memset(&tempBuffer[0],0x00,strlen(tempBuffer));
+//                    printf("-------tag length is 0x%02X 0x%02x\n",rawDataBuffer[inCnt],rawDataBuffer[inCnt+1]);
+                    inFunc_BCD_to_ASCII(tempBuffer, &rawDataBuffer[inCnt], 2);
+                    inCnt +=2;
+//                    printf("===============length is %s\n",tempBuffer);
+                    subTagLen = atoi(tempBuffer);
+//                    printf("-------tag length is %d\n",subTagLen);
+                    myGetString(rawDataBuffer,&inCnt,subTagLen,tempBuffer,myFieldTable[idxField].isDispAscii);
+                    myCusPrint(subTagName,subTagLen,tempBuffer);
+                    
+                    fieldTotalLen -= (2 + subTagLen + 2);//sub tag name 和sub field length 目前為2 
+                } 
+            }
+
+        }
+        
+    }
+
+}
 int myPackData(BYTE *uszPackBuf)
 {
     int FieldSz = sizeof(srNCCC_ATS_ISOFieldType)/sizeof(srNCCC_ATS_ISOFieldType[0]);

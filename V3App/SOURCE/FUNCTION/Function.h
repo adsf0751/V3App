@@ -5,3 +5,4 @@ int inFunc_BCD_to_ASCII(char *, unsigned char *, int );
 int inFunc_ShellCommand_System(char *);
 int inFunc_ls(char* , char* );
 int inFunc_PAD_ASCII(char *, char *, char , int , int );
+
