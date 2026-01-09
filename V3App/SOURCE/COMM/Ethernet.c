@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
-#include "../SOURCE/Display.h"
-#include "../Trans.h"
-#include "CPT.h"
-#include "../EDC.h"
+#include "../DISPLAY/Display.h"
+#include "../../Trans.h"
+#include "../FUNCTION/CPT.h"
+#include "../../EDC.h"
 extern int ginTrans_ClientFd;
 extern CPT_REC srCPTRec;
 extern EDC_REC srEDCRec;
@@ -22,7 +22,7 @@ char ipAddr[] = "10.105.109.155"; //IP Address
 char mask[] = "255.255.254.0"; //Mask
 char gateWay[] = "10.105.109.254"; //Gateway IP
 char hostIp[] = "10.105.108.43"; //Server IP
-char hostPort[] = "5000"; //Server Port
+char hostPort[] = "18012"; //Server Port
 
 int inETHERNET_Open() {
     char szDebugMsg[100 + 1];
@@ -1000,6 +1000,7 @@ int inETHERNET_Send_Data_By_Native(int inFileHandle, unsigned char* uszData, uns
 	
 	if (inTempLen >= 0)
 	{
+            
 		return (VS_SUCCESS);
 	}
 	else
@@ -1145,6 +1146,8 @@ int inETHERNET_Send(unsigned char *uszSendBuff, int inSendSize, int inSendTimeou
 			}
 			else
                             printf("send data successed\n");
+                            printf("socket disconnected ,ClientFd is %d\n",ginTrans_ClientFd);
+                            close(ginTrans_ClientFd);
 //				break;
 		}
 //	}

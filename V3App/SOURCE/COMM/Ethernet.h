@@ -1,4 +1,4 @@
-#include "../EDC.h"
+#include "../../EDC.h" // For  EDC_REC
 EDC_REC srEDCRec;
 int	ginTrans_ClientFd;
 int inETHERNET_Open(void);

@@ -2,7 +2,7 @@
 #include <ctosapi.h>
 #include <stdio.h>
 #include <string.h>
-#include "../Trans.h"
+#include "../../Trans.h"
 #include "File.h"
 /*
 Function	:inFILE_Close

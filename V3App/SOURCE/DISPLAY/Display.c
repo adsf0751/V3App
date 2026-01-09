@@ -1,7 +1,7 @@
 #include <ctosapi.h>
 #include <stdio.h>
 #include <string.h>
-#include "../Trans.h"
+#include "../../Trans.h"
 #include "Display.h"
 /*
 Function	:inPutGraphic

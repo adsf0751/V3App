@@ -9,9 +9,11 @@
 #include "print.h"
 #include "PrtMsg.h"
 
-#include "SOURCE/File.h"
-#include "SOURCE/Ethernet.h"
-#include "SOURCE/Display.h"
+#include "SOURCE/FUNCTION/Function.h"
+#include "SOURCE/FUNCTION/File.h"
+#include "SOURCE/COMM/Ethernet.h"
+#include "SOURCE/DISPLAY/Display.h"
+#include "SOURCE/NCCC/NCCCats.h"
 
 #define _AP_ROOT_PATH_   "./"
 #define _SHORT_RECEIPT_U_   "U"
@@ -26,8 +28,7 @@
 #define d_SEEK_FROM_BEGINNING   0
 #define d_SEEK_FROM_CURRENT     1
 #define d_SEEK_FROM_EOF         2
-#define _PADDING_RIGHT_         0  /* 靠左右補字元 */
-#define _PADDING_LEFT_          1  /* 靠右左補字元 */
+
 #define _PRT_NORMAL_            d_FONT_8x16
 #define d_FONT_8x16             0x0810
 
@@ -65,10 +66,6 @@ typedef struct
 BMPHeight gsrBMPHeight;
 BufferArrangeUnderLine gsrBAUL[5];
 static  TMSIPDT_REC	srTMSIPDTRec;	/* construct TMSIPDT record */
-
-
-
-
 
 /*
 Function	:inPRINT_TTF_SetFont_Style
@@ -552,54 +549,6 @@ int inCREDIT_PRINT_Data_ByBuffer(TRANSACTION_OBJECT *pobTran, unsigned char *usz
     return VS_SUCCESS;
 }
 
-int inFunc_ShellCommand_System(char *szCommand) {
-    int inRetVal;
-    char szDebugMsg[100 + 1];
-    if (szCommand == NULL) {
-        return (VS_ERROR);
-    }
-    inRetVal = system(szCommand);
-    /* 在C 程式裡其中 ret 值要除以256才會得到與shell 傳回相符的值 */
-    inRetVal >>= 8;
-
-    if (inRetVal != 0) {
-        return (VS_ERROR);
-    }
-    return (VS_SUCCESS);
-}
-
-int inFunc_ls(char* szParameter1, char* szSource) {
-    int inRetVal = VS_SUCCESS;
-    char szDebugMsg[100 + 1] = {0};
-    char szCommand[100 + 1] = {0}; /* Shell Command*/
-
-    /* 組命令 */
-    if (strlen(szSource) != 0) {
-        memset(szCommand, 0x00, sizeof (szCommand));
-        sprintf(szCommand, "ls ");
-
-        if (strlen(szParameter1) != 0) {
-            strcat(szCommand, szParameter1);
-            strcat(szCommand, " ");
-        }
-
-        if (strlen(szSource) != 0) {
-            strcat(szCommand, szSource);
-        }
-    }/* 沒有來源檔 */
-    else {
-        return (VS_ERROR);
-    }
-    //printf("szCommand is %s\n",szCommand);
-    /* 執行命令 */
-    inRetVal = inFunc_ShellCommand_System(szCommand);
-    if (inRetVal != VS_SUCCESS) {
-        return (inRetVal);
-    }
-
-    return (VS_SUCCESS);
-}
-
 /*
 Function	:inPRINT_Buffer_GetHeightFlow
 Date&Time	:2016/3/16 下午 2:48
@@ -698,8 +647,6 @@ int inFunc_Booting_Flow_Print_Image_Initial(TRANSACTION_OBJECT *pobTran) {
     return (VS_SUCCESS);
 }
 
-
-
 int inSetTermIPAddress(char* szTermIPAddress) {
     memset(srEDCRec.szTermIPAddress, 0x00, sizeof (srEDCRec.szTermIPAddress));
     /* 傳進的指標 不得為空  長度需大於0 小於規定最大值 */
@@ -736,24 +683,25 @@ int inSetTermGetewayAddress(char* szTermGetewayAddress) {
     return (VS_SUCCESS);
 }
 
-
-
 int main(int argc, char *argv[]) {
+    BYTE key;
     int i = 0;
-    int inPrintIndex = 0, inRetVal;
-    char szShort_Receipt_Mode[2 + 1];
-    char szDebugMsg[100 + 1];
-    char szCustomerIndicator[3 + 1] = {0};
     unsigned char uszBuffer[PB_CANVAS_X_SIZE * 8 * _BUFFER_MAX_LINE_];
     BufferHandle srBhandle;
     FONT_ATTRIB srFont_Attrib;
     TRANSACTION_OBJECT pobTran;
-    //inFunc_ls("-R -l", _AP_ROOT_PATH_);
+//    inFunc_ls("-R -l", _AP_ROOT_PATH_);
+    BYTE uszPackBuf[984];
+    memset(uszPackBuf,0x00,sizeof(uszPackBuf));
+    
+    int inCnt = myPackData(uszPackBuf);
+    
     inETHERNET_Initial();
     inETHERNET_SetConfig();
-    char txDataBuffer[] = "testing,send a  message to server ";
-    inETHERNET_Send(txDataBuffer,strlen(txDataBuffer),0);
+    
+    inETHERNET_Send(uszPackBuf,inCnt,0);
 //    EthernetPing(hostIp);
+    
     pobTran.srBRec.inPrintOption = _PRT_CUST_;
     strcpy(pobTran.srBRec.szCardLabel, "9中9文9字9"); //卡別
     strcpy(pobTran.srBRec.szPAN, "252500001616"); //卡號
@@ -764,7 +712,7 @@ int main(int argc, char *argv[]) {
     strcpy(pobTran.srBRec.szAuthCode, "123456");
     strcpy(pobTran.srBRec.szRefNo, "999999");
 
-    inFunc_Booting_Flow_Print_Image_Initial(&pobTran);
+//    inFunc_Booting_Flow_Print_Image_Initial(&pobTran);
     //    printf("初始化圖片預設高度\n");
     //    printf("%s:inBankLogoHeight is %d \n",     _BANK_LOGO_,      gsrBMPHeight.inBankLogoHeight);
     //    printf("%s:inMerchantLogoHeight is %d \n", _MERCHANT_LOGO_,  gsrBMPHeight.inMerchantLogoHeight);
@@ -780,7 +728,7 @@ int main(int argc, char *argv[]) {
 
     inPRINT_Buffer_Initial(uszBuffer, _BUFFER_MAX_LINE_, &srFont_Attrib, &srBhandle);
 
-    BYTE key;
+   
     CTOS_LCDTClearDisplay();
 
     //    if ((inRetVal = inCREDIT_PRINT_Logo_ByBuffer(&pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)
@@ -792,7 +740,7 @@ int main(int argc, char *argv[]) {
     //    if ((inRetVal = inPRINT_Buffer_OutPut(uszBuffer, &srBhandle)) != VS_SUCCESS)
     //        printf("inPRINT_Buffer_OutPut failed, ret=%d\n",inRetVal);
 
-    CTOS_LCDTPrintXY(1, 1, "show on LCD 123"); //console  to the  LCD
+    
     CTOS_KBDGet(&key);
     exit(0);
 }
