@@ -165,19 +165,19 @@ int myUnPackData(BYTE *rawDataBuffer ,int inReceiveSize)
         myPrintData("Len",msgLength,strDataBuffer);
         
         //Transport Protocol Data Unit (TPDU)
-        myDataToString(rawDataBuffer,&inCnt,5,strDataBuffer,VS_FALSE);
-        myPrintData("TPDU",5,strDataBuffer);
+        myDataToString(rawDataBuffer,&inCnt,_NCCC_ATS_TPDU_SIZE_,strDataBuffer,VS_FALSE);
+        myPrintData("TPDU",_NCCC_ATS_TPDU_SIZE_,strDataBuffer);
         
         //Message Type Identifier(MTI)
-        myDataToString(rawDataBuffer,&inCnt,2,strDataBuffer,VS_FALSE);
-        myPrintData("MTI",2,strDataBuffer);
+        myDataToString(rawDataBuffer,&inCnt,_NCCC_ATS_MTI_SIZE_,strDataBuffer,VS_FALSE);
+        myPrintData("MTI",_NCCC_ATS_MTI_SIZE_,strDataBuffer);
         
         //Primary Bit Map
-        for(i=0;i<8;i++)
+        for(i=0;i<_NCCC_ATS_BIT_MAP_SIZE_;i++)
         {
             for(j=7;j>=0;j--)
             {
-                if((rawDataBuffer[inCnt+i] >> j) & 0x01)
+                if(_NCCC_ATS_CHECK_BIT_MAP_(rawDataBuffer[inCnt+i],j))
                 {
 //                    printf("filedCnt = %d\n",filedCnt);
                     indexTable[idxField++] = filedCnt;                    
