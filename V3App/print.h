@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-   
+#include <ctosapi.h>
 typedef enum
 {
 	VS_USER_CANCEL			= (-1000),		/* 使用者取消交易 */

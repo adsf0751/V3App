@@ -107,14 +107,14 @@ MY_FIELD_TYPE_TABLE myFieldTable[] =
 };
 
 
-void myCusPrint(char *fieldName,int len,char *data)
+void myPrintData(char *fieldName,int len,char *data)
 {
     printf("[%6s] [%3d] [%s]\n",fieldName,len,data);
 }
 /*
  Describe        :根據isDispAscii旗標判斷 傳入的byte顯示為ascii or byte
  */
-void myGetString(BYTE* inBuffer,int* idx,int len ,char *outBuffer,int isDispAscii)
+void myDataToString(BYTE* inBuffer,int* idx,int len ,char *outBuffer,int isDispAscii)
 {
     memset(&outBuffer[0],0x00,strlen(outBuffer));
 //    printf("idx is %d , len is %d\n",*idx,len);
@@ -144,8 +144,8 @@ int myUnPackData(BYTE *rawDataBuffer ,int inReceiveSize)
     int szField = 0;//indexTable length
     int idxField =0;//indexTable index
     int filedCnt = 1; //計算當前 bitmap 上 bit所代表欄位
-    char tempBuffer[100+1];//儲存當前欄位data
-    memset(&tempBuffer[0],0x00,100+1);
+    char strDataBuffer[100+1];//儲存當前欄位data
+    memset(&strDataBuffer[0],0x00,100+1);
     int inCnt = 2;//received buffer index
     int i,j;
     char subTagName[100];
@@ -153,54 +153,40 @@ int myUnPackData(BYTE *rawDataBuffer ,int inReceiveSize)
     
     if(msgLength == (inReceiveSize-2) )
     {   
-        printf("\n\n Receive Length is %d , Buffer is : \n",msgLength);
+        printf("\n\n Receive Length is %d (0x%02X 0x%02X) , Buffer is : \n",msgLength,rawDataBuffer[0],rawDataBuffer[1]);
         for(i=2;i<inReceiveSize;i++)
         {
             printf("0x%02x\t",rawDataBuffer[i]);
         }
         printf("\n\n");
-        memset(&tempBuffer[0],0x00,100+1);
+        memset(&strDataBuffer[0],0x00,100+1);
         //Message Length
-        sprintf(tempBuffer,"%d",msgLength);
-        myCusPrint("Len",msgLength,tempBuffer);
+        sprintf(strDataBuffer,"%d",msgLength);
+        myPrintData("Len",msgLength,strDataBuffer);
         
         //Transport Protocol Data Unit (TPDU)
-        myGetString(rawDataBuffer,&inCnt,5,tempBuffer,VS_FALSE);
-        myCusPrint("TPDU",5,tempBuffer);
+        myDataToString(rawDataBuffer,&inCnt,5,strDataBuffer,VS_FALSE);
+        myPrintData("TPDU",5,strDataBuffer);
         
         //Message Type Identifier(MTI)
-        myGetString(rawDataBuffer,&inCnt,2,tempBuffer,VS_FALSE);
-        myCusPrint("MTI",2,tempBuffer);
+        myDataToString(rawDataBuffer,&inCnt,2,strDataBuffer,VS_FALSE);
+        myPrintData("MTI",2,strDataBuffer);
         
         //Primary Bit Map
         for(i=0;i<8;i++)
-        {   
-            unsigned char *nibble = malloc(sizeof(unsigned char)*2);
-            nibble[0] = (rawDataBuffer[inCnt+i] &0xF0) >> 4; //高4 bits
-            nibble[1] =  rawDataBuffer[inCnt+i] &0x0F;       //低4 bits
-//            printf("0x%02x 0x%02x\n",nibble[0],nibble[1]);
-            for(j =3;j>=0;j--)
+        {
+            for(j=7;j>=0;j--)
             {
-                if((nibble[0] >> j) & 0x01 )
+                if((rawDataBuffer[inCnt+i] >> j) & 0x01)
                 {
 //                    printf("filedCnt = %d\n",filedCnt);
-                    indexTable[idxField++] = filedCnt;
+                    indexTable[idxField++] = filedCnt;                    
                 }
                 filedCnt++;
             }
-            for(j =3;j>=0;j--)
-            {
-                if((nibble[1] >> j) & 0x01 )
-                {
-//                    printf("filedCnt = %d\n",filedCnt);
-                    indexTable[idxField++] = filedCnt;
-                }
-                filedCnt++;
-            }
-            free(nibble);
         }
-        myGetString(rawDataBuffer,&inCnt,8,tempBuffer,VS_FALSE);
-        myCusPrint("Bitmap",8,tempBuffer); 
+        myDataToString(rawDataBuffer,&inCnt,8,strDataBuffer,VS_FALSE);
+        myPrintData("Bitmap",8,strDataBuffer); 
         
         char strFieldName[4+1];
         szField = idxField;
@@ -209,53 +195,95 @@ int myUnPackData(BYTE *rawDataBuffer ,int inReceiveSize)
             idxField = indexTable[i];
             if(myFieldTable[idxField].inFormat == EMPTY)
             {
-                myGetString(rawDataBuffer,&inCnt,myFieldTable[idxField].inFieldLen,tempBuffer,myFieldTable[idxField].isDispAscii);
+                myDataToString(rawDataBuffer,&inCnt,myFieldTable[idxField].inFieldLen,strDataBuffer,myFieldTable[idxField].isDispAscii);
                 
                 memset(strFieldName,0x00,5);
                 sprintf(strFieldName,"F_%02d",idxField);
 
-                myCusPrint(strFieldName,myFieldTable[idxField].inFieldLen,tempBuffer); 
+                myPrintData(strFieldName,myFieldTable[idxField].inFieldLen,strDataBuffer); 
             }
             else if(myFieldTable[idxField].inFormat == LLVAR)
             {
                 printf("---------F_%02d return length is 0x%02X\n",idxField,rawDataBuffer[inCnt++]);
                 
-                myGetString(rawDataBuffer,&inCnt,myFieldTable[idxField].inFieldLen,tempBuffer,myFieldTable[idxField].isDispAscii);
+                myDataToString(rawDataBuffer,&inCnt,myFieldTable[idxField].inFieldLen,strDataBuffer,myFieldTable[idxField].isDispAscii);
                 
                 memset(strFieldName,0x00,5);
                 sprintf(strFieldName,"F_%02d",idxField);
 
-                myCusPrint(strFieldName,myFieldTable[idxField].inFieldLen,tempBuffer); 
+                myPrintData(strFieldName,myFieldTable[idxField].inFieldLen,strDataBuffer); 
             }
             else // LLLVAR
             {
-                memset(tempBuffer,0x00,strlen(tempBuffer));
+                memset(strDataBuffer,0x00,strlen(strDataBuffer));
                 printf("---------F_%02d return total length is 0x%02X 0x%02X\n",idxField,rawDataBuffer[inCnt],rawDataBuffer[inCnt+1]);
-                inFunc_BCD_to_ASCII(tempBuffer, &rawDataBuffer[inCnt], 2);
-                int fieldTotalLen = atoi(tempBuffer);
-                //printf("fieldTotalLen is %d\n",fieldTotalLen);
-                inCnt+=2;
-                while(fieldTotalLen > 0)
+                inFunc_BCD_to_ASCII(strDataBuffer, &rawDataBuffer[inCnt], 2);
+                inCnt += 2;
+                printf("[  F_%2d] [%3d]\n",idxField,atoi(strDataBuffer));
+                switch(idxField)
                 {
-//                    printf("fieldTotalLen is %d\n",fieldTotalLen);
-//                    printf("-------tag name is %c%c\n",rawDataBuffer[inCnt],rawDataBuffer[inCnt+1]);
-                    myGetString(rawDataBuffer,&inCnt,2,subTagName,myFieldTable[idxField].isDispAscii);
-                    memset(&tempBuffer[0],0x00,strlen(tempBuffer));
-//                    printf("-------tag length is 0x%02X 0x%02x\n",rawDataBuffer[inCnt],rawDataBuffer[inCnt+1]);
-                    inFunc_BCD_to_ASCII(tempBuffer, &rawDataBuffer[inCnt], 2);
-                    inCnt +=2;
-//                    printf("===============length is %s\n",tempBuffer);
-                    subTagLen = atoi(tempBuffer);
-//                    printf("-------tag length is %d\n",subTagLen);
-                    myGetString(rawDataBuffer,&inCnt,subTagLen,tempBuffer,myFieldTable[idxField].isDispAscii);
-                    myCusPrint(subTagName,subTagLen,tempBuffer);
-                    
-                    fieldTotalLen -= (2 + subTagLen + 2);//sub tag name 和sub field length 目前為2 
-                } 
-            }
+                    case 48:
+                    {
+                        break;
+                    }
+                    case 54:
+                    {
+                        break;
+                    }
+                    case 55:
+                    {
+                        break;
+                    }
+                     case 57:
+                    {
+                        break;
+                    }
+                    case 58:
+                    {
+                        break;
+                    }
+                    case 59:
+                    {
+                       int fieldTotalLen = atoi(strDataBuffer);
+                        //printf("fieldTotalLen is %d\n",fieldTotalLen);
+                        while(fieldTotalLen > 0)
+                        {
+        //                    printf("fieldTotalLen is %d\n",fieldTotalLen);
+        //                    printf("-------tag name is %c%c\n",rawDataBuffer[inCnt],rawDataBuffer[inCnt+1]);
+                            myDataToString(rawDataBuffer,&inCnt,2,subTagName,myFieldTable[idxField].isDispAscii);
+                            memset(&strDataBuffer[0],0x00,strlen(strDataBuffer));
+        //                    printf("-------tag length is 0x%02X 0x%02x\n",rawDataBuffer[inCnt],rawDataBuffer[inCnt+1]);
+                            inFunc_BCD_to_ASCII(strDataBuffer, &rawDataBuffer[inCnt], 2);
+                            inCnt +=2;
+        //                    printf("===============length is %s\n",strDataBuffer);
+                            subTagLen = atoi(strDataBuffer);
+        //                    printf("-------tag length is %d\n",subTagLen);
+                            myDataToString(rawDataBuffer,&inCnt,subTagLen,strDataBuffer,myFieldTable[idxField].isDispAscii);
+                            myPrintData(subTagName,subTagLen,strDataBuffer);
 
+                            fieldTotalLen -= (2 + subTagLen + 2);//sub tag name 和sub field length 目前為2 
+                        }
+                        break;
+                    }
+                    case 60:
+                    {
+                        break;
+                    }
+                    case 61:
+                    {
+                        break;
+                    }
+                    case 62:
+                    {
+                        break;
+                    }
+                    case 63:
+                    {
+                        break;
+                    }
+                }
+            }
         }
-        
     }
 
 }

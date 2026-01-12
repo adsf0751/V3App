@@ -40,6 +40,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/SOURCE/FUNCTION/File.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/Function.o \
 	${OBJECTDIR}/SOURCE/NCCCats.o \
+	${OBJECTDIR}/SOURCE/Print.o \
 	${OBJECTDIR}/appmain.o
 
 
@@ -86,6 +87,10 @@ ${OBJECTDIR}/SOURCE/FUNCTION/Function.o: SOURCE/FUNCTION/Function.c
 ${OBJECTDIR}/SOURCE/NCCCats.o: SOURCE/NCCCats.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE
 	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/NCCCats.o SOURCE/NCCCats.c
+
+${OBJECTDIR}/SOURCE/Print.o: SOURCE/Print.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE
+	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/Print.o SOURCE/Print.c
 
 ${OBJECTDIR}/appmain.o: appmain.c
 	${MKDIR} -p ${OBJECTDIR}
