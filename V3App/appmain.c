@@ -685,7 +685,7 @@ int inSetTermGetewayAddress(char* szTermGetewayAddress) {
 
 int main(int argc, char *argv[]) {
     BYTE key;
-    int i = 0;
+    int  inRetVal = 0;
     unsigned char uszBuffer[PB_CANVAS_X_SIZE * 8 * _BUFFER_MAX_LINE_];
     BufferHandle srBhandle;
     FONT_ATTRIB srFont_Attrib;
@@ -701,25 +701,31 @@ int main(int argc, char *argv[]) {
     
     int inCnt = myPackData(uszPackBuf);
     
-    inETHERNET_Initial();
-    inETHERNET_SetConfig();
-    
-    inETHERNET_Send(uszPackBuf,inCnt,0);
-    inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
-    
-    if(inReceiveSize > 0 )
+    inRetVal = inETHERNET_Initial();
+    if(inRetVal == VS_SUCCESS)
     {
-        myUnPackData( uszRecvPacket , inReceiveSize);
+        printf("inETHERNET_Initial successed\n");
+        if(inETHERNET_SetConfig() == VS_SUCCESS)
+        {
+            inETHERNET_Send(uszPackBuf,inCnt,0);
+            inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
+
+            if(inReceiveSize > 0 )
+            {
+                myUnPackData( uszRecvPacket , inReceiveSize);
+            }
+        }
+        if(inETHERNET_END() == VS_SUCCESS)
+        {
+            printf("socket disconnect successed!!\n");
+        }
+        else
+        {
+            printf("socket disconnect failed!!\n");
+        }
     }
     
-    if(inETHERNET_END() == VS_SUCCESS)
-    {
-        printf("socket disconnect successed!!\n");
-    }
-    else
-    {
-        printf("socket disconnect failed!!\n");
-    }
+
 //    EthernetPing(hostIp);
     
     pobTran.srBRec.inPrintOption = _PRT_CUST_;

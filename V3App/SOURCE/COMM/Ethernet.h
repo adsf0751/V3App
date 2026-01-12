@@ -1,5 +1,11 @@
 #include "../../EDC.h" // For  EDC_REC
 #define _COMM_RECEIVE_MAX_LENGTH_	1536
+// Define Ethernet Data //
+#define IPADDR      "10.105.109.155"
+#define MASK        "255.255.254.0"
+#define GATEWAY     "10.105.109.254"
+#define HOSTIP      "10.105.108.23"
+#define HOSTPORT    "18012"
 typedef struct
 {
         char szCommIndex[2 + 1];                /* 通訊參數索引 */

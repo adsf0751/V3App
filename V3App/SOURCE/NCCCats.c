@@ -109,7 +109,7 @@ MY_FIELD_TYPE_TABLE myFieldTable[] =
 
 void myCusPrint(char *fieldName,int len,char *data)
 {
-    printf("[% 6s] [%3d] [%s]\n",fieldName,len,data);
+    printf("[%6s] [%3d] [%s]\n",fieldName,len,data);
 }
 /*
  Describe        :根據isDispAscii旗標判斷 傳入的byte顯示為ascii or byte
@@ -134,29 +134,27 @@ void myGetString(BYTE* inBuffer,int* idx,int len ,char *outBuffer,int isDispAsci
             strcat(outBuffer,strData);
         }       
     }
-
     *idx = *idx + len;
 }
 int myUnPackData(BYTE *rawDataBuffer ,int inReceiveSize)
 {
     int msgLength = (rawDataBuffer[0]<<8) | rawDataBuffer[1];
-
-    int  indexTable[64];
+    int  indexTable[64];//類似hashtable的key
     memset(&indexTable[0],0x00,64);
-    int filedCnt = 1;
-    char tempBuffer[100+1];
+    int szField = 0;//indexTable length
+    int idxField =0;//indexTable index
+    int filedCnt = 1; //計算當前 bitmap 上 bit所代表欄位
+    char tempBuffer[100+1];//儲存當前欄位data
     memset(&tempBuffer[0],0x00,100+1);
-    int szField = 0;
-    int idxField =0;
-    int inCnt = 2;
+    int inCnt = 2;//received buffer index
     int i,j;
     char subTagName[100];
     int subTagLen = 0;
+    
     if(msgLength == (inReceiveSize-2) )
     {   
-        printf("msgLength is Valid\n");
-        printf("\n\n Receive Buffer is : \n");
-        for(i=0;i<inReceiveSize;i++)
+        printf("\n\n Receive Length is %d , Buffer is : \n",msgLength);
+        for(i=2;i<inReceiveSize;i++)
         {
             printf("0x%02x\t",rawDataBuffer[i]);
         }
@@ -164,26 +162,26 @@ int myUnPackData(BYTE *rawDataBuffer ,int inReceiveSize)
         memset(&tempBuffer[0],0x00,100+1);
         //Message Length
         sprintf(tempBuffer,"%d",msgLength);
-        myCusPrint(" Len   ",msgLength,tempBuffer);
+        myCusPrint("Len",msgLength,tempBuffer);
         
         //Transport Protocol Data Unit (TPDU)
         myGetString(rawDataBuffer,&inCnt,5,tempBuffer,VS_FALSE);
-        myCusPrint(" TPDU  ",5,tempBuffer);
+        myCusPrint("TPDU",5,tempBuffer);
         
         //Message Type Identifier(MTI)
         myGetString(rawDataBuffer,&inCnt,2,tempBuffer,VS_FALSE);
-        myCusPrint(" MTI   ",2,tempBuffer);
+        myCusPrint("MTI",2,tempBuffer);
         
         //Primary Bit Map
         for(i=0;i<8;i++)
-        {    
-            unsigned char *arr = malloc(sizeof(unsigned char)*2);
-            arr[0] = (rawDataBuffer[inCnt+i] &0xF0) >> 4;
-            arr[1] =  rawDataBuffer[inCnt+i] &0x0F;  
-//            printf("0x%02x 0x%02x\n",arr[0],arr[1]);
+        {   
+            unsigned char *nibble = malloc(sizeof(unsigned char)*2);
+            nibble[0] = (rawDataBuffer[inCnt+i] &0xF0) >> 4; //高4 bits
+            nibble[1] =  rawDataBuffer[inCnt+i] &0x0F;       //低4 bits
+//            printf("0x%02x 0x%02x\n",nibble[0],nibble[1]);
             for(j =3;j>=0;j--)
             {
-                if((arr[0] >> j) & 0x01 )
+                if((nibble[0] >> j) & 0x01 )
                 {
 //                    printf("filedCnt = %d\n",filedCnt);
                     indexTable[idxField++] = filedCnt;
@@ -192,17 +190,17 @@ int myUnPackData(BYTE *rawDataBuffer ,int inReceiveSize)
             }
             for(j =3;j>=0;j--)
             {
-                if((arr[1] >> j) & 0x01 )
+                if((nibble[1] >> j) & 0x01 )
                 {
 //                    printf("filedCnt = %d\n",filedCnt);
                     indexTable[idxField++] = filedCnt;
                 }
                 filedCnt++;
             }
-            free(arr);
+            free(nibble);
         }
         myGetString(rawDataBuffer,&inCnt,8,tempBuffer,VS_FALSE);
-        myCusPrint(" Bitmap",8,tempBuffer); 
+        myCusPrint("Bitmap",8,tempBuffer); 
         
         char strFieldName[4+1];
         szField = idxField;

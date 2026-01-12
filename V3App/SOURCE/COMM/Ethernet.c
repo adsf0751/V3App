@@ -17,12 +17,7 @@ extern int ginTrans_ClientFd;
 extern CPT_REC srCPTRec;
 extern EDC_REC srEDCRec;
 
-//Define Ethernet Data //
-char ipAddr[] = "10.105.109.155"; //IP Address
-char mask[] = "255.255.254.0"; //Mask
-char gateWay[] = "10.105.109.254"; //Gateway IP
-char hostIp[] = "10.105.108.43"; //Server IP
-char hostPort[] = "18012"; //Server Port
+
 /*
 Function        :inGetHostIPPrimary
 Date&Time       :
@@ -552,8 +547,9 @@ int inETHERNET_SetConfig(void)
                 return (VS_SUCCESS);
         }
         else
-	{
-		inETHERNET_END();
+	{   
+            return (VS_ERROR);
+//            inETHERNET_END();
 	}
 
 /*目前只有一個host ip and port 以下不實作*/        
@@ -706,11 +702,11 @@ int inETHERNET_Initial(void) {
     char szDispMsg[16 + 1] = {0};
     unsigned char uszLen = 0;
     
-    inSetTermIPAddress(ipAddr);
-    inSetTermMASKAddress(mask);
-    inSetTermGetewayAddress(gateWay);
-    memcpy(&srCPTRec.szHostIPPrimary[0], &hostIp[0], strlen(hostIp));
-    memcpy(&srCPTRec.szHostPortNoPrimary[0], &hostPort[0], strlen(hostPort));
+    inSetTermIPAddress(IPADDR);
+    inSetTermMASKAddress(MASK);
+    inSetTermGetewayAddress(GATEWAY);
+    memcpy(&srCPTRec.szHostIPPrimary[0]    , HOSTIP  , strlen(HOSTIP));
+    memcpy(&srCPTRec.szHostPortNoPrimary[0], HOSTPORT, strlen(HOSTPORT));
     //暫不實現
     //	inDISP_ClearAll();
     //	inFunc_Display_LOGO( 0,  _COORDINATE_Y_LINE_16_2_);				/* 第一層顯示 LOGO */
