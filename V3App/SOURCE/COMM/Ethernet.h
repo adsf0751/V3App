@@ -4,7 +4,7 @@
 #define IPADDR      "10.105.109.155"
 #define MASK        "255.255.254.0"
 #define GATEWAY     "10.105.109.254"
-#define HOSTIP      "10.105.108.23"
+#define HOSTIP      "10.105.108.22"
 #define HOSTPORT    "18012"
 typedef struct
 {

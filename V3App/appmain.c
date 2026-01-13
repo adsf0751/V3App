@@ -411,14 +411,18 @@ int main(int argc, char *argv[]) {
     memset(uszPackBuf,0x00,sizeof(uszPackBuf));
     
     int inCnt = myPackData(uszPackBuf);
-    
+//    int i;
+//    for (i=0;i<inCnt;i++)
+//    {
+//        printf("0x%02X\t",uszPackBuf[i]);
+//    }
     inRetVal = inETHERNET_Initial();
     if(inRetVal == VS_SUCCESS)
     {
         printf("inETHERNET_Initial successed\n");
         if(inETHERNET_SetConfig() == VS_SUCCESS)
         {
-            inETHERNET_Send(uszPackBuf,inCnt,0);
+            inETHERNET_Send(uszPackBuf,inCnt-2,0);
             inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
 
             if(inReceiveSize > 0 )
@@ -427,18 +431,15 @@ int main(int argc, char *argv[]) {
             }
         }
         if(inETHERNET_END() == VS_SUCCESS)
-        {
             printf("socket disconnect successed!!\n");
-        }
         else
-        {
             printf("socket disconnect failed!!\n");
-        }
     }
-    
+    CTOS_LCDTPrintXY(1, 1, "Return 0;");
+    CTOS_KBDGet(&key);
 //    EthernetPing(hostIp);
     
-    inFunc_Booting_Flow_Print_Image_Initial(&pobTran);
+//    inFunc_Booting_Flow_Print_Image_Initial(&pobTran);
 //    printf("初始化圖片預設高度\n");
 //    printf("%s:inBankLogoHeight is %d \n",     _BANK_LOGO_,      gsrBMPHeight.inBankLogoHeight);
 //    printf("%s:inMerchantLogoHeight is %d \n", _MERCHANT_LOGO_,  gsrBMPHeight.inMerchantLogoHeight);
@@ -481,7 +482,5 @@ int main(int argc, char *argv[]) {
 //    if ((inRetVal = inPRINT_Buffer_OutPut(uszBuffer, &srBhandle)) != VS_SUCCESS)
 //        printf("inPRINT_Buffer_OutPut failed, ret=%d\n",inRetVal);
 
-    
-    CTOS_KBDGet(&key);
     exit(0);
 }

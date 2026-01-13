@@ -17,18 +17,18 @@ ISO_FIELD_TYPE_NCCC_ATS_TABLE srNCCC_ATS_ISOFieldType[] =
         {32,            _NCCC_ATS_ISO_BYTE_1_,      VS_FALSE,	    6},
         {35,            _NCCC_ATS_ISO_NIBBLE_2_,    VS_FALSE,       64},
         {37,            _NCCC_ATS_ISO_ASC_,         VS_FALSE,       24},
-        {38,            _NCCC_ATS_ISO_ASC_,         VS_FALSE,       6},
+//        {38,            _NCCC_ATS_ISO_ASC_,         VS_FALSE,       6},
 //        {39,            _NCCC_ATS_ISO_ASC_,         VS_FALSE,       2},
         {41,            _NCCC_ATS_ISO_ASC_,         VS_FALSE,       16},
         {42,            _NCCC_ATS_ISO_ASC_,         VS_FALSE,       30},
         {48,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        42},
-        {52,            _NCCC_ATS_ISO_BCD_,         VS_FALSE,       16},
+//        {52,            _NCCC_ATS_ISO_BCD_,         VS_FALSE,       16},
 //        {54,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        0},
         {55,            _NCCC_ATS_ISO_BYTE_3_,      VS_FALSE,       280},
         {57,            _NCCC_ATS_ISO_BYTE_3_,      VS_FALSE,       24},
-        {58,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        0},
+//        {58,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        0},
         {59,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        292},
-//        {60,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        12},
+        {60,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        12},
         {62,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        12},
         {63,            _NCCC_ATS_ISO_BYTE_3_,      VS_TRUE,        0},
 //        {64,            _NCCC_ATS_ISO_BCD_,         VS_FALSE,       16},
@@ -305,21 +305,20 @@ int myPackData(BYTE *uszPackBuf)
     uszPackBuf[inCnt++] = 0X02;
     uszPackBuf[inCnt++] = 0X00;
     //Primary Bit Map 
-    //3 4 11 22 24 25 32  37 38 41 42 48 55 
-    uszPackBuf[inCnt++] = 0X30; // 1~ 8
-    uszPackBuf[inCnt++] = 0X20; // 9~16
-    uszPackBuf[inCnt++] = 0X05; //17~24
-    uszPackBuf[inCnt++] = 0X81; //25~32
-    uszPackBuf[inCnt++] = 0X2C; //33~40
-    uszPackBuf[inCnt++] = 0XC1; //41~48
-    uszPackBuf[inCnt++] = 0X12; //49~56
-    uszPackBuf[inCnt++] = 0XF2; //57~64
+    memset(&uszPackBuf[inCnt],0x00,8);//9~16
+    inCnt += 8;
     
     for(i=0;i<FieldSz;i++)
     {            
         int Length = srNCCC_ATS_ISOFieldType[i].inFieldLen / 2;
         unsigned char* uszBCD = malloc(sizeof(unsigned char)*(Length+1));
         memset(uszBCD, 0x00, Length+1);
+        printf("field num is %d\n",srNCCC_ATS_ISOFieldType[i].inFieldNum);
+        /*===== set a bit in the bitmap field =====*/
+        /*參考 inNCCC_ATS_BitMapCheck */
+        int offset = (srNCCC_ATS_ISOFieldType[i].inFieldNum -1) / 8;
+        uszPackBuf[9 + offset] |= (1U << 8-(srNCCC_ATS_ISOFieldType[i].inFieldNum - 8*offset));
+        
         switch(srNCCC_ATS_ISOFieldType[i].inFieldNum)
         {
             case 3:
@@ -346,14 +345,14 @@ int myPackData(BYTE *uszPackBuf)
             case 12:
             {
                 inFunc_ASCII_to_BCD(&uszBCD[0],"073012",Length );
-                memcpy((char*)&uszPackBuf[inCnt],&uszBCD[0],Length);
+                memcpy((char*)&uszPackBuf[inCnt], (char *)&uszBCD[0],Length);
                 inCnt +=3;
                 break;
             }
             case 13:
             {
                 inFunc_ASCII_to_BCD(&uszBCD[0],"0107",Length );
-                memcpy((char*)&uszPackBuf[inCnt],&uszBCD[0],Length);
+                memcpy((char*)&uszPackBuf[inCnt], (char *)&uszBCD[0],Length);
                 inCnt +=3;
                 break;
             }
@@ -464,7 +463,7 @@ int myPackData(BYTE *uszPackBuf)
             }
             case 52:
             {
-                memcpy(&uszPackBuf[inCnt],"1234567812345678",8);
+                memcpy(&uszPackBuf[inCnt],"12345678",8);
                 inCnt += 8;
                 break;
             }
@@ -556,6 +555,7 @@ int myPackData(BYTE *uszPackBuf)
                 sprintf(totalLength,"%04d",inCnt - lastInCnt-2);
 //                printf("last count is %d , curr count is %d,total length is %s\n",lastInCnt,inCnt,totalLength);
                 inFunc_ASCII_to_BCD(&uszPackBuf[lastInCnt], totalLength, 2);
+                
                 break;
             }
             case 57:
@@ -675,18 +675,15 @@ int myPackData(BYTE *uszPackBuf)
                 break; 
         }
         free(uszBCD);
-    }
+    } 
+   
     //計算整個buffer總長度，轉成2Byte塞到buffer[0]/buffer[1]
-    unsigned int Len = inCnt -2 ;//扣掉buffer[0]/buffer[1] 
     printf("inCnt  is %d\n",inCnt);
-    //Len 是非負整數前提下
-    //除2^n     等價於Len >>  n
-    //求2^n餘數 等價於Len & (2^n -1)
-//    uszPackBuf[0] = (Len/16);
-//    uszPackBuf[1] = Len%16; 
-    uszPackBuf[0] = Len >> 4;
-    uszPackBuf[1] = Len & (16-1); 
-//    printf("uszPackBuf[0] is %x\n",uszPackBuf[0]);
-//    printf("uszPackBuf[1] is %x\n",uszPackBuf[1]); 
+    
+    uszPackBuf[0] = (inCnt - 2) / 256;
+    uszPackBuf[1] = (inCnt - 2) % 256;  
+    printf("uszPackBuf[0] is 0x%02x\n",uszPackBuf[0]);
+    printf("uszPackBuf[1] is 0x%02x\n",uszPackBuf[1]);
+    
     return inCnt;
 }
