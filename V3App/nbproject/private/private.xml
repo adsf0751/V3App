@@ -10,7 +10,12 @@
         <group>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/NCCCats.c</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/Function.c</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/PrtMsg.h</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/COMM/Ethernet.c</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/Print.c</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/print.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/Print.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/Trans.h</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/appmain.c</file>
         </group>
     </open-files>

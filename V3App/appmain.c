@@ -422,6 +422,11 @@ int main(int argc, char *argv[]) {
         printf("inETHERNET_Initial successed\n");
         if(inETHERNET_SetConfig() == VS_SUCCESS)
         {
+            /*
+             * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
+             * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length
+             * 為了不改動用到此function，故先將inSendSize -2
+             */
             inETHERNET_Send(uszPackBuf,inCnt-2,0);
             inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
 
