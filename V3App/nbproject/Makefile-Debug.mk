@@ -37,8 +37,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/SOURCE/COMM/Ethernet.o \
 	${OBJECTDIR}/SOURCE/DISPLAY/Display.o \
+	${OBJECTDIR}/SOURCE/FUNCTION/ECR.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/File.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/Function.o \
+	${OBJECTDIR}/SOURCE/FUNCTION/RS232.o \
 	${OBJECTDIR}/SOURCE/NCCCats.o \
 	${OBJECTDIR}/SOURCE/Print.o \
 	${OBJECTDIR}/appmain.o
@@ -76,6 +78,10 @@ ${OBJECTDIR}/SOURCE/DISPLAY/Display.o: SOURCE/DISPLAY/Display.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/DISPLAY
 	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/DISPLAY/Display.o SOURCE/DISPLAY/Display.c
 
+${OBJECTDIR}/SOURCE/FUNCTION/ECR.o: SOURCE/FUNCTION/ECR.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
+	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/ECR.o SOURCE/FUNCTION/ECR.c
+
 ${OBJECTDIR}/SOURCE/FUNCTION/File.o: SOURCE/FUNCTION/File.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
 	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/File.o SOURCE/FUNCTION/File.c
@@ -83,6 +89,10 @@ ${OBJECTDIR}/SOURCE/FUNCTION/File.o: SOURCE/FUNCTION/File.c
 ${OBJECTDIR}/SOURCE/FUNCTION/Function.o: SOURCE/FUNCTION/Function.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
 	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/Function.o SOURCE/FUNCTION/Function.c
+
+${OBJECTDIR}/SOURCE/FUNCTION/RS232.o: SOURCE/FUNCTION/RS232.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
+	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/RS232.o SOURCE/FUNCTION/RS232.c
 
 ${OBJECTDIR}/SOURCE/NCCCats.o: SOURCE/NCCCats.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE

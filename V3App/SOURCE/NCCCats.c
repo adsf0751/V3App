@@ -313,7 +313,7 @@ int myPackData(BYTE *uszPackBuf)
         int Length = srNCCC_ATS_ISOFieldType[i].inFieldLen / 2;
         unsigned char* uszBCD = malloc(sizeof(unsigned char)*(Length+1));
         memset(uszBCD, 0x00, Length+1);
-        printf("field num is %d\n",srNCCC_ATS_ISOFieldType[i].inFieldNum);
+//        printf("field num is %d\n",srNCCC_ATS_ISOFieldType[i].inFieldNum);
         /*===== set a bit in the bitmap field =====*/
         /*參考 inNCCC_ATS_BitMapCheck */
         int offset = (srNCCC_ATS_ISOFieldType[i].inFieldNum -1) / 8;

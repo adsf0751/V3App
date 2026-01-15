@@ -5,8 +5,8 @@
 #include  <stdio.h>
 #include "DISPLAY/Display.h"
 #define _PROCESS_           "./fs_data/PROCESS.bmp"
-#define _COORDINATE_Y_LINE_8_7_  (_LCD_YSIZE_ / 8) * 6
-#define _LCD_YSIZE_   480
+//#define _COORDINATE_Y_LINE_8_7_  (_LCD_YSIZE_ / 8) * 6
+//#define _LCD_YSIZE_   480
 
 
 int inPRINT_TTF_SetFont_Style(int);

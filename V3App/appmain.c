@@ -12,9 +12,9 @@
 #include "SOURCE/FUNCTION/Function.h"
 #include "SOURCE/FUNCTION/File.h"
 #include "SOURCE/COMM/Ethernet.h"
-#include "SOURCE/DISPLAY/Display.h"
 #include "SOURCE/NCCC/NCCCats.h"
 #include "SOURCE/Print.h"
+#include "SOURCE/FUNCTION/ECR.h"
 #define _AP_ROOT_PATH_   "./"
 #define _SHORT_RECEIPT_U_   "U"
 #define _NCCC_TEXT_LOGO_    "財團法人聯合信用卡處理中心"
@@ -410,38 +410,52 @@ int main(int argc, char *argv[]) {
     
     memset(uszPackBuf,0x00,sizeof(uszPackBuf));
     
-    int inCnt = myPackData(uszPackBuf);
+//    int inCnt = myPackData(uszPackBuf);
 //    int i;
 //    for (i=0;i<inCnt;i++)
 //    {
 //        printf("0x%02X\t",uszPackBuf[i]);
 //    }
-    inRetVal = inETHERNET_Initial();
-    if(inRetVal == VS_SUCCESS)
+//    inRetVal = inETHERNET_Initial();
+//    if(inRetVal == VS_SUCCESS)
+//    {
+//        printf("inETHERNET_Initial successed\n");
+//        if(inETHERNET_SetConfig() == VS_SUCCESS)
+//        {
+//            /*
+//             * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
+//             * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length
+//             * 為了不改動用到此function，故先將inSendSize -2
+//             */
+//            inETHERNET_Send(uszPackBuf,inCnt-2,0);
+//            inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
+//
+//            if(inReceiveSize > 0 )
+//            {
+//                myUnPackData( uszRecvPacket , inReceiveSize);
+//            }
+//        }
+//        if(inETHERNET_END() == VS_SUCCESS)
+//            printf("socket disconnect successed!!\n");
+//        else
+//            printf("socket disconnect failed!!\n");
+//    }
+    ECR_TABLE			gsrECROb = {.srSetting.uszComPort = d_COM2};
+    if(inECR_Initial() == VS_SUCCESS)
     {
-        printf("inETHERNET_Initial successed\n");
-        if(inETHERNET_SetConfig() == VS_SUCCESS)
+//        CTOS_LCDTPrintXY(1, 1, "inECR_Initial");
+//        CTOS_KBDGet(&key);
+        inRS232_ECR_8N1_Standard_Receive_Packet(&pobTran, &gsrECROb);
+         
+        if (inRS232_Close(gsrECROb.srSetting.uszComPort) != VS_SUCCESS)
         {
-            /*
-             * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
-             * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length
-             * 為了不改動用到此function，故先將inSendSize -2
-             */
-            inETHERNET_Send(uszPackBuf,inCnt-2,0);
-            inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
-
-            if(inReceiveSize > 0 )
-            {
-                myUnPackData( uszRecvPacket , inReceiveSize);
-            }
+            printf("Close the RS232 port  Failed\n");
         }
-        if(inETHERNET_END() == VS_SUCCESS)
-            printf("socket disconnect successed!!\n");
-        else
-            printf("socket disconnect failed!!\n");
+        
+        CTOS_KBDGet(&key);
     }
-    CTOS_LCDTPrintXY(1, 1, "Return 0;");
-    CTOS_KBDGet(&key);
+
+
 //    EthernetPing(hostIp);
     
 //    inFunc_Booting_Flow_Print_Image_Initial(&pobTran);

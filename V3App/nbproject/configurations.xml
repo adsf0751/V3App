@@ -23,10 +23,16 @@
         <itemPath>SOURCE/DISPLAY/Display.h</itemPath>
       </logicalFolder>
       <logicalFolder name="FUNCTION" displayName="FUNCTION" projectFiles="true">
+        <itemPath>SOURCE/FUNCTION/ECR.c</itemPath>
+        <itemPath>SOURCE/FUNCTION/ECR.h</itemPath>
+        <itemPath>SOURCE/FUNCTION/ECR_Define.h</itemPath>
+        <itemPath>SOURCE/FUNCTION/ECR_Struct.h</itemPath>
         <itemPath>SOURCE/FUNCTION/File.c</itemPath>
         <itemPath>SOURCE/FUNCTION/File.h</itemPath>
         <itemPath>SOURCE/FUNCTION/Function.c</itemPath>
         <itemPath>SOURCE/FUNCTION/Function.h</itemPath>
+        <itemPath>SOURCE/FUNCTION/RS232.c</itemPath>
+        <itemPath>SOURCE/FUNCTION/RS232.h</itemPath>
       </logicalFolder>
       <logicalFolder name="NCCC" displayName="NCCC" projectFiles="true">
         <itemPath>SOURCE/NCCCats.c</itemPath>
@@ -123,6 +129,14 @@
       </item>
       <item path="SOURCE/DISPLAY/Display.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SOURCE/FUNCTION/ECR.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/ECR.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/ECR_Define.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/ECR_Struct.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SOURCE/FUNCTION/File.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/File.h" ex="false" tool="3" flavor2="0">
@@ -130,6 +144,10 @@
       <item path="SOURCE/FUNCTION/Function.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/Function.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/RS232.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/RS232.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/NCCC/NCCCats.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -213,6 +231,14 @@
       </item>
       <item path="SOURCE/DISPLAY/Display.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SOURCE/FUNCTION/ECR.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/ECR.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/ECR_Define.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/ECR_Struct.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SOURCE/FUNCTION/File.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/File.h" ex="false" tool="3" flavor2="0">
@@ -220,6 +246,10 @@
       <item path="SOURCE/FUNCTION/Function.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/Function.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/RS232.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/RS232.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/NCCC/NCCCats.h" ex="false" tool="3" flavor2="0">
       </item>

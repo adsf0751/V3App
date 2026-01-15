@@ -8,14 +8,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/NCCCats.c</file>
-            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/Function.c</file>
-            <file>file:/C:/MyProject/V3App/V3App/V3App/PrtMsg.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/ECR_Struct.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/ECR.h</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/COMM/Ethernet.c</file>
-            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/Print.c</file>
-            <file>file:/C:/MyProject/V3App/V3App/V3App/print.h</file>
-            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/Print.h</file>
-            <file>file:/C:/MyProject/V3App/V3App/V3App/Trans.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/RS232.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/DISPLAY/Display.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/RS232.c</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/ECR.c</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/appmain.c</file>
         </group>
     </open-files>

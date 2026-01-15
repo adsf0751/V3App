@@ -1,3 +1,9 @@
+#ifndef EDC_H
+#define EDC_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
 	char	szCUPFuncEnable[2 + 1];			/* 是否開啟CUP功能，該參數值為(Y/N)，預設為N */
@@ -280,3 +286,9 @@ int inGetPOS_ID(char* szPOS_ID);
 int inGetGPRS_APN(char* szGPRS_APN);
 int inGetScreenBrightness(char* szScreenBrightness);
 int inGetSignpadBeepInterval(char* szSignpadBeepInterval);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif 
