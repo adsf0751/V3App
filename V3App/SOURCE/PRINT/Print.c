@@ -56,7 +56,6 @@ int inPRINT_Buffer_PutGraphic(unsigned char *uszFilename, unsigned char* uszBuff
     int inRetVal;
     char szDebugMsg[100 + 1];
     unsigned short usReturnValue;
-
     /* 輸入高度不合法 */
     if (inGraphicYLength <= 0) {
         return (-66);
@@ -94,7 +93,7 @@ int inPRINT_Buffer_PutGraphic(unsigned char *uszFilename, unsigned char* uszBuff
 int inPRINT_Buffer_OutPut(unsigned char *uszBuffer, BufferHandle *srBhandle) {
     char szTemplate[44 + 1];
     unsigned short usReturnValue;
-    //printf("PRINT_Buffer_OutPut\n");
+   
     /* Q:為什麼要除以8 A:列印的高度以8為單位 Ex:12x24的字需用3行來印(24 = 8 * 3) 12x36需用5行來印(36 < 40 = 8 * 5 )*/
     if (srBhandle->inYcurrent >= srBhandle->inYcover)
         usReturnValue = CTOS_PrinterBufferOutput(uszBuffer, ((srBhandle->inYcurrent) / 8 + 1));
@@ -110,56 +109,25 @@ int inPRINT_Buffer_OutPut(unsigned char *uszBuffer, BufferHandle *srBhandle) {
         return (VS_SUCCESS);
     } else {
         if (usReturnValue == d_PRINTER_PAPER_OUT) {
-            //			/* 印表機缺紙請裝紙 */
-            //			inDISP_Clear_Line(_LINE_8_4_, _LINE_8_8_);
-            //			inDISP_PutGraphic(_ERR_PRINT_PAPER_OUT_, 0, _COORDINATE_Y_LINE_8_6_);
-            //
-            //			inDISP_BEEP(1, 0);
-            //			inDISP_Wait(1000);
-
+            printf("printer paper out\n");
             return (VS_PRINTER_PAPER_OUT);
         } else if (usReturnValue == d_PRINTER_HEAD_OVERHEAT) {
-            //			memset(szTemplate, 0x00, sizeof(szTemplate));	
-            //			if (usReturnValue == d_PRINTER_HEAD_OVERHEAT)
-            //			{
-            //				sprintf(szTemplate, "印表機頭過熱");	/* 錯誤代碼 */
-            //			}
-            //			else if (usReturnValue == d_PRINTER_MOTOR_OVERHEAT)
-            //			{
-            //				sprintf(szTemplate, "印表機馬達過熱");	/* 錯誤代碼 */
-            //			}
-            //
-            //			/* 印表機過熱 */
-            //			DISPLAY_OBJECT	srDispMsgObj;
-            //			memset(&srDispMsgObj, 0x00, sizeof(srDispMsgObj));
-            //			strcpy(srDispMsgObj.szDispPic1Name, _ERR_PRINT_);
-            //			srDispMsgObj.inDispPic1YPosition = _COORDINATE_Y_LINE_8_6_;
-            //			srDispMsgObj.inMsgType = _ENTER_KEY_MSG_;
-            //			srDispMsgObj.inTimeout = _EDC_TIMEOUT_;
-            //			strcpy(srDispMsgObj.szErrMsg1, szTemplate);
-            //			srDispMsgObj.inErrMsg1Line = _LINE_8_5_;
-            //			srDispMsgObj.inBeepTimes = 1;
-            //			srDispMsgObj.inBeepInterval = 0;
-            //			
-            //			inDISP_Msg_BMP(&srDispMsgObj);
+            memset(szTemplate, 0x00, sizeof(szTemplate));	
+            if (usReturnValue == d_PRINTER_HEAD_OVERHEAT)
+            {
+                sprintf(szTemplate, "印表機頭過熱");	/* 錯誤代碼 */
+            }
+            else if (usReturnValue == d_PRINTER_MOTOR_OVERHEAT)
+            {
+                sprintf(szTemplate, "印表機馬達過熱");	/* 錯誤代碼 */
+            }
 
+            printf("%s\n",szTemplate);
             return (VS_PRINTER_OVER_HEAT);
         } else {
-            //			memset(szTemplate, 0x00, sizeof(szTemplate));	
-            //			sprintf(szTemplate, "代碼：0x%04X", usReturnValue);	/* 錯誤代碼 */
-            //
-            //			/* 印表機錯誤 */
-            //			DISPLAY_OBJECT	srDispMsgObj;
-            //			memset(&srDispMsgObj, 0x00, sizeof(srDispMsgObj));
-            //			strcpy(srDispMsgObj.szDispPic1Name, _ERR_PRINT_);
-            //			srDispMsgObj.inDispPic1YPosition = _COORDINATE_Y_LINE_8_6_;
-            //			srDispMsgObj.inMsgType = _ENTER_KEY_MSG_;
-            //			srDispMsgObj.inTimeout = _EDC_TIMEOUT_;
-            //			strcpy(srDispMsgObj.szErrMsg1, szTemplate);
-            //			srDispMsgObj.inErrMsg1Line = _LINE_8_5_;
-            //			srDispMsgObj.inBeepTimes = 1;
-            //			srDispMsgObj.inBeepInterval = 0;			
-            //			inDISP_Msg_BMP(&srDispMsgObj);
+            memset(szTemplate, 0x00, sizeof(szTemplate));	
+            sprintf(szTemplate, "代碼：0x%04X", usReturnValue);	/* 錯誤代碼 */
+            printf("%s\n",szTemplate);
             return (VS_ERROR);
         }
     }

@@ -107,6 +107,8 @@ typedef enum
 #define _FONT_PRINT_REVERSE_		d_FONT_STYLE_REVERSE
 #define _FONT_PRINT_UNDERLINE_		d_FONT_STYLE_UNDERLINE
 
+#define _PRT_NORMAL_            d_FONT_8x16
+#define d_FONT_8x16             0x0810
 
 typedef struct					
 {

@@ -1,8 +1,6 @@
-#include "../../Trans.h" // FOR VS_ERROR/VS_SUCCESS
-#include <stdio.h> // FOR NULL
+
 #include "Function.h" //FOR _PADDING_RIGHT_ /_PADDING_LEFT_
-#include <string.h>
-#include <stdlib.h>
+//extern BMPHeight gsrBMPHeight;
 /*
 Function	:inFunc_ASCII_to_BCD
 Date&Time	:2015/7/13 下午 2:02
@@ -238,4 +236,91 @@ int inFunc_PAD_ASCII(char *szStr_out, char *szStr_in, char szPad_char, int inPad
         }
 
 	return (VS_SUCCESS);
+}
+
+/*
+Function	:inPRINT_Buffer_GetHeightFlow
+Date&Time	:2016/3/16 下午 2:48
+Describe	:決定要加入幾張圖，不return error是因為當有缺圖，其他圖仍能運作正常
+ */
+int inPRINT_Buffer_GetHeightFlow(BMPHeight* gsrBMPHeight) {
+    int inPreLen = 0;
+    int inPathLen = 0;
+    char szPath[100 + 1];
+    char szFileName[50 + 1];
+    /* 初始化結構 */
+    memset(gsrBMPHeight, 0x00, sizeof (BMPHeight));
+
+    inPreLen = strlen("./fs_data/");
+
+    /* 銀行LOGO高度 */
+    memset(szPath, 0x00, sizeof (szPath));
+    inPathLen = strlen(_BANK_LOGO_);
+    memcpy(szPath, _BANK_LOGO_, inPathLen);
+
+    memset(szFileName, 0x00, sizeof (szFileName));
+    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
+
+    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inBankLogoHeight);
+    
+    /* 商店LOGO高度 */
+    memset(szPath, 0x00, sizeof (szPath));
+    inPathLen = strlen(_MERCHANT_LOGO_);
+    memcpy(szPath, _MERCHANT_LOGO_, inPathLen);
+
+    memset(szFileName, 0x00, sizeof (szFileName));
+    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
+
+    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inMerchantLogoHeight);
+
+    /* 表頭圖檔高度 */
+    memset(szPath, 0x00, sizeof (szPath));
+    inPathLen = strlen(_NAME_LOGO_);
+    memcpy(szPath, _NAME_LOGO_, inPathLen);
+
+    memset(szFileName, 0x00, sizeof (szFileName));
+    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
+
+    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inTitleNameHeight);
+
+    /* 企業標語高度 */
+//    memset(szPath, 0x00, sizeof (szPath));
+//    inPathLen = strlen(_SLOGAN_LOGO_);
+//    memcpy(szPath, _SLOGAN_LOGO_, inPathLen);
+//
+//    memset(szFileName, 0x00, sizeof (szFileName));
+//    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
+//
+//    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inSloganHeight);
+
+    /* CUP警語高度 */
+//    memset(szPath, 0x00, sizeof (szPath));
+//    inPathLen = strlen(_CUP_LEGAL_LOGO_);
+//    memcpy(szPath, _CUP_LEGAL_LOGO_, inPathLen);
+//
+//    memset(szFileName, 0x00, sizeof (szFileName));
+//    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
+//
+//    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inCupLegalHeight);
+
+    /* 分期警語高度 */
+//    memset(szPath, 0x00, sizeof (szPath));
+//    inPathLen = strlen(_LEGAL_LOGO_);
+//    memcpy(szPath, _LEGAL_LOGO_, inPathLen);
+//
+//    memset(szFileName, 0x00, sizeof (szFileName));
+//    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
+//
+//    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inInstHeight);
+
+    /* 商店提示與高度*/
+//    memset(szPath, 0x00, sizeof (szPath));
+//    inPathLen = strlen(_NOTICE_LOGO_);
+//    memcpy(szPath, _NOTICE_LOGO_, inPathLen);
+//
+//    memset(szFileName, 0x00, sizeof (szFileName));
+//    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
+//
+//    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inNoticeHeight);
+    return (VS_SUCCESS);
 }

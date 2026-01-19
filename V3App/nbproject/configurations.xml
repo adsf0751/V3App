@@ -5,9 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>EDC.h</itemPath>
+      <itemPath>Print.h</itemPath>
       <itemPath>PrtMsg.h</itemPath>
       <itemPath>Trans.h</itemPath>
-      <itemPath>print.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -17,6 +17,10 @@
       <logicalFolder name="COMM" displayName="COMM" projectFiles="true">
         <itemPath>SOURCE/COMM/Ethernet.c</itemPath>
         <itemPath>SOURCE/COMM/Ethernet.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="CREDIT" displayName="CREDIT" projectFiles="true">
+        <itemPath>SOURCE/CREDIT/CreditptrByBuffer.c</itemPath>
+        <itemPath>SOURCE/CREDIT/CreditptrByBuffer.h</itemPath>
       </logicalFolder>
       <logicalFolder name="DISPLAY" displayName="DISPLAY" projectFiles="true">
         <itemPath>SOURCE/DISPLAY/Display.c</itemPath>
@@ -39,8 +43,8 @@
         <itemPath>SOURCE/NCCC/NCCCats.h</itemPath>
       </logicalFolder>
       <logicalFolder name="PRINT" displayName="PRINT" projectFiles="true">
-        <itemPath>SOURCE/Print.c</itemPath>
-        <itemPath>SOURCE/Print.h</itemPath>
+        <itemPath>SOURCE/PRINT/Print.c</itemPath>
+        <itemPath>SOURCE/PRINT/Print.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -119,11 +123,17 @@
       </compileType>
       <item path="EDC.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Print.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="PrtMsg.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/COMM/Ethernet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/COMM/Ethernet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/CREDIT/CreditptrByBuffer.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/CREDIT/CreditptrByBuffer.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/DISPLAY/Display.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -153,15 +163,13 @@
       </item>
       <item path="SOURCE/NCCCats.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/Print.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/PRINT/Print.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/Print.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/PRINT/Print.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Trans.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="appmain.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="print.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Debug" type="1">
@@ -221,11 +229,17 @@
       </compileType>
       <item path="EDC.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Print.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="PrtMsg.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/COMM/Ethernet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/COMM/Ethernet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/CREDIT/CreditptrByBuffer.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/CREDIT/CreditptrByBuffer.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/DISPLAY/Display.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -255,15 +269,13 @@
       </item>
       <item path="SOURCE/NCCCats.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/Print.c" ex="false" tool="0" flavor2="0">
+      <item path="SOURCE/PRINT/Print.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="SOURCE/Print.h" ex="false" tool="3" flavor2="0">
+      <item path="SOURCE/PRINT/Print.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Trans.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="appmain.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="print.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

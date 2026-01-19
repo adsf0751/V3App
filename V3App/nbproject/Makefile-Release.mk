@@ -36,13 +36,14 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/SOURCE/COMM/Ethernet.o \
+	${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o \
 	${OBJECTDIR}/SOURCE/DISPLAY/Display.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/ECR.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/File.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/Function.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/RS232.o \
 	${OBJECTDIR}/SOURCE/NCCCats.o \
-	${OBJECTDIR}/SOURCE/Print.o \
+	${OBJECTDIR}/SOURCE/PRINT/Print.o \
 	${OBJECTDIR}/appmain.o
 
 
@@ -74,6 +75,10 @@ ${OBJECTDIR}/SOURCE/COMM/Ethernet.o: SOURCE/COMM/Ethernet.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/COMM
 	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/COMM/Ethernet.o SOURCE/COMM/Ethernet.c
 
+${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o: SOURCE/CREDIT/CreditptrByBuffer.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/CREDIT
+	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o SOURCE/CREDIT/CreditptrByBuffer.c
+
 ${OBJECTDIR}/SOURCE/DISPLAY/Display.o: SOURCE/DISPLAY/Display.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/DISPLAY
 	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/DISPLAY/Display.o SOURCE/DISPLAY/Display.c
@@ -98,9 +103,9 @@ ${OBJECTDIR}/SOURCE/NCCCats.o: SOURCE/NCCCats.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE
 	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/NCCCats.o SOURCE/NCCCats.c
 
-${OBJECTDIR}/SOURCE/Print.o: SOURCE/Print.c
-	${MKDIR} -p ${OBJECTDIR}/SOURCE
-	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/Print.o SOURCE/Print.c
+${OBJECTDIR}/SOURCE/PRINT/Print.o: SOURCE/PRINT/Print.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/PRINT
+	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/PRINT/Print.o SOURCE/PRINT/Print.c
 
 ${OBJECTDIR}/appmain.o: appmain.c
 	${MKDIR} -p ${OBJECTDIR}
