@@ -1,3 +1,5 @@
 *.o
 er.name
 *.CAP
+#忽略所有帶有APP的目錄
+APP/
