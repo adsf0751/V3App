@@ -94,7 +94,19 @@ int inETHERNET_Cofig_Set(unsigned char uszTag, unsigned char *uszValue, unsigned
 
     return (VS_SUCCESS);
 }
-
+/*
+Function        :vdEthernetGetNetWorkValue
+Describe        :透過ethernetTag 取得ip/gateway/mask存於uszTagConfig，最後組出uszTemplate +uszTagConfig
+ *              e.g: IP: (最後組出uszTemplate) +　192.168.XXX.XXX (uszTagConfig) 
+*/
+void vdEthernetGetNetWorkValue(int ethernetTag,unsigned char* uszTemplate)
+{
+    unsigned char   uszTagConfig[40 + 1];
+    unsigned char   uszLen = sizeof(uszTagConfig);
+    memset(uszTagConfig, 0x00, sizeof(uszTagConfig));
+    inETHERNET_Cofig_Get(ethernetTag, (unsigned char*)uszTagConfig, &uszLen);
+    strncat(uszTemplate,uszTagConfig,uszLen);
+}
 /*
 Function        :inETHERNET_END
 Date&Time       :2017/7/19 上午 11:09
@@ -961,7 +973,7 @@ int inETHERNET_Watch_Status(void)
 	return (VS_SUCCESS);
 }
 /* Describe:from example  */
-void EthernetPing(const char* ip)
+int inEthernetPing(const char* ip)
 {
   BYTE PingBuff[15+1];
   sprintf(PingBuff,ip);
@@ -971,6 +983,7 @@ void EthernetPing(const char* ip)
   }else{
       printf("ping %s failed,ret is %X\n",PingBuff,ret);
   }
+  return (ret == d_OK) ? VS_SUCCESS : VS_ERROR;
 }
 /*
 Function        :inETHERNET_Send_Ready_Flow
@@ -1084,20 +1097,8 @@ int inETHERNET_Send(unsigned char *uszSendBuff, int inSendSize, int inSendTimeou
 
 //        memset(szSendData, 0x00, sizeof(szSendData));
 //        memset(szDataHead, 0x00, sizeof(szDataHead));
-//
-//        /* inETHERNET_Send() START! */
-//        if (ginDebug == VS_TRUE)
-//                inLogPrintf(AT, "inETHERNET_Send() START!");
-//
-//        /* Get HeadFormat */
-//        if (inGetTCPHeadFormat(szDataHead) == VS_ERROR)
-//        {
-//                /* inGetTCPHeadFormat ERROR */
-//                if (ginDebug == VS_TRUE)
-//                        inLogPrintf(AT, "inGetTCPHeadFormat Error!");
-//                
-//                return (VS_ERROR);
-//        }
+
+        /* inETHERNET_Send() START! */
 	
 	/*	範例:Size = 1024
 	 * 	H:0x04 0x00
@@ -1113,23 +1114,6 @@ int inETHERNET_Send(unsigned char *uszSendBuff, int inSendSize, int inSendTimeou
 //		szSendData[0] = (inSendSize / 100) / 10 * 16 + (inSendSize / 100) % 10;
 //		szSendData[1] = (inSendSize % 100) / 10 * 16 + (inSendSize % 100) % 10;
 //        }
-	
-//	if (ginISODebug == VS_TRUE)
-//	{
-//		inPRINT_ChineseFont("----------------------------------------",_PRT_ISO_);
-//		memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
-//		sprintf(szDebugMsg, "%02X %02X :length = %d", szSendData[0], szSendData[1], inSendSize);
-//		inPRINT_ChineseFont_Format(szDebugMsg, "  ", 34, _PRT_ISO_);
-//		inPRINT_ChineseFont("----------------------------------------", _PRT_ISO_);
-//	}
-//	if (ginDebug == VS_TRUE)
-//	{
-//		inLogPrintf(AT, "----------------------------------------");
-//		memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
-//		sprintf(szDebugMsg, "%02X %02X :length = %d", szSendData[0], szSendData[1], inSendSize);
-//		inLogPrintf(AT, szDebugMsg);
-//		inLogPrintf(AT, "----------------------------------------");
-//	}
 
         memcpy(&szSendData[2], uszSendBuff, inSendSize);
 
@@ -1139,43 +1123,21 @@ int inETHERNET_Send(unsigned char *uszSendBuff, int inSendSize, int inSendTimeou
 	/* 有Timeout，要計時 */
 	if (inSendTimeout != 0)
                 inDISP_Timer_Start(_TIMER_NEXSYS_1_, inSendTimeout);
-
-//	while (1)
-//	{
-//		if (inSendTimeout != 0)
-//                {
-//                        if (inTimerGet(_TIMER_NEXSYS_1_) == VS_SUCCESS)
-//                        {
-////                                if (ginDebug == VS_TRUE)
-////                                {
-////                                        inLogPrintf(AT, "inETHERNET_Send() TIMEOUT");
-////				}
-//				
-//				return (VS_ERROR);
-//			}
-//		}
-
 		/* 如果可以Send就Send */
 		if (inETHERNET_Send_Ready_Flow()== VS_SUCCESS)
 		{
-//			if (inETHERNET_Send_Data_Flow(szSendData, inSendSize) != VS_SUCCESS)
-                    
-                        if (inETHERNET_Send_Data_Flow(uszSendBuff, inSendSize) != VS_SUCCESS)
-			{
-                            printf("send data failed\n");
-//				continue;
-			}
-			else
-                            printf("send data successed\n"); 
-//				break;
+                    if (inETHERNET_Send_Data_Flow(uszSendBuff, inSendSize) != VS_SUCCESS)	
+                    {
+                        printf("send data failed\n");
+                        return (VS_ERROR);
+                    }
+                    else
+                    {
+                        printf("send data successed\n");
+                        return (VS_SUCCESS);
+                    }
 		}
-//	}
-
-//        /* inETHERNET_Send() END! */
-//        if (ginDebug == VS_TRUE)
-//                inLogPrintf(AT, "inETHERNET_Send() END!");
-
-        return (VS_SUCCESS);
+        return (VS_ERROR);
 }
 
 /*
@@ -1496,4 +1458,39 @@ int inETHERNET_Receive(unsigned char *uszReceiveBuff, int inReceiveSize, int inR
 	     
 
 	return (inDataLength);
+}
+
+int inSetTermIPAddress(char* szTermIPAddress) {
+    memset(srEDCRec.szTermIPAddress, 0x00, sizeof (srEDCRec.szTermIPAddress));
+    /* 傳進的指標 不得為空  長度需大於0 小於規定最大值 */
+    if (szTermIPAddress == NULL || strlen(szTermIPAddress) < 0 || strlen(szTermIPAddress) > 15) {
+        printf("inSetTermIPAddress failed \n");
+        return (VS_ERROR);
+    }
+    memcpy(&srEDCRec.szTermIPAddress[0], &szTermIPAddress[0], strlen(szTermIPAddress));
+
+    return (VS_SUCCESS);
+}
+
+int inSetTermMASKAddress(char* szTermMASKAddress) {
+    memset(srEDCRec.szTermMASKAddress, 0x00, sizeof (srEDCRec.szTermMASKAddress));
+    /* 傳進的指標 不得為空  長度需大於0 小於規定最大值 */
+    if (szTermMASKAddress == NULL || strlen(szTermMASKAddress) < 0 || strlen(szTermMASKAddress) > 15) {
+        printf("inSetTermMASKAddress failed\n");
+        return (VS_ERROR);
+    }
+    memcpy(&srEDCRec.szTermMASKAddress[0], &szTermMASKAddress[0], strlen(szTermMASKAddress));
+
+    return (VS_SUCCESS);
+}
+int inSetTermGetewayAddress(char* szTermGetewayAddress) {
+    memset(srEDCRec.szTermGetewayAddress, 0x00, sizeof (srEDCRec.szTermGetewayAddress));
+    /* 傳進的指標 不得為空  長度需大於0 小於規定最大值 */
+    if (szTermGetewayAddress == NULL || strlen(szTermGetewayAddress) < 0 || strlen(szTermGetewayAddress) > 15) {
+        printf("inSetTermGetewayAddress failed\n");
+        return (VS_ERROR);
+    }
+    memcpy(&srEDCRec.szTermGetewayAddress[0], &szTermGetewayAddress[0], strlen(szTermGetewayAddress));
+
+    return (VS_SUCCESS);
 }

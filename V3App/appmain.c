@@ -29,8 +29,6 @@
 #define d_SEEK_FROM_CURRENT     1
 #define d_SEEK_FROM_EOF         2
 
-
-
 #define _EDC_TIMEOUT_           -1  /* 由EDC.dat控制 */
 #define AF_INET                 PF_INET
 #define	PF_INET                 2	/* IP protocol family.  */
@@ -38,10 +36,7 @@
 #define SO_REUSEADDR            2
 #define SOL_TCP                 6	/* TCP level */
 #define	TCP_MAXSEG              2	/* Set maximum segment size  */
-
 extern MY_ECR_DATA myECRTable[43];
-
-
 /*
 Function        :inFunc_Booting_Flow_Print_Image_Initial
 Date&Time       :2018/6/5 下午 6:27
@@ -52,6 +47,144 @@ int inFunc_Booting_Flow_Print_Image_Initial(TRANSACTION_OBJECT *pobTran,BMPHeigh
     inPRINT_Buffer_GetHeightFlow(gsrBMPHeight);
     return (VS_SUCCESS);
 }
+
+void vdEthernetMenu(void)
+{
+    BYTE key;
+    int breakFlag = 0;
+    int inRetVal = VS_ERROR;
+    BYTE uszPackBuf[984];
+    memset(uszPackBuf,0x00,sizeof(uszPackBuf));
+    int inCnt = myPackData(uszPackBuf);
+    unsigned char   uszTemplate[60 + 1];
+    BYTE uszRecvPacket[_NCCC_ATS_ISO_SEND_ + 1];
+    int  inReceiveTimeout = 10;
+    int	 inReceiveSize = _COMM_RECEIVE_MAX_LENGTH_;
+    while(1)
+    {
+        CTOS_LCDTClearDisplay();
+        CTOS_LCDTPrintXY(1, 1, "Ethernet Menu");
+        CTOS_LCDTPrintXY(1, 2, "1:Set Config");
+        CTOS_LCDTPrintXY(1, 3, "2:Get Config");
+        CTOS_LCDTPrintXY(1, 4, "3:Connect");
+        CTOS_LCDTPrintXY(1, 5, "4:Tx Data");
+        CTOS_LCDTPrintXY(1, 6, "5.Rx Data");
+//        CTOS_LCDTPrintXY(1, 7, "6.Ping");
+        CTOS_LCDTPrintXY(1, 7, "X.Exit");
+        CTOS_KBDGet(&key);
+        breakFlag = 0;
+        switch(key)
+        { 
+            case d_KBD_1: 
+            { 
+                CTOS_LCDTClearDisplay();               
+                inRetVal = inETHERNET_Initial();
+                if(inRetVal == VS_SUCCESS)
+                {
+                    CTOS_LCDTPrintXY(1, 1, "Config Set Success!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                    CTOS_LCDTPrintXY(1, 1, "Config Set Fail!!!");
+                    CTOS_Delay(2000);
+                }
+                break;                
+            }
+            case d_KBD_2: 
+            {   
+                CTOS_LCDTClearDisplay();
+                memset(uszTemplate, 0x00, sizeof(uszTemplate));               
+                memcpy(uszTemplate,"IP:", 3);
+                vdEthernetGetNetWorkValue(d_ETHERNET_CONFIG_IP,(unsigned char*)uszTemplate);
+                CTOS_LCDTPrintXY(1,1,uszTemplate);
+
+                memset(uszTemplate, 0x00, sizeof(uszTemplate));               
+                memcpy(uszTemplate,"GW:", 3);
+                vdEthernetGetNetWorkValue(d_ETHERNET_CONFIG_GATEWAY,(unsigned char*)uszTemplate);
+                CTOS_LCDTPrintXY(1,2,uszTemplate);
+
+                memset(uszTemplate, 0x00, sizeof(uszTemplate));               
+                memcpy(uszTemplate,"MASK:", 5);
+                vdEthernetGetNetWorkValue(d_ETHERNET_CONFIG_MASK,(unsigned char*)uszTemplate);
+                CTOS_LCDTPrintXY(1,3,uszTemplate);
+
+                CTOS_Delay(2000);
+                break;
+            }
+            case d_KBD_3: 
+            { 
+                CTOS_LCDTClearDisplay();
+                if(inETHERNET_SetConfig() == VS_SUCCESS)
+                {
+                    CTOS_LCDTPrintXY(1,1,"Connect Host Success!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                    CTOS_LCDTPrintXY(1, 1, "Connect Host Fail!!!");
+                    CTOS_Delay(2000);
+                }
+                break;
+            }
+            case d_KBD_4: 
+            {
+                CTOS_LCDTClearDisplay(); 
+                if( inETHERNET_Send(uszPackBuf,inCnt-2,0) == VS_SUCCESS)
+                {
+                    CTOS_LCDTPrintXY(1,1,"EthernetTx Success!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                    CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
+                    CTOS_Delay(2000);
+                }
+                break;
+            }
+            case d_KBD_5: 
+            {   //BUG:Tx完按Rx可以正常使用，但只按RX多次會報錯，先記錄，暫時不改
+                CTOS_LCDTClearDisplay(); 
+                inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
+                if(inReceiveSize > 0 )
+                {
+                    myUnPackData( uszRecvPacket , inReceiveSize);
+                    CTOS_LCDTPrintXY(1,1,"EthernetRx Success!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                   CTOS_LCDTPrintXY(1,1,"EthernetRx Fail!!!");
+                   CTOS_Delay(2000); 
+                }
+                break;
+            }
+            case d_KBD_6: 
+            {
+                break;
+            }
+            case d_KBD_CANCEL: 
+            { 
+                breakFlag = 1;
+                CTOS_LCDTClearDisplay(); 
+                if(inETHERNET_END() == VS_SUCCESS)
+                {
+                    CTOS_LCDTPrintXY(1,1,"EthernetDisconnSuccess!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                    CTOS_LCDTPrintXY(1,1,"EthernetDisconnFail!!!");
+                    CTOS_Delay(2000);
+                }
+                break;
+            }
+        }
+        if(breakFlag)
+            break;
+    }
+}
+
 
 int main(int argc, char *argv[]) {
     BYTE key;
@@ -64,22 +197,13 @@ int main(int argc, char *argv[]) {
     BMPHeight gsrBMPHeight;
 //    inFunc_ls("-R -l", _AP_ROOT_PATH_); /*可查看是否有fs_data路徑(是否有Load img.mci)*/
     
-    BYTE uszPackBuf[984];
-    BYTE uszRecvPacket[_NCCC_ATS_ISO_SEND_ + 1];
-    int  inReceiveTimeout = 10;
-    int	 inReceiveSize = _COMM_RECEIVE_MAX_LENGTH_;
-    
-    memset(uszPackBuf,0x00,sizeof(uszPackBuf));
-   
-    ECR_TABLE			gsrECROb = {.srSetting.uszComPort = d_COM2};
+    ECR_TABLE   gsrECROb = {.srSetting.uszComPort = d_COM2};
 
-    
-    
     CTOS_LCDTPrintXY(1, 1, "System Startup");
     CTOS_LCDTPrintXY(1, 2, "Loading Image...");
     CTOS_LCDTPrintXY(1, 3, "Configuring Printer...");
-
-    CTOS_KBDGet(&key);
+    CTOS_Delay(1000);
+//    CTOS_KBDGet(&key);
     //在Load mci時，要先Load APP.mci，再來才是img.mci
     inFunc_Booting_Flow_Print_Image_Initial(&pobTran,&gsrBMPHeight);
     printf("初始化圖片預設高度\n");
@@ -136,7 +260,8 @@ int main(int argc, char *argv[]) {
                break;
             }
             case d_KBD_2: 
-            { 
+            {   
+                vdEthernetMenu();
                 break;
             }
             case d_KBD_3: 
@@ -177,7 +302,7 @@ int main(int argc, char *argv[]) {
 //        
 //        CTOS_KBDGet(&key);
 //    }
-//    int inCnt = myPackData(uszPackBuf);
+//    
 ////    int inCnt = myCusPackData(uszPackBuf);
 //    int i;
 //    for (i=0;i<inCnt;i++)
@@ -196,12 +321,7 @@ int main(int argc, char *argv[]) {
 //             * 為了不改動用到此function，故先將inSendSize -2
 //             */
 //            inETHERNET_Send(uszPackBuf,inCnt-2,0);
-////            inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
-////
-////            if(inReceiveSize > 0 )
-////            {
-////                myUnPackData( uszRecvPacket , inReceiveSize);
-////            }
+////            
 //        }
 //        if(inETHERNET_END() == VS_SUCCESS)
 //            printf("socket disconnect successed!!\n");

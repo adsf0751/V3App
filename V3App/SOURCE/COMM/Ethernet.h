@@ -4,7 +4,7 @@
 #define IPADDR      "10.105.109.155"
 #define MASK        "255.255.254.0"
 #define GATEWAY     "10.105.109.254"
-#define HOSTIP      "10.105.108.22"
+#define HOSTIP      "10.105.108.23"
 #define HOSTPORT    "18012"
 typedef struct
 {
@@ -50,3 +50,6 @@ int inETHERNET_Receive(unsigned char *, int , int );
 int inETHERNET_Receive_Ready_Flow(unsigned short *);
 int inETHERNET_Receive_Ready_By_Native(int , unsigned short *);
 int inETHERNET_Receive_Data_Flow(unsigned char* , unsigned short *);
+int inSetTermIPAddress(char* szTermIPAddress);
+int inSetTermMASKAddress(char* szTermMASKAddress);
+int inSetTermGetewayAddress(char* szTermGetewayAddress);

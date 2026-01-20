@@ -117,10 +117,11 @@ int inPRINT_Buffer_OutPut(unsigned char *uszBuffer, BufferHandle *srBhandle) {
             {
                 sprintf(szTemplate, "印表機頭過熱");	/* 錯誤代碼 */
             }
-            else if (usReturnValue == d_PRINTER_MOTOR_OVERHEAT)
-            {
-                sprintf(szTemplate, "印表機馬達過熱");	/* 錯誤代碼 */
-            }
+            //BUG:d_PRINTER_MOTOR_OVERHEAT未被抓取，先記錄
+//            else if (usReturnValue == d_PRINTER_MOTOR_OVERHEAT)
+//            {
+//                sprintf(szTemplate, "印表機馬達過熱");	/* 錯誤代碼 */
+//            }
 
             printf("%s\n",szTemplate);
             return (VS_PRINTER_OVER_HEAT);
