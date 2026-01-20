@@ -190,7 +190,7 @@ void vdEthernetMenu(void)
     }
 }
 
-void vdECRMenu(TRANSACTION_OBJECT* pobTran)
+void vdRS232Menu(TRANSACTION_OBJECT* pobTran)
 {
     BYTE key;
     int breakFlag = 0;
@@ -199,7 +199,7 @@ void vdECRMenu(TRANSACTION_OBJECT* pobTran)
     while(1)
     {
         CTOS_LCDTClearDisplay();
-        CTOS_LCDTPrintXY(1, 1, "Ecr Menu");
+        CTOS_LCDTPrintXY(1, 1, "Rs232 Menu");
         CTOS_LCDTPrintXY(1, 2, "1:Set Config");
         
         CTOS_LCDTPrintXY(1, 3, "2:Rx Data");
@@ -367,7 +367,7 @@ int main(int argc, char *argv[]) {
             }
             case d_KBD_3: 
             { 
-                vdECRMenu(&pobTran);
+                vdRS232Menu(&pobTran);
                 break;
             }
             case d_KBD_CANCEL: 
