@@ -1,4 +1,49 @@
 #include "RS232.h"
+MY_ECR_DATA myECRTable[43] = {
+    {"ECR Indicator"                                     , 1, 1  ,NULL},
+    {"ECR Version Date"                                  , 6, 2  ,NULL},
+    {"Trans Type Indicator"                              , 1, 8  ,NULL},
+    {"Trans Type"                                        , 2, 9  ,NULL},
+    {"CUP / Smart pay / ESVC Indicator "                 , 1, 11 ,NULL},
+    {"Host ID"                                           , 2, 12 ,NULL},
+    {"Receipt No"                                        , 6, 14 ,NULL},
+    {"Card No"                                           , 19,20 ,NULL},
+    {"Card Expire Date"                                  , 4 ,39 ,NULL},
+    {"Trans Amount"                                      , 12, 43,NULL},
+    {"Trans Date"                                        , 6, 55 ,NULL},
+    {"Trans Time"                                        , 6, 61 ,NULL},
+    {"Approval No"                                       , 9, 67 ,NULL},
+    {"Wave Card"                                         , 1, 76 ,NULL},
+    {"ECR Response Code"                                 , 4, 77 ,NULL},
+    {"Merchant ID"                                       , 15, 81,NULL},
+    {"Terminal ID "                                      , 8, 96 ,NULL},
+    {"Exp Amount "                                       , 12,104,NULL},
+    {"Store Id "                                         , 18,116,NULL},
+    {"Installment/Redeem Indicator "                     , 1, 134,NULL},
+    {"RDM Paid Amt "                                     , 12,135,NULL},
+    {"RDM Point"                                         , 8, 147,NULL},
+    {"Points of Balance"                                 , 8, 155,NULL},
+    {"Redeem Amt "                                       , 12,163,NULL},
+    {"Installment Period"                                , 2, 175,NULL},
+    {"Down Payment Amount/ESVC Balance before Tx. "      , 12,177,NULL},
+    {"Installment Payment Amount/ESVC Balance after Tx." , 12,189,NULL},
+    {"Formality Fee/ESVC Autoload Amount "               , 12,201,NULL},
+    {"Card Type"                                         , 2, 213,NULL},
+    {"Batch No"                                          , 6, 215,NULL},
+    {"Start Trans Type"                                  , 2, 221,NULL},
+    {"MP Flag"                                           , 1, 223,NULL},
+    {"SP ISSUER ID"                                      , 8, 224,NULL},
+    {"SP / 信用卡/ESVC Origin Date "                     , 8, 232,NULL},
+    {"SP Origin RRN / 信用卡OriginRRN/ATS電票交易序號 "  ,12, 240,NULL},
+    {"Pay Item"                                          , 5, 252,NULL},
+    {"Card No. Hash Value"                               , 50,257,NULL},
+    {"MP Response Code"                                  , 6, 307,NULL},
+    {"ASM Award flag"                                    , 1, 313,NULL},
+    {"MCP Indicator"                                     , 1, 314,NULL},
+    {"金融機構代碼 "                                     , 3, 315,NULL},
+    {"Reserved"                                          , 5, 318,NULL},
+    {"HG Data"                                           , 78,323,NULL},
+};
 
 /*
 Function        :inRS232_FlushRxBuffer
@@ -35,7 +80,6 @@ int inRS232_FlushRxBuffer(unsigned char uszComPort)
 	}
 	       
 }
-
 /*
 Function        :inRS232_Open
 Date&Time       :2017/7/13 上午 11:54
@@ -153,13 +197,19 @@ int inRS232_ECR_8N1_Standard_Receive_Packet(TRANSACTION_OBJECT *pobTran, ECR_TAB
                 srECROb->srSetting.inTimeout = _ECR_RECEIVE_REQUEST_TIMEOUT_;
         
 	inRetVal = inECR_Receive(pobTran, srECROb, szDataBuffer, _ECR_8N1_Standard_Data_Size_);
-	printf("InData: \n");
+
+	printf("Insert data into the table columns... \n");
         int i;
-        for(i= 0;i<_ECR_8N1_Standard_Data_Size_;i++)
+        int szECRTable = sizeof(myECRTable) / sizeof(myECRTable[0]);
+        for(i= 0; i<szECRTable ;i++)
         {
-            printf("%C",szDataBuffer[i]);
+            myECRTable[i].Data = malloc(myECRTable[i].Length+1);
+            int idx =  myECRTable[i].Idx;
+            int len =  myECRTable[i].Length;
+            memcpy(myECRTable[i].Data,&szDataBuffer[idx-1],len);
+            myECRTable[i].Data[len] = '\0';
         }
-        printf("\n");
+
 	if (inRetVal != VS_SUCCESS)
 	{
 		return (inRetVal);
@@ -184,6 +234,72 @@ int inRS232_ECR_8N1_Standard_Receive_Packet(TRANSACTION_OBJECT *pobTran, ECR_TAB
 	
         return (VS_SUCCESS);
 }
+/*
+Function        :inRS232_ECR_8N1_Standard_Send_Packet
+Date&Time       :2016/7/11 下午 3:29
+Describe        :處理要送給收銀機的資料
+*/
+int inRS232_ECR_8N1_Standard_Send_Packet(TRANSACTION_OBJECT *pobTran, ECR_TABLE * srECROb)
+{
+	int	inRetVal = VS_ERROR;
+	int	inSendSize = 0;
+	char	szDataBuf[_ECR_RS232_BUFF_SIZE_] = {0};	/* 封包資料 */
+	
+	/* 如果已經回過ECR就不再回 */
+//	if (srECROb->srTransData.uszIsResponse == VS_TRUE)
+//		return (VS_SUCCESS);
+	
+	/* 初始化 */
+	memset(szDataBuf, 0x00, sizeof(szDataBuf));
+	/* (需求單-109455)-Üny實體掃碼需求 by Russell 2021/9/10 上午 10:32 */
+//	if (gbBarCodeECRBit == VS_TRUE)
+//	{
+//		inSendSize = _ECR_8N1_1000_CUPQRCODE_Size_;
+//	}
+//	else
+//	{
+		inSendSize = _ECR_8N1_Standard_Data_Size_;
+//	}
+/* ---------------------包裝電文--------------------------------------------- */
+//	if (memcmp(srECROb->srTransData.szTransType, _ECR_8N1_INQUIRY_LAST_TRANSACTION_, strlen(_ECR_8N1_INQUIRY_LAST_TRANSACTION_)) == 0)
+//	{
+//		inRetVal = inECR_8N1_Inquiry_Last_Transaction_Pack(pobTran, srECROb, szDataBuf);
+//		
+//		/* (需求單-111155)-電子錢包業者收付訊息整合平台需求 by Russell 2023/8/24 下午 5:40 */
+//		/* "註8.	當收銀機發動’查詢前筆交易別狀態’予EDC，EDC查詢前筆交易為電子錢包(不論成功或失敗交易)，EDC須回覆’0010’予收銀機。" */
+//		if (szDataBuf[10] == 'W')
+//		{
+//			memcpy(&szDataBuf[76], "0010", 4);
+//		}
+//	}
+//	else
+//	{
+		inRetVal = inECR_8N1_Standard_Pack(pobTran, srECROb, szDataBuf);
+//	}
+	
+	if (inRetVal == VS_ERROR)
+	{
+		return (VS_ERROR);
+	}
+	
+//	if (memcmp(srECROb->srTransData.szTransType, _ECR_8N1_INQUIRY_LAST_TRANSACTION_, strlen(_ECR_8N1_INQUIRY_LAST_TRANSACTION_)) != 0)
+//	{
+//		inECR_Save_Response(szDataBuf, inSendSize);
+//	}
+/* ---------------------傳送電文--------------------------------------------- */
+	inRetVal = inECR_Send(pobTran, srECROb, szDataBuf, inSendSize);
+	/* 標示已送給ECR回覆電文 */
+	srECROb->srTransData.uszIsResponse = VS_TRUE;
+	
+	if (inRetVal != VS_SUCCESS)
+	{
+		return (inRetVal);
+	}
+	
+        return (VS_SUCCESS);
+}
+
+
 /*
 Function        :inRS232_Data_Receive_Check
 Date&Time       :2016/6/20 下午 6:02

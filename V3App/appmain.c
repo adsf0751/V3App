@@ -70,7 +70,7 @@ void vdEthernetMenu(void)
         CTOS_LCDTPrintXY(1, 5, "4:Tx Data");
         CTOS_LCDTPrintXY(1, 6, "5.Rx Data");
 //        CTOS_LCDTPrintXY(1, 7, "6.Ping");
-        CTOS_LCDTPrintXY(1, 7, "X.Exit");
+        CTOS_LCDTPrintXY(1, 16, "X.Exit");
         CTOS_KBDGet(&key);
         breakFlag = 0;
         switch(key)
@@ -130,6 +130,11 @@ void vdEthernetMenu(void)
             case d_KBD_4: 
             {
                 CTOS_LCDTClearDisplay(); 
+                /*
+                 * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
+                 * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length，
+                 * 所以在此function會自動+2，為了不改動用到function，故再此先讓inSendSize -2
+                 */
                 if( inETHERNET_Send(uszPackBuf,inCnt-2,0) == VS_SUCCESS)
                 {
                     CTOS_LCDTPrintXY(1,1,"EthernetTx Success!!!");
@@ -160,7 +165,7 @@ void vdEthernetMenu(void)
                 break;
             }
             case d_KBD_6: 
-            {
+            {   //TODO:未使用到ETHERNET_PING()
                 break;
             }
             case d_KBD_CANCEL: 
@@ -185,7 +190,108 @@ void vdEthernetMenu(void)
     }
 }
 
+void vdECRMenu(TRANSACTION_OBJECT* pobTran)
+{
+    BYTE key;
+    int breakFlag = 0;
+    int inRetVal = 0;
+    ECR_TABLE   gsrECROb = {.srSetting.uszComPort = d_COM2};
+    while(1)
+    {
+        CTOS_LCDTClearDisplay();
+        CTOS_LCDTPrintXY(1, 1, "Ecr Menu");
+        CTOS_LCDTPrintXY(1, 2, "1:Set Config");
+        
+        CTOS_LCDTPrintXY(1, 3, "2:Rx Data");
+        CTOS_LCDTPrintXY(1, 4, "3:Tx Data");
+        CTOS_LCDTPrintXY(1, 16, "X.Exit");
+        CTOS_KBDGet(&key);
+        breakFlag = 0;
+        switch(key)
+        { 
+            case d_KBD_1: 
+            { 
+                CTOS_LCDTClearDisplay();               
+                if(inECR_Initial() == VS_SUCCESS)
+                {
+                    CTOS_LCDTPrintXY(1, 1, "RS232ConnSuccess!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                    CTOS_LCDTPrintXY(1, 1, "RS232ConnFail!!!");
+                    CTOS_Delay(2000);
+                }
+                break;                
+            }
+            case d_KBD_2: 
+            {   
+                CTOS_LCDTClearDisplay();
+                CTOS_LCDTPrintXY(1, 1, "Processing....");
+                inRetVal = inRS232_ECR_8N1_Standard_Receive_Packet(pobTran, &gsrECROb);
+                CTOS_LCDTClearDisplay();
+                if( inRetVal == VS_SUCCESS)
+                {
+                    CTOS_LCDTPrintXY(1,1,"Rx Data Success!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                    CTOS_LCDTPrintXY(1,1,"Rx Data Fail!!!");
+                    CTOS_Delay(2000);
+                }
+                printf("***-------------------------***\n");
+                int i;
+                for(i= 0; i< 43 ;i++)
+                {
+                    printf("%s:[%s]\n",myECRTable[i].FieldName,myECRTable[i].Data);
+                }
 
+                printf("***-------------------------***\n");
+                break;
+            }
+            //BUG:單純做Tx會傳送電文時失敗, 超過重試次數，但做Rx+Tx可以，不確定是否為正常流程
+            case d_KBD_3: 
+            {              
+                CTOS_LCDTClearDisplay();
+                CTOS_LCDTPrintXY(1, 1, "Processing....");
+                inRetVal = inRS232_ECR_8N1_Standard_Send_Packet(&pobTran, &gsrECROb);
+                CTOS_LCDTClearDisplay();
+                if(  inRetVal == VS_SUCCESS)
+                {
+                    CTOS_LCDTPrintXY(1,1,"Tx Data Success!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                    CTOS_LCDTPrintXY(1,1,"Tx Data Fail!!!");
+                    CTOS_Delay(2000);
+                }
+               
+                break;
+            }
+            
+            case d_KBD_CANCEL: 
+            { 
+                breakFlag = 1;
+                CTOS_LCDTClearDisplay(); 
+                if(inRS232_Close(gsrECROb.srSetting.uszComPort) == VS_SUCCESS)
+                {
+                    CTOS_LCDTPrintXY(1,1,"RS232DisconnSuccess!!!");
+                    CTOS_Delay(2000);
+                }
+                else
+                {
+                    CTOS_LCDTPrintXY(1,1,"RS232DisconnFail!!!");
+                    CTOS_Delay(2000);
+                }
+                break;
+            }
+        }
+        if(breakFlag)
+            break;
+    }
+}
 int main(int argc, char *argv[]) {
     BYTE key;
     CTOS_LCDTClearDisplay();
@@ -195,10 +301,9 @@ int main(int argc, char *argv[]) {
     FONT_ATTRIB srFont_Attrib;
     TRANSACTION_OBJECT pobTran;
     BMPHeight gsrBMPHeight;
-//    inFunc_ls("-R -l", _AP_ROOT_PATH_); /*可查看是否有fs_data路徑(是否有Load img.mci)*/
+    /*可查看是否有fs_data路徑(是否有Load img.mci)*/
+//    inFunc_ls("-R -l", _AP_ROOT_PATH_); 
     
-    ECR_TABLE   gsrECROb = {.srSetting.uszComPort = d_COM2};
-
     CTOS_LCDTPrintXY(1, 1, "System Startup");
     CTOS_LCDTPrintXY(1, 2, "Loading Image...");
     CTOS_LCDTPrintXY(1, 3, "Configuring Printer...");
@@ -218,12 +323,7 @@ int main(int argc, char *argv[]) {
     /*============印表機設定============*/
     int breakFlag = 0;
     inPRINT_Buffer_Initial(uszBuffer, _BUFFER_MAX_LINE_, &srFont_Attrib, &srBhandle);
-     /*============列印一筆文字簽單============*/
-//    CTOS_PrinterPutString("Print API Test");
-//    CTOS_PrinterPutString("1測試1----");
-//    if ((inRetVal = inPRINT_Buffer_OutPut(uszBuffer, &srBhandle)) != VS_SUCCESS)
-//        printf("inPRINT_Buffer_OutPut failed, ret=%d\n",inRetVal);
-    /*============列印一筆文字簽單============*/
+
     while(1)
     {
         CTOS_LCDTClearDisplay();
@@ -231,7 +331,7 @@ int main(int argc, char *argv[]) {
         CTOS_LCDTPrintXY(1, 2, "1:Print Receipt");
         CTOS_LCDTPrintXY(1, 3, "2:Ethernet COMM");
         CTOS_LCDTPrintXY(1, 4, "3:Rs232 COMM");
-        CTOS_LCDTPrintXY(1, 5, "X:Exit");
+        CTOS_LCDTPrintXY(1, 16, "X:Exit");
         CTOS_KBDGet(&key);
         breakFlag = 0;
         switch(key)
@@ -259,6 +359,7 @@ int main(int argc, char *argv[]) {
                     printf("inPRINT_Buffer_OutPut failed, ret=%d\n",inRetVal);
                break;
             }
+            //BUG:進入選單直接選擇跳出會因為 跳出做disconnet 但因為沒有open過而顯示diconn fail
             case d_KBD_2: 
             {   
                 vdEthernetMenu();
@@ -266,6 +367,7 @@ int main(int argc, char *argv[]) {
             }
             case d_KBD_3: 
             { 
+                vdECRMenu(&pobTran);
                 break;
             }
             case d_KBD_CANCEL: 
@@ -277,59 +379,5 @@ int main(int argc, char *argv[]) {
         if(breakFlag)
             break;
     }
-//    if(inECR_Initial() == VS_SUCCESS)
-//    {
-////        CTOS_LCDTPrintXY(1, 1, "inECR_Initial");
-////        CTOS_KBDGet(&key);
-//
-//        inRS232_ECR_8N1_Standard_Receive_Packet(&pobTran, &gsrECROb);
-//        CTOS_LCDTPrintXY(1, 1, "Press any key ");
-//        CTOS_KBDGet(&key);
-//        
-//        printf("***-------------------------***\n");
-//        int i;
-//        for(i= 0; i< 43 ;i++)
-//        {
-//            printf("%s:[%s]\n",myECRTable[i].FieldName,myECRTable[i].Data);
-//        }
-//        
-//        printf("***-------------------------***\n");
-////        inRS232_ECR_8N1_Standard_Send_Packet(&pobTran, &gsrECROb);
-//        if (inRS232_Close(gsrECROb.srSetting.uszComPort) != VS_SUCCESS)
-//        {
-//            printf("Close the RS232 port  Failed\n");
-//        }
-//        
-//        CTOS_KBDGet(&key);
-//    }
-//    
-////    int inCnt = myCusPackData(uszPackBuf);
-//    int i;
-//    for (i=0;i<inCnt;i++)
-//    {
-//        printf("0x%02X\t",uszPackBuf[i]);
-//    }
-//    inRetVal = inETHERNET_Initial();
-//    if(inRetVal == VS_SUCCESS)
-//    {
-//        printf("inETHERNET_Initial successed\n");
-//        if(inETHERNET_SetConfig() == VS_SUCCESS)
-//        {
-//            /*
-//             * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
-//             * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length
-//             * 為了不改動用到此function，故先將inSendSize -2
-//             */
-//            inETHERNET_Send(uszPackBuf,inCnt-2,0);
-////            
-//        }
-//        if(inETHERNET_END() == VS_SUCCESS)
-//            printf("socket disconnect successed!!\n");
-//        else
-//            printf("socket disconnect failed!!\n");
-//    }
-
-//    EthernetPing(hostIp);
-   
     exit(0);
 }

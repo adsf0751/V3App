@@ -23,6 +23,15 @@ extern "C" {
 #define _ECR_RS232_GET_CARD_TIMEOUT_		_ECR_GET_CARD_TIMEOUT_
 #define _ECR_RS232_RECEIVE_ACK_TIMEOUT_		_ECR_RECEIVE_ACK_TIMEOUT_LONG_
 #define _ECR_RS232_BUFF_SIZE_			_ECR_BUFF_SIZE_
+
+typedef struct
+{
+    char  FieldName[100 +1];
+    int   Length;
+    int   Idx; 
+    char* Data;
+}MY_ECR_DATA;
+extern MY_ECR_DATA myECRTable[43];
 int inRS232_ECR_8N1_Standard_Initial(ECR_TABLE *srECROb);
 int inRS232_ECR_8N1_Standard_Receive_Packet(TRANSACTION_OBJECT *pobTran, ECR_TABLE * srECROb);
 int inRS232_Close(unsigned char uszComport);
@@ -31,6 +40,9 @@ int inRS232_Data_Receive_Check(unsigned char uszComPort, unsigned short *usRecei
 int inRS232_Data_Send(unsigned char uszComPort, unsigned char *uszSendBuff, unsigned short usSendSize);
 int inRS232_Data_Send_Check(unsigned char uszComPort);
 int inRS232_FlushTxBuffer(unsigned char uszComPort);
+int inRS232_FlushRxBuffer(unsigned char uszComPort);
+int inRS232_ECR_8N1_Standard_Send_Packet(TRANSACTION_OBJECT *pobTran, ECR_TABLE * srECROb);
+
 #ifdef __cplusplus
 }
 #endif

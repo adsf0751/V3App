@@ -28,7 +28,51 @@ int inDISP_PutGraphic(char *szFileName, int inX, int inY) {
     }
     return (VS_SUCCESS);
 }
+/*
+Function        :inTimerStart_MicroSecond
+Date&Time       :2018/2/9 下午 1:55
+Describe        :設定計時器開啟，inTimerNbr是第幾號計時器，lnDelay是多久Timeout
+ *		 lnDelay傳入單位為 10MicroSecond泛用度更高
+*/
+int inTimerStart_MicroSecond(int inTimerNbr, long lnDelay)
+{
+        CTOS_TimeOutSet(inTimerNbr, lnDelay);
 
+        return (VS_SUCCESS);
+}
+
+/*
+Function        :inDISP_Timer_Start_MicroSecond
+Date&Time       :2018/2/9 下午 1:57
+Describe        :當lnDelay設為-1，使用EDC.dat內的TimeOut，時間單位更細的API
+*/
+int inDISP_Timer_Start_MicroSecond(int inTimerNumber, long lnDelay)
+{
+	int	inEnterTimeout = 0;
+	char	szEnterTimeout[3 + 1];
+	
+//	if (lnDelay == _EDC_TIMEOUT_)
+//	{
+//		memset(szEnterTimeout, 0x00, sizeof(szEnterTimeout));
+//		inGetEnterTimeout(szEnterTimeout);
+//		inEnterTimeout = atoi(szEnterTimeout);
+//		if (inEnterTimeout != 0)
+//		{
+//			inTimerStart_MicroSecond(inTimerNumber, (long)inEnterTimeout);
+//		}
+//		else
+//		{
+//			return (VS_ERROR);
+//		}
+//	}
+//	else
+//	{
+                //暫時不跑EDC.dat內的TimeOut
+		inTimerStart_MicroSecond(inTimerNumber, lnDelay);
+//	}
+	
+	return (VS_SUCCESS);
+}
 /*
 Function	:inPRINT_Buffer_Get_Height
 Date&Time	:2016/3/16 下午 2:15

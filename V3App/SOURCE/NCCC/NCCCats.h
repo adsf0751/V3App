@@ -1,3 +1,4 @@
+#include "../FUNCTION/RS232.h"
 typedef struct
 {
         int inFieldNum; /* Field Number */
@@ -48,3 +49,4 @@ typedef struct
 
 int myPackData(BYTE *uszPackBuf);
 int myUnPackData(BYTE *rawDataBuf ,int inReceiveSize);
+int myCusPackData(BYTE *uszPackBuf);

@@ -53,3 +53,4 @@ int inETHERNET_Receive_Data_Flow(unsigned char* , unsigned short *);
 int inSetTermIPAddress(char* szTermIPAddress);
 int inSetTermMASKAddress(char* szTermMASKAddress);
 int inSetTermGetewayAddress(char* szTermGetewayAddress);
+void vdEthernetGetNetWorkValue(int ethernetTag,unsigned char* uszTemplate);
