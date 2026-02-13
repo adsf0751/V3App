@@ -8,7 +8,7 @@
 #include "Trans.h"
 #include "Print.h"
 #include "PrtMsg.h"
-
+#include "SOURCE/INCLUDE/Define_1.h"
 #include "SOURCE/FUNCTION/Function.h"
 #include "SOURCE/FUNCTION/File.h"
 #include "SOURCE/COMM/Ethernet.h"
@@ -17,7 +17,7 @@
 #include "SOURCE/FUNCTION/ECR.h"
 #include "SOURCE/ECR_Struct.h"
 #include "SOURCE/CREDIT/CreditptrByBuffer.h"
-
+#include "SOURCE/FUNCTION/Sqlite.h"
 #define _AP_ROOT_PATH_   "./"
 #define _SHORT_RECEIPT_U_   "U"
 #define _NCCC_TEXT_LOGO_    "財團法人聯合信用卡處理中心"
@@ -292,6 +292,109 @@ void vdRS232Menu(TRANSACTION_OBJECT* pobTran)
             break;
     }
 }
+
+void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
+{
+    BYTE key;
+    BYTE uszPackBuf[984];
+    memset(uszPackBuf,0x00,sizeof(uszPackBuf));
+    unsigned char uszKey = 0;
+    int breakFlag = 0;
+    int inRetVal = 0;
+    CTOS_LCDTClearDisplay(); 
+    CTOS_LCDTPrintXY(1,1,"請輸入數字:");
+    while(1)
+    {
+        uszKey = 0x00;
+        uszKey = uszKBD_Key();
+        if (uszKey != 0x00)
+        {    
+            CTOS_LCDTClearDisplay();
+            switch (uszKey)
+            {
+                case _KEY_1_:
+                case _KEY_2_:
+                case _KEY_3_:
+                case _KEY_4_:
+                case _KEY_5_:
+                case _KEY_6_:
+                case _KEY_7_:
+                case _KEY_8_:
+                case _KEY_9_:
+            //        case _KEY_0_:
+            //        case _KEY_F1_:
+            //        case _KEY_F2_:
+            //        case _KEY_F3_:
+            //        case _KEY_F4_:
+            //        case _KEY_CLEAR_:
+            //        case _KEY_DOT_:
+            //        case _KEY_ENTER_:
+            //        case _KEY_FUNCTION_:
+            //        case _KEY_CANCEL_:
+                    pobTran->inMenuKeyin = uszKey;
+                    
+                    inRetVal  = inCREDIT_Func_Get_OPT_Amount(pobTran);
+                    if(  inRetVal == VS_SUCCESS)
+                    {
+                        printf("Amount is %06ld\n",pobTran->srBRec.lnTxnAmount);
+                    }
+                    else
+                    {
+                        printf("Get Amount Failed\n");
+                        return ;
+                    }         
+                    break;
+            }
+            //取得金額後發送電文
+            CTOS_LCDTClearDisplay();
+            int inCnt = mySalePackData(pobTran,uszPackBuf);
+
+            inRetVal = inETHERNET_Initial();
+            if(inRetVal == VS_SUCCESS)
+            {
+                CTOS_LCDTPrintXY(1, 1, "Config Set Success!!!");
+                CTOS_Delay(2000);
+            }
+            else
+            {
+                CTOS_LCDTPrintXY(1, 1, "Config Set Fail!!!");
+                CTOS_Delay(2000);
+            }
+            CTOS_LCDTClearDisplay();
+            if(inETHERNET_SetConfig() == VS_SUCCESS)
+            {
+                CTOS_LCDTPrintXY(1,1,"Connect Host Success!!!");
+                CTOS_Delay(2000);
+            }
+            else
+            {
+                CTOS_LCDTPrintXY(1, 1, "Connect Host Fail!!!");
+                CTOS_Delay(2000);
+            }
+            
+            CTOS_LCDTClearDisplay(); 
+            if( inETHERNET_Send(uszPackBuf,inCnt-2,0) == VS_SUCCESS)
+            {
+                CTOS_LCDTPrintXY(1,1,"EthernetTx Success!!!");
+                CTOS_Delay(2000);
+            }
+            else
+            {
+                CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
+                CTOS_Delay(2000);
+            }
+            /*
+             * TODO:
+             * 1.Insert into table 可以存每筆交易，
+             * 可能包含 流水號、MID、TID、金額、交易類型、建立時間等
+             * 2.列印簽單            
+             */
+            break;
+        }
+    }
+}
+
+
 int main(int argc, char *argv[]) {
     BYTE key;
     CTOS_LCDTClearDisplay();
@@ -301,15 +404,17 @@ int main(int argc, char *argv[]) {
     FONT_ATTRIB srFont_Attrib;
     TRANSACTION_OBJECT pobTran;
     BMPHeight gsrBMPHeight;
-    /*可查看是否有fs_data路徑(是否有Load img.mci)*/
+    /* 可查看是否有fs_data路徑(是否有Load img.mci) */
 //    inFunc_ls("-R -l", _AP_ROOT_PATH_); 
-    
     CTOS_LCDTPrintXY(1, 1, "System Startup");
     CTOS_LCDTPrintXY(1, 2, "Loading Image...");
     CTOS_LCDTPrintXY(1, 3, "Configuring Printer...");
+    CTOS_LCDTPrintXY(1, 4, "DB Setting..."); 
     CTOS_Delay(1000);
-//    CTOS_KBDGet(&key);
-    //在Load mci時，要先Load APP.mci，再來才是img.mci
+    /*============LCD設定============*/
+    inDISP_Initial();
+    /*============LCD設定============*/
+    //要先Load APP.mci，再來才是Load img.mci
     inFunc_Booting_Flow_Print_Image_Initial(&pobTran,&gsrBMPHeight);
     printf("初始化圖片預設高度\n");
     printf("%s:inBankLogoHeight is %d \n",     _BANK_LOGO_,      gsrBMPHeight.inBankLogoHeight);
@@ -323,7 +428,15 @@ int main(int argc, char *argv[]) {
     /*============印表機設定============*/
     int breakFlag = 0;
     inPRINT_Buffer_Initial(uszBuffer, _BUFFER_MAX_LINE_, &srFont_Attrib, &srBhandle);
-
+    
+    /*============開啟資料庫============*/
+    if(inSqlite_Initial() != VS_SUCCESS)
+    {
+        printf("inSqlite Initial Failed!\n");
+        return VS_FALSE;
+    }
+    /*============開啟資料庫============*/
+    
     while(1)
     {
         CTOS_LCDTClearDisplay();
@@ -331,6 +444,7 @@ int main(int argc, char *argv[]) {
         CTOS_LCDTPrintXY(1, 2, "1:Print Receipt");
         CTOS_LCDTPrintXY(1, 3, "2:Ethernet COMM");
         CTOS_LCDTPrintXY(1, 4, "3:Rs232 COMM");
+        CTOS_LCDTPrintXY(1, 5, "4:__SALE__");
         CTOS_LCDTPrintXY(1, 16, "X:Exit");
         CTOS_KBDGet(&key);
         breakFlag = 0;
@@ -340,15 +454,18 @@ int main(int argc, char *argv[]) {
             { 
                 /*============假資料============*/
                 pobTran.srBRec.inPrintOption = _PRT_CUST_;
-                strcpy(pobTran.srBRec.szCardLabel, "9中9文9字9"); //卡別
-                strcpy(pobTran.srBRec.szPAN, "252500001616"); //卡號
+                strcpy(pobTran.srBRec.szCardLabel, "VISA"); //卡別
+                strcpy(pobTran.srBRec.szPAN, "493817******1411"); //卡號
                 strcpy(pobTran.srBRec.szDate, "1223"); //日期
                 strcpy(pobTran.srBRec.szTime, "143059"); //時間
-                pobTran.srBRec.lnOrgInvNum = 2;
-                pobTran.srBRec.lnBatchNum = 3;
-                strcpy(pobTran.srBRec.szAuthCode, "123456");
-                strcpy(pobTran.srBRec.szRefNo, "999999");
+                pobTran.srBRec.lnOrgInvNum = 1;
+                pobTran.srBRec.lnBatchNum  = 1;
+                strcpy(pobTran.srBRec.szAuthCode, "777777");
+                strcpy(pobTran.srBRec.szRefNo, "999999999999");
                 /*============假資料============*/
+                /*
+                 * TODO:改放在一個function呼叫下方列印簽單部分。
+                 */
                 if ((inRetVal = inCREDIT_PRINT_Logo_ByBuffer(&pobTran, uszBuffer, &srFont_Attrib, &srBhandle,&gsrBMPHeight)) != VS_SUCCESS)
                     printf("inCREDIT_PRINT_Logo_ByBuffer failed, ret=%d\n",inRetVal);
                 if ((inRetVal = inCREDIT_PRINT_Tidmid_ByBuffer(&pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)
@@ -368,6 +485,13 @@ int main(int argc, char *argv[]) {
             case d_KBD_3: 
             { 
                 vdRS232Menu(&pobTran);
+                break;
+            }
+            case d_KBD_4: 
+            {   
+                //期望做到直接跳到輸入金額 > 組裝封包 > 送電文 > 接收電文 > 列印簽單
+                
+                vdSALEMenu(&pobTran);
                 break;
             }
             case d_KBD_CANCEL: 

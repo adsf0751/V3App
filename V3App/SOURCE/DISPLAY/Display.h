@@ -61,7 +61,7 @@ extern "C" {
 #define _MONITOR_QUARTER_SIZE_          57654
 #endif
  for ingenico end */
-
+#include <ctosapi.h>
 typedef struct
 {
         int		inX;					/* 顯示畫面第幾列 */
@@ -514,7 +514,12 @@ int inPRINT_Buffer_GetHeight(unsigned char* , int* );
 int inDISP_Timer_Start(int , long );
 int inTimerGet(int);
 int inTimerStart(int , long );
-
+int inDISP_Clear_Line(int , int );
+unsigned char uszKBD_Key(void);
+unsigned char uszKBD_Key_Hit(void);
+int inDISP_Clear_Area(int inXL, int inYL, int inXR, int inYR, int inFoneSize);
+int inDISP_Enter8x16_GetAmount(DISPLAY_OBJECT  *srDispObj);
+int inDISP_EnglishFont_Color(char *szMessage, int inFontSize, int inLINE, int inColor, int inAlign);
 #ifdef __cplusplus
 }
 #endif

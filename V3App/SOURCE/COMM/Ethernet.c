@@ -345,7 +345,7 @@ int inETHERNET_Connect_Flow(char *szHostIP, char *szPort)
                 if(inRetVal ==VS_SUCCESS )
                     printf("inETHERNET_Connect_By_Native successed\n");
                 else
-                    printf("inETHERNET_Connect_By_Native failed\n");
+                    printf("inETHERNET_Connect_By_Native failed，host ip is %s\n",szHostIP);
 		/* 標示現在連線方式，斷線後重新恢復成_ETHERNET_FLOW_CTOS_ */
 //		ginEthernetFlow = _ETHERNET_FLOW_NATIVE_;
 //

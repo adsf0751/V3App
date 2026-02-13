@@ -83,7 +83,7 @@ int inCREDIT_PRINT_Tidmid_ByBuffer(TRANSACTION_OBJECT *pobTran, unsigned char *u
     } else {
         /* 橫式 */
         memset(szTemplate, 0x00, sizeof(szTemplate));
-        pString = "4567";
+        pString = "1314006807";
         strncpy(szTemplate,pString,strlen(pString));
         //inGetMerchantID(szTemplate);
 
@@ -97,7 +97,7 @@ int inCREDIT_PRINT_Tidmid_ByBuffer(TRANSACTION_OBJECT *pobTran, unsigned char *u
 
         /* Get端末機代號 */
         memset(szTemplate, 0x00, sizeof(szTemplate));
-        pString = "121314151617";
+        pString = "13992020";
         strncpy(szTemplate,pString,strlen(pString));
         //                inGetTerminalID(szTemplate);
 

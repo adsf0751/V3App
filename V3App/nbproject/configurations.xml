@@ -19,6 +19,8 @@
         <itemPath>SOURCE/COMM/Ethernet.h</itemPath>
       </logicalFolder>
       <logicalFolder name="CREDIT" displayName="CREDIT" projectFiles="true">
+        <itemPath>SOURCE/CREDIT/Creditfunc.c</itemPath>
+        <itemPath>SOURCE/CREDIT/Creditfunc.h</itemPath>
         <itemPath>SOURCE/CREDIT/CreditptrByBuffer.c</itemPath>
         <itemPath>SOURCE/CREDIT/CreditptrByBuffer.h</itemPath>
       </logicalFolder>
@@ -37,6 +39,11 @@
         <itemPath>SOURCE/FUNCTION/Function.h</itemPath>
         <itemPath>SOURCE/FUNCTION/RS232.c</itemPath>
         <itemPath>SOURCE/FUNCTION/RS232.h</itemPath>
+        <itemPath>SOURCE/FUNCTION/Sqlite.c</itemPath>
+        <itemPath>SOURCE/FUNCTION/Sqlite.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="INCLUDE" displayName="INCLUDE" projectFiles="true">
+        <itemPath>SOURCE/INCLUDE/Define_1.h</itemPath>
       </logicalFolder>
       <logicalFolder name="NCCC" displayName="NCCC" projectFiles="true">
         <itemPath>SOURCE/NCCCats.c</itemPath>
@@ -117,6 +124,7 @@
             <linkerLibLibItem>ssl</linkerLibLibItem>
             <linkerLibLibItem>z</linkerLibLibItem>
             <linkerLibLibItem>freetype</linkerLibLibItem>
+            <linkerLibLibItem>casqlite</linkerLibLibItem>
           </linkerLibItems>
           <commandLine>-L . "-L${SDKV3LIB}" "-L${SDKV3LIBN}"</commandLine>
         </linkerTool>
@@ -130,6 +138,10 @@
       <item path="SOURCE/COMM/Ethernet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/COMM/Ethernet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/CREDIT/Creditfunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/CREDIT/Creditfunc.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/CREDIT/CreditptrByBuffer.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -158,6 +170,12 @@
       <item path="SOURCE/FUNCTION/RS232.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/RS232.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/Sqlite.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/Sqlite.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/INCLUDE/Define_1.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/NCCC/NCCCats.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -237,6 +255,10 @@
       </item>
       <item path="SOURCE/COMM/Ethernet.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SOURCE/CREDIT/Creditfunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/CREDIT/Creditfunc.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SOURCE/CREDIT/CreditptrByBuffer.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/CREDIT/CreditptrByBuffer.h" ex="false" tool="3" flavor2="0">
@@ -264,6 +286,12 @@
       <item path="SOURCE/FUNCTION/RS232.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/RS232.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/Sqlite.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/Sqlite.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/INCLUDE/Define_1.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/NCCC/NCCCats.h" ex="false" tool="3" flavor2="0">
       </item>

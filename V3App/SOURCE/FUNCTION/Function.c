@@ -1,6 +1,156 @@
 
 #include "Function.h" //FOR _PADDING_RIGHT_ /_PADDING_LEFT_
 //extern BMPHeight gsrBMPHeight;
+
+/*
+Function        :inFunc_Amount_Comma
+Date&Time       :2016/9/5 下午 4:03
+Describe        :
+ *szAmt:	金額
+ *szCurSymbol:	金額的符號 ex: ＄、 ￥
+ *szPad_char:	要Pad的字元
+ *inSigned:	如果有需要印出負0的需求
+ *inWide:	最後字串的寬度
+ *inAlign:	右靠左靠，True的話，右靠左補空白；False的話，左靠右補空白
+ *注意:		若靠右，且pad 0x00會抓不到字串長度
+*/
+int inFunc_Amount_Comma(char *szAmt, char *szCurSymbol, char szPad_char, int inSigned, int inWide, int inAlign)
+{
+	int	inOffset = 0;		
+	int	inNumberLen = 0;	/* 已放進szComma的數字數量 */
+        int	inLen, inPoint = 0, i;	/* inPoint:現在szComma的長度 */
+        int     inFinalLen;
+        char	szComma[48 + 1];
+	char	szTemplate[48 + 1];
+	char	szUnsignedAmt[20 + 1];
+      
+	
+	/* 輸入數字是負數 */
+        memset(szUnsignedAmt, 0x00, sizeof(szUnsignedAmt));
+	if (szAmt[0] == '-')
+		strcpy(szUnsignedAmt, &szAmt[1]);
+	else
+		strcpy(szUnsignedAmt, &szAmt[0]);
+	
+	inLen = strlen(szUnsignedAmt);
+	inOffset = inLen % 3;
+	memset(szComma, 0x00, sizeof(szComma));
+	
+	for (i = 0; i < inLen; i ++)
+	{
+		szComma[inPoint ++] = szUnsignedAmt[i];
+		inNumberLen ++;			/* 數字長度 */
+		
+		/* 每第三個數字加comma ，若已經是最後一位也不加comma */
+		if (((inNumberLen - inOffset) % 3 == 0) &&
+		     (i != inLen - 1))
+			szComma[inPoint ++] = 0x2C; /* 補【,】 */
+	}
+        
+	
+	
+	memset(szTemplate, 0x00, sizeof(szTemplate));
+	
+	/* Flag有On或是原傳入金額為負 */
+	if (inSigned == _SIGNED_MINUS_ || szAmt[0] == '-')
+		sprintf(szTemplate, "-%s", szComma);
+	else
+		sprintf(szTemplate, "%s", szComma);
+
+        inFinalLen = strlen(szCurSymbol) + strlen(szTemplate);
+        
+        if (inFinalLen > inWide)
+        {    
+                /* 已經超出inWide，直接丟append */
+        }
+        else
+        {    
+                /* 補空白 */
+                if (inAlign == _PADDING_LEFT_)
+                        inFunc_PAD_ASCII(szTemplate, szTemplate, szPad_char, inWide - strlen(szCurSymbol), _PADDING_LEFT_);	/* 右靠左補空白 */
+                else
+                        inFunc_PAD_ASCII(szTemplate, szTemplate, szPad_char, inWide - strlen(szCurSymbol), _PADDING_RIGHT_);	/* 左靠右補空白 */
+	}
+        
+	/* 金額符號 */
+	if (strlen(szCurSymbol) != 0)
+		sprintf(szAmt, "%s%s", szCurSymbol, szTemplate);
+	else
+		sprintf(szAmt, "%s", szTemplate);
+
+	return (VS_SUCCESS);
+}
+/*
+Function        :inFunc_SyncPobTran_Date_Include_Year
+Date&Time       :2018/2/8 上午 9:40
+Describe        :將傳進的RTC的時間部份，傳進放進來的Buffer,因為只傳pointer，所以要求傳進長度避免爆掉
+ *		:這個會連20一起填
+*/
+int inFunc_SyncPobTran_Date_Include_Year(char *szDate,int inTimeBufferLen, RTC_NEXSYS *srRTC)
+{	
+	if (inTimeBufferLen >= 8 + 1)
+	{
+		sprintf(szDate, "20%02d%02d%02d",  srRTC->uszYear, srRTC->uszMonth, srRTC->uszDay);
+		return (VS_SUCCESS);
+	}
+	else
+	{
+		return (VS_ERROR);
+	}
+}
+/*
+Function        :inFunc_SyncPobTran_Time
+Date&Time       :2018/2/8 上午 9:40
+Describe        :將傳進的RTC的時間部份，傳進放進來的Buffer,因為只傳pointer，所以要求傳進長度避免爆掉
+*/
+int inFunc_SyncPobTran_Time(char *szTime,int inTimeBufferLen, RTC_NEXSYS *srRTC)
+{	
+	if (inTimeBufferLen >= 6 + 1)
+	{
+		sprintf(szTime, "%02d%02d%02d",  srRTC->uszHour, srRTC->uszMinute, srRTC->uszSecond);
+		return (VS_SUCCESS);
+	}
+	else
+	{
+		return (VS_ERROR);
+	}
+}
+/*
+Function        :inFunc_Sync_BRec_Date_Time
+Date&Time       :2018/2/8 上午 9:44
+Describe        :同步BRec日期和時間
+*/
+int inFunc_Sync_BRec_Date_Time(TRANSACTION_OBJECT *pobTran, RTC_NEXSYS *srRTC)
+{	
+	/* 同步到pobTran */
+	memset(pobTran->srBRec.szDate, 0x00, sizeof(pobTran->srBRec.szDate));
+	memset(pobTran->srBRec.szOrgDate, 0x00, sizeof(pobTran->srBRec.szOrgDate));
+	memset(pobTran->srBRec.szTime, 0x00, sizeof(pobTran->srBRec.szTime));
+	memset(pobTran->srBRec.szOrgTime, 0x00, sizeof(pobTran->srBRec.szOrgTime));
+	
+	if (inFunc_SyncPobTran_Date_Include_Year(pobTran->srBRec.szDate, sizeof(pobTran->srBRec.szDate),  srRTC) != VS_SUCCESS)
+	{
+		return (VS_ERROR);
+	}
+	
+	if (inFunc_SyncPobTran_Date_Include_Year(pobTran->srBRec.szOrgDate, sizeof(pobTran->srBRec.szOrgDate),  srRTC) != VS_SUCCESS)
+	{
+		return (VS_ERROR);
+	}
+	
+	if (inFunc_SyncPobTran_Time(pobTran->srBRec.szTime, sizeof(pobTran->srBRec.szTime),  srRTC) != VS_SUCCESS)
+	{
+		return (VS_ERROR);
+	}
+	
+	if (inFunc_SyncPobTran_Time(pobTran->srBRec.szOrgTime, sizeof(pobTran->srBRec.szOrgTime),  srRTC) != VS_SUCCESS)
+	{
+		return (VS_ERROR);
+	}
+	
+	return (VS_SUCCESS);
+}
+
 /*
 Function	:inFunc_ASCII_to_BCD
 Date&Time	:2015/7/13 下午 2:02

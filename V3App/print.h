@@ -19,41 +19,6 @@ extern "C" {
 #endif
 
 #include <ctosapi.h>
-typedef enum
-{
-	VS_USER_CANCEL			= (-1000),		/* 使用者取消交易 */
-	VS_WAVE_INVALID_SCHEME_ERR		, 		/* 感應卡使用 */
-	VS_WAVE_AMOUNT_ERR			, 		/* 感應卡使用 */
-	VS_WAVE_ERROR				, 		/* 感應卡使用 */
-
-	VS_NO_CARD_BIN				,		/* 找不到cardbin */
-	VS_CARD_PAN_ERROR			,		/* 卡號錯誤 */
-	VS_CARD_EXP_ERR				,		/* 有效期錯誤 */
-	VS_LAST_PAGE				,		/* 回上一層 */
-	VS_PREVIOUS_PAGE			,		/* 上一頁 */
-	VS_NEXT_PAGE				,		/* 下一頁 */
-	VS_FUNC_CLOSE_ERR			,		/* 功能未開，回上一頁 */
-	VS_HG_REWARD_COMM_ERR			,		/* 紅利積點失敗 */
-	VS_PRINTER_OVER_HEAT			,		/* 印表機過熱 */
-	VS_PRINTER_PAPER_OUT			,		/* 列印沒紙 */
-	VS_CALLBANK				,		/* call bank */
-	VS_ISO_PACK_ERR				,		/* ISO PACK 失敗 */
-	VS_ISO_UNPACK_ERROR			,		/* ISO UNPACK 失敗 */
-	VS_COMM_ERROR				,		/* 通訊失敗 */
-	VS_ICC_INSERT_ERROR			,		/* 插卡失敗 */
-	VS_SWIPE_ERROR				,		/* 刷卡失敗 */
-	VS_FILE_ERROR				,		/* 檔案失敗 */
-	VS_READ_ERROR				, 		/* 讀檔失敗 */
-	VS_WRITE_ERROR				, 		/* 寫檔失敗 */
-	VS_USER_OPER_ERR			, 		/* 使用者操作錯誤 */
-	VS_CLOSE_ERROR				, 		/* 檔案關閉失敗 */
-	VS_OPEN_ERROR				, 		/* 檔案開啟失敗 */
-	VS_NO_RECORD				, 		/* 沒有交易記錄 */
-	VS_ABORT				, 		/* Operation Aborted (obsolete) */
-	VS_EMV_CARD_OUT				,		/* 晶片卡被取出 */
-	VS_TAP_AGAIN				,		/* 表示要再次感應，目前for悠遊卡使用 */
-	VS_WRITE_KEY_ERROR			,		/* 表示寫key失敗 */
-}RESPONSE_V3;
 
 typedef enum
 {

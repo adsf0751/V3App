@@ -110,7 +110,8 @@ int inPRINT_Buffer_OutPut(unsigned char *uszBuffer, BufferHandle *srBhandle) {
     } else {
         if (usReturnValue == d_PRINTER_PAPER_OUT) {
             printf("printer paper out\n");
-            return (VS_PRINTER_PAPER_OUT);
+//            return (VS_PRINTER_PAPER_OUT);
+            return (VS_ERROR);
         } else if (usReturnValue == d_PRINTER_HEAD_OVERHEAT) {
             memset(szTemplate, 0x00, sizeof(szTemplate));	
             if (usReturnValue == d_PRINTER_HEAD_OVERHEAT)
@@ -124,7 +125,8 @@ int inPRINT_Buffer_OutPut(unsigned char *uszBuffer, BufferHandle *srBhandle) {
 //            }
 
             printf("%s\n",szTemplate);
-            return (VS_PRINTER_OVER_HEAT);
+//            return (VS_PRINTER_OVER_HEAT);
+            return (VS_ERROR);
         } else {
             memset(szTemplate, 0x00, sizeof(szTemplate));	
             sprintf(szTemplate, "代碼：0x%04X", usReturnValue);	/* 錯誤代碼 */

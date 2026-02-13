@@ -1,0 +1,1 @@
+int inCREDIT_Func_Get_OPT_Amount(TRANSACTION_OBJECT *pobTran);
