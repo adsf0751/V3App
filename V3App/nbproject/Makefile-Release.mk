@@ -36,12 +36,15 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/SOURCE/COMM/Ethernet.o \
+	${OBJECTDIR}/SOURCE/CREDIT/Creditfunc.o \
 	${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o \
 	${OBJECTDIR}/SOURCE/DISPLAY/Display.o \
+	${OBJECTDIR}/SOURCE/FUNCTION/Batch.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/ECR.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/File.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/Function.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/RS232.o \
+	${OBJECTDIR}/SOURCE/FUNCTION/Sqlite.o \
 	${OBJECTDIR}/SOURCE/NCCCats.o \
 	${OBJECTDIR}/SOURCE/PRINT/Print.o \
 	${OBJECTDIR}/appmain.o
@@ -61,7 +64,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-lcaethernet -lcafont -lcafs -lcakms -lcalcd -lcamodem -lcapmodem -lcaprt -lcartc -lcauart -lcauldpm -lcausbh -lcagsm -lcabarcode -lpthread -ldl -lcaclvw -lcaclentry -lcaclmdl -lcatls -lctosapi -lcrypto -lcurl -lssl -lz -lfreetype
+LDLIBSOPTIONS=-lcaethernet -lcafont -lcafs -lcakms -lcalcd -lcamodem -lcapmodem -lcaprt -lcartc -lcauart -lcauldpm -lcausbh -lcagsm -lcabarcode -lpthread -ldl -lcaclvw -lcaclentry -lcaclmdl -lcatls -lctosapi -lcrypto -lcurl -lssl -lz -lfreetype -lcasqlite
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -75,6 +78,10 @@ ${OBJECTDIR}/SOURCE/COMM/Ethernet.o: SOURCE/COMM/Ethernet.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/COMM
 	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/COMM/Ethernet.o SOURCE/COMM/Ethernet.c
 
+${OBJECTDIR}/SOURCE/CREDIT/Creditfunc.o: SOURCE/CREDIT/Creditfunc.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/CREDIT
+	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/CREDIT/Creditfunc.o SOURCE/CREDIT/Creditfunc.c
+
 ${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o: SOURCE/CREDIT/CreditptrByBuffer.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/CREDIT
 	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o SOURCE/CREDIT/CreditptrByBuffer.c
@@ -82,6 +89,10 @@ ${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o: SOURCE/CREDIT/CreditptrByBuffer.
 ${OBJECTDIR}/SOURCE/DISPLAY/Display.o: SOURCE/DISPLAY/Display.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/DISPLAY
 	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/DISPLAY/Display.o SOURCE/DISPLAY/Display.c
+
+${OBJECTDIR}/SOURCE/FUNCTION/Batch.o: SOURCE/FUNCTION/Batch.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
+	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/Batch.o SOURCE/FUNCTION/Batch.c
 
 ${OBJECTDIR}/SOURCE/FUNCTION/ECR.o: SOURCE/FUNCTION/ECR.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
@@ -98,6 +109,10 @@ ${OBJECTDIR}/SOURCE/FUNCTION/Function.o: SOURCE/FUNCTION/Function.c
 ${OBJECTDIR}/SOURCE/FUNCTION/RS232.o: SOURCE/FUNCTION/RS232.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
 	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/RS232.o SOURCE/FUNCTION/RS232.c
+
+${OBJECTDIR}/SOURCE/FUNCTION/Sqlite.o: SOURCE/FUNCTION/Sqlite.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/FUNCTION
+	$(COMPILE.c) -O2 -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/FUNCTION/Sqlite.o SOURCE/FUNCTION/Sqlite.c
 
 ${OBJECTDIR}/SOURCE/NCCCats.o: SOURCE/NCCCats.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE

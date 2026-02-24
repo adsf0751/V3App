@@ -508,7 +508,7 @@ Color value. Encoding 00 BB GG RR, where
 #define _MSG_BMP_DISP_POSITION_LEFT_	1
 #define _MSG_BMP_DISP_POSITION_CENTER_	2
 #define _MSG_BMP_DISP_POSITION_RIGHT_	3
-
+int inDISP_Initial(void);
 int inDISP_PutGraphic(char *, int , int );
 int inPRINT_Buffer_GetHeight(unsigned char* , int* );
 int inDISP_Timer_Start(int , long );
@@ -520,6 +520,8 @@ unsigned char uszKBD_Key_Hit(void);
 int inDISP_Clear_Area(int inXL, int inYL, int inXR, int inYR, int inFoneSize);
 int inDISP_Enter8x16_GetAmount(DISPLAY_OBJECT  *srDispObj);
 int inDISP_EnglishFont_Color(char *szMessage, int inFontSize, int inLINE, int inColor, int inAlign);
+int inDISP_TTF_SetFont(int inLanguage, int inFontStyle);
+int inDISP_Decide_FontSize(int inFontSize, int inLanguage, unsigned short* usFontsize);
 #ifdef __cplusplus
 }
 #endif
