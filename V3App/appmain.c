@@ -336,7 +336,7 @@ int inFuncInsertTxnRecord_By_Sqlite(TRANSACTION_OBJECT *pobTran)
 	sync();  
         return (VS_SUCCESS);
 }
-void vdEthernetMenu(void)
+void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
 {
     BYTE key;
     int breakFlag = 0;
@@ -357,7 +357,7 @@ void vdEthernetMenu(void)
         CTOS_LCDTPrintXY(1, 4, "3:Connect");
         CTOS_LCDTPrintXY(1, 5, "4:Tx Data");
         CTOS_LCDTPrintXY(1, 6, "5.Rx Data");
-//        CTOS_LCDTPrintXY(1, 7, "6.Ping");
+        CTOS_LCDTPrintXY(1, 7, "6.TEST");
         CTOS_LCDTPrintXY(1, 16, "X.Exit");
         CTOS_KBDGet(&key);
         breakFlag = 0;
@@ -453,7 +453,10 @@ void vdEthernetMenu(void)
                 break;
             }
             case d_KBD_6: 
-            {   //TODO:未使用到ETHERNET_PING()
+            {   
+                //TODO:未使用到ETHERNET_PING()
+                CTOS_LCDTClearDisplay();
+                inFunc_Get_HostIP(pobTran);
                 break;
             }
             case d_KBD_CANCEL: 
@@ -870,7 +873,7 @@ int main(int argc, char *argv[]) {
             //BUG:進入選單直接選擇跳出會因為 跳出做disconnet 但因為沒有open過而顯示diconn fail
             case d_KBD_2: 
             {   
-                vdEthernetMenu();
+                vdEthernetMenu(&pobTran);
                 break;
             }
             case d_KBD_3: 

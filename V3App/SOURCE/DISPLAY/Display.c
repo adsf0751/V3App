@@ -716,6 +716,216 @@ int inDISP_Enter8x16_GetAmount(DISPLAY_OBJECT  *srDispObj)
 		
     	}
 }
+int inDISP_Enter8x16_GetSetting(DISPLAY_OBJECT  *srDispObj)
+{
+	int		inChoice = 0;
+	int		inColor;
+	int		inFinalTimeOut;
+	char		szTemplate[32 + 1];
+        unsigned char   uszkey;
+
+//        if (srDispObj->inMenuKeyIn > 0)
+//        {
+//                /* 將輸入第一碼先存起來 */         
+//                sprintf(&srDispObj->szOutput[srDispObj->inOutputLen], "%c", srDispObj->inMenuKeyIn);
+//                srDispObj->inOutputLen ++;
+//        }
+	
+	/* 若TIMEOUT時間大於0時用傳進來的TimeOut，否則用EDC.dat的 */
+//        if (srDispObj->inTimeout > 0)
+//	{
+//		inFinalTimeOut = srDispObj->inTimeout;
+//	}
+//	else
+//	{
+//		inFinalTimeOut = _EDC_TIMEOUT_;
+//	}
+//	inGetHostIPPrimary(srDispObj->szPromptMsg);
+	inColor = srDispObj->inColor;
+     
+	inDISP_Timer_Start(_TIMER_NEXSYS_1_, 30);
+	while (1)
+	{
+                uszkey = -1;
+                uszkey = uszKBD_Key();
+//                if (strlen(srDispObj->szPromptMsg) > 0)
+//                {
+//                /* 如果為MenuKeyIn，第一個數字要顯示 */
+//                        uszkey = _MENUKEYIN_EVENT_;
+//                }
+//                else
+//                {
+////			inChoice = inDisTouch_TouchSensor_Click_Slide(srDispObj->inTouchSensorFunc);
+//			uszkey = uszKBD_Key();
+//                }
+		
+//		if (inChoice == _Touch_OX_LINE8_8_ENTER_BUTTON_)
+//		{
+//			uszkey = _KEY_ENTER_;
+//		}
+//		else if (inChoice == _Touch_OX_LINE8_8_CANCEL_BUTTON_)
+//		{
+//			uszkey = _KEY_CANCEL_;
+//		}
+		
+		/* Timeout */
+		if (inTimerGet(_TIMER_NEXSYS_1_) == VS_SUCCESS)
+		{
+			uszkey = _KEY_TIMEOUT_;
+		}
+                
+                switch (uszkey)
+                {
+                        case _KEY_CANCEL_ :
+                                srDispObj->inOutputLen = 0;
+                                memset(srDispObj->szOutput, 0x00, sizeof(srDispObj->szOutput));
+				/* 清空Touch資料 */
+//				inDisTouch_Flush_TouchFile();	
+                                return (VS_USER_CANCEL);
+                        case _KEY_TIMEOUT_ :
+                                srDispObj->inOutputLen = 0;
+                                memset(srDispObj->szOutput, 0x00, sizeof(srDispObj->szOutput));
+				/* 清空Touch資料 */
+//				inDisTouch_Flush_TouchFile();
+                                return(VS_TIMEOUT);
+                        case _KEY_ENTER_ :
+                                /* 先確認該部份是否可輸入0 和 ByPass */
+				if (srDispObj->inCanNotZero != VS_TRUE && srDispObj->inCanNotBypass != VS_TRUE)
+				{
+					/* 清空Touch資料 */
+//					inDisTouch_Flush_TouchFile();			
+					return (srDispObj->inOutputLen);
+				}
+				/* 不能ByPass但可以輸入0 */
+				else if (srDispObj->inCanNotZero != VS_TRUE && srDispObj->inCanNotBypass == VS_TRUE)
+				{
+					if (srDispObj->inOutputLen == 0)
+					{
+//						inDISP_BEEP(1, 0);
+						continue;
+					}
+					else
+					{
+						/* 清空Touch資料 */
+//						inDisTouch_Flush_TouchFile();					
+						return (srDispObj->inOutputLen);
+					}
+				}
+				/* 不能輸入0但可以ByPass */
+				else if (srDispObj->inCanNotZero == VS_TRUE && srDispObj->inCanNotBypass != VS_TRUE)
+				{
+					/* 判斷輸入為零 提示聲音+重新輸入 */
+					if (atol(srDispObj->szOutput) == 0L)
+					{
+//						inDISP_BEEP(1, 0);
+						continue;
+					}
+					else
+					{
+						/* 清空Touch資料 */
+//						inDisTouch_Flush_TouchFile();						
+						return (srDispObj->inOutputLen);
+					}
+					
+				}
+				/* 不能輸入0也不能ByPass */
+				else
+				{
+					/* 判斷輸入為零 提示聲音+重新輸入 */
+					if (atol(srDispObj->szOutput) == 0L || srDispObj->inOutputLen == 0)
+					{
+//						inDISP_BEEP(1, 0);
+						continue;
+					}
+					else
+					{
+						/* 清空Touch資料 */
+//						inDisTouch_Flush_TouchFile();					
+						return (srDispObj->inOutputLen);
+					}
+					
+				}
+                        case _KEY_CLEAR_ :
+                                if (srDispObj->inOutputLen > 0)
+                                {
+                                        srDispObj->szOutput[srDispObj->inOutputLen - 1] = 0x00;
+                                        srDispObj->inOutputLen --;
+                                        break;
+                                }
+                                else
+                                        continue;
+                        case _KEY_0_ :
+                        case _KEY_1_ :
+                        case _KEY_2_ :
+                        case _KEY_3_ :
+                        case _KEY_4_ :
+                        case _KEY_5_ :
+                        case _KEY_6_ :
+                        case _KEY_7_ :
+                        case _KEY_8_ :
+                        case _KEY_9_ :
+                        case _KEY_ALPHA_:
+                            printf("----\n");
+				/* 金額第一位數不能為0 */
+//                                if (srDispObj->inOutputLen == 0 && uszkey - 48 == 0)
+//                                {
+//                                        continue;
+//                                }
+				/* 若超過最大長度時長嗶一聲 */
+				if (srDispObj->inOutputLen >= srDispObj->inMaxLen)
+				{
+//					inDISP_BEEP(1, 0);
+					continue;
+				}
+                                uszkey = (uszkey ==_KEY_ALPHA_) ? '.' : uszkey;    
+                                sprintf(&srDispObj->szOutput[srDispObj->inOutputLen], "%c", uszkey);
+                                srDispObj->inOutputLen ++;
+                                break;
+                        case _MENUKEYIN_EVENT_:
+                                /* 將inMenuKeyIn初始化 */
+                                srDispObj->inMenuKeyIn = -1;
+                                break;
+                        default :
+                                continue;
+                }
+                
+                /* 設定螢幕字型大小 */
+		/* _ENGLISH_FONT_8X16_ */
+//		if (ginHalfLCD == VS_TRUE)
+//			srDispObj->inFoneSize = _ENGLISH_FONT_8X16_HALF_;
+//		else
+			srDispObj->inFoneSize = _ENGLISH_FONT_8X16_;
+
+                /* 一律先把畫面清掉後再顯示輸入訊息 */
+                if (srDispObj->inX != 0)
+                        //不懂
+			inDISP_Clear_Area(srDispObj->inX, srDispObj->inY, 16, srDispObj->inY, srDispObj->inFoneSize);
+		else
+			inDISP_Clear_Area(1, srDispObj->inY, 16, srDispObj->inY, srDispObj->inFoneSize);
+
+		memset(szTemplate, 0x00, sizeof(szTemplate));
+		strcpy(szTemplate, srDispObj->szOutput);
+		/* 如果砍到沒金額，顯示0元而不是空白 */
+		if (strlen(szTemplate) == 0)
+		{
+			strcat(szTemplate, "0");
+		}
+		
+                if (srDispObj->inR_L == _DISP_LEFT_)
+                {
+			inFunc_Amount_Comma(szTemplate, srDispObj->szPromptMsg, 0x00, _SIGNED_NONE_, 16, _PADDING_RIGHT_);
+                        inDISP_EnglishFont_Color(szTemplate, _FONTSIZE_8X16_, srDispObj->inY, inColor, _DISP_LEFT_);
+                }
+                else if (srDispObj->inR_L == _DISP_RIGHT_)
+                {       
+
+//			inFunc_Amount_Comma(szTemplate, srDispObj->szPromptMsg, 0x00, _SIGNED_NONE_, 16, _PADDING_RIGHT_);                   
+                        printf("srDispObj->szOutput is %s\n",szTemplate);
+                        inDISP_EnglishFont_Color(szTemplate, _FONTSIZE_8X16_, srDispObj->inY, inColor, _DISP_RIGHT_);
+                }
+		
+    	}
+}
 
 /*
 Function	:inDISP_Clear_Line

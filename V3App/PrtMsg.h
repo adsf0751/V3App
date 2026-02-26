@@ -27,3 +27,5 @@
 
 /* TMS排程下載用 */
 #define _TMS_SCHEDULE_IMPORTANT_        "./fs_data/IMPORTANT.bmp"	/* 重要訊息通知 */
+
+#define _MENU_SET_COMM_TITLE_		"./fs_data/SETCOMM_T.bmp"		/* 通訊設定 */

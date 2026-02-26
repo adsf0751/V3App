@@ -13,6 +13,8 @@
 #include "../../Trans.h"
 #include "../DISPLAY/Display.h"
 #include "Ethernet.h"
+#include "../../PrtMsg.h"
+#include "../INCLUDE/Define_1.h"
 extern int ginTrans_ClientFd;
 extern CPT_REC srCPTRec;
 extern EDC_REC srEDCRec;
@@ -1493,4 +1495,56 @@ int inSetTermGetewayAddress(char* szTermGetewayAddress) {
     memcpy(&srEDCRec.szTermGetewayAddress[0], &szTermGetewayAddress[0], strlen(szTermGetewayAddress));
 
     return (VS_SUCCESS);
+}
+
+/*
+Function	:
+Date&Time	:2016/12/29 上午 11:20
+Describe	:
+*/
+int inFunc_Get_HostIP(TRANSACTION_OBJECT *pobTran)
+{
+	int		inRetVal;
+        char		szTemplate[_DISP_MSG_SIZE_ + 1];
+        DISPLAY_OBJECT  srDispObj;
+        int isValidIp = -1;
+        do {
+                isValidIp = -1;
+                memset(&srDispObj, 0x00, sizeof(DISPLAY_OBJECT));
+		memset(szTemplate, 0x00, sizeof(szTemplate));
+
+		srDispObj.inY = _LINE_8_7_;
+		srDispObj.inR_L = _DISP_RIGHT_;
+//		srDispObj.inMaxLen = inFunc_Check_Digit();      /* 不可超過9，long變數最多放9位 */
+		srDispObj.inMaxLen = 15; 
+//              srDispObj.inMenuKeyIn = ginEventCode;
+                srDispObj.inMenuKeyIn = pobTran->inMenuKeyin;
+		srDispObj.inCanNotBypass = VS_TRUE;
+		srDispObj.inCanNotZero = VS_TRUE;
+		srDispObj.inColor = _COLOR_RED_;
+		strcpy(srDispObj.szPromptMsg, "");
+ 
+		inDISP_Clear_Line(_LINE_8_4_, _LINE_8_8_);
+		inDISP_PutGraphic(_MENU_SET_COMM_TITLE_, 0, _COORDINATE_Y_LINE_8_4_);
+               
+
+		memset(srDispObj.szOutput, 0x00, sizeof(srDispObj.szOutput));
+		srDispObj.inOutputLen = 0;
+                
+		inRetVal = inDISP_Enter8x16_GetSetting(&srDispObj);
+                    
+		if (inRetVal == VS_TIMEOUT || inRetVal == VS_USER_CANCEL)
+		{
+                        printf("inCREDIT_Func_Get_OPT_Amount Timeout_Or_UserCancel(%d) END!\n",inRetVal);
+                        return (inRetVal);
+		}
+                struct sockaddr_in sa;
+                isValidIp  = inet_pton(AF_INET,srDispObj.szOutput , &(sa.sin_addr));
+                printf("isValidIp is %d\n",isValidIp);
+                printf("srDispObj.szOutput is %s\n",srDispObj.szOutput);
+            
+        }while(isValidIp != 1);
+        
+
+	return (VS_SUCCESS);
 }
