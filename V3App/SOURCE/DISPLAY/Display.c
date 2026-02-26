@@ -23,7 +23,8 @@ int inDISP_Initial(void)
 
         /* 步驟三 設定TTF字型及Style */
         inDISP_TTF_SetFont(_DISP_CHINESE_, _FONT_DISPLAY_REGULAR_);               /* 微軟正黑體 */
-
+        /*非原本程式設定，因為在inDISP_EnglishFont_Color()會修改別的字型大小，所以這邊先設定一個原始大小*/
+        CTOS_LCDTSelectFontSize(_CHINESE_FONT_8X22_);
         return (VS_SUCCESS);
 }
 /*
@@ -497,7 +498,7 @@ int inDISP_EnglishFont_Color(char *szMessage, int inFontSize, int inLINE, int in
         CTOS_LCDTPrintAligned(inLINE, (unsigned char*)szMessage, inAlign);
         /* 將字體顏色換回黑色 */
         CTOS_LCDForeGndColor(0x00000000);
-        
+
         return (VS_SUCCESS);
 }
 /*

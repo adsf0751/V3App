@@ -452,7 +452,7 @@ int inSqlite_Table_Link_BRec(TRANSACTION_OBJECT *pobTran, SQLITE_ALL_TABLE *srAl
 		{0	,"inTableID"			,&pobTran->inTableID				},	/* inTableID */
 		{0	,"inCode"			,&pobTran->srBRec.inCode			},	/* Trans Code */
 		{0	,"inOrgCode"			,&pobTran->srBRec.inOrgCode			},	/* Original Trans Code  */
-		{0	,"inPrintOption"		,&pobTran->srBRec.inPrintOption			},	/* Print Option Flag */
+		{0	,"inPrintOption" 		,&pobTran->srBRec.inPrintOption			},	/* Print Option Flag */
 		{0	,"inHDTIndex"			,&pobTran->srBRec.inHDTIndex			},	/* 紀錄HDTindex */
 		{0	,"inCDTIndex"			,&pobTran->srBRec.inCDTIndex			},	/* 紀錄CDTindex */
 		{0	,"inCPTIndex"			,&pobTran->srBRec.inCPTIndex			},	/* 紀錄CPTindex */
@@ -477,7 +477,7 @@ int inSqlite_Table_Link_BRec(TRANSACTION_OBJECT *pobTran, SQLITE_ALL_TABLE *srAl
 		{0	,"lnInvNum"			,&pobTran->srBRec.lnInvNum			},	/* 調閱編號  */
 		{0	,"lnOrgInvNum"			,&pobTran->srBRec.lnOrgInvNum			},	/* Original 調閱編號  */
 		{0	,"lnBatchNum"			,&pobTran->srBRec.lnBatchNum			},	/* Batch Number */
-		{0	,"lnOrgBatchNum"		,&pobTran->srBRec.lnOrgBatchNum			},	/* Original Batch Number */
+		{0	,"lnOrgBatchNum" 		,&pobTran->srBRec.lnOrgBatchNum			},	/* Original Batch Number */
 		{0	,"lnSTANNum"			,&pobTran->srBRec.lnSTANNum			},	/* Stan Number */
 		{0	,"lnOrgSTANNum"			,&pobTran->srBRec.lnOrgSTANNum			},	/* Original Stan Number */
 		{0	,"lnInstallmentPeriod"		,&pobTran->srBRec.lnInstallmentPeriod		},	/* 分期付款_期數 */
@@ -512,85 +512,85 @@ int inSqlite_Table_Link_BRec(TRANSACTION_OBJECT *pobTran, SQLITE_ALL_TABLE *srAl
 	
 	SQLITE_CHAR_TABLE TABLE_BATCH_CHAR[] =
 	{
-		{0	,"szAuthCode"			,pobTran->srBRec.szAuthCode			,strlen(pobTran->srBRec.szAuthCode)		},	/* Auth Code */
-		{0	,"szMPASAuthCode"		,pobTran->srBRec.szMPASAuthCode			,strlen(pobTran->srBRec.szMPASAuthCode)		},	/* MPAS Auth Code */
-		{0	,"szRespCode"			,pobTran->srBRec.szRespCode			,strlen(pobTran->srBRec.szRespCode)		},	/* Response Code */
-		{0	,"szStoreID"			,pobTran->srBRec.szStoreID			,strlen(pobTran->srBRec.szStoreID)		},	/* StoreID */
-		{0	,"szCardLabel"			,pobTran->srBRec.szCardLabel			,strlen(pobTran->srBRec.szCardLabel)		},	/* 卡別  */
-		{0	,"szPAN"			,pobTran->srBRec.szPAN				,strlen(pobTran->srBRec.szPAN)			},	/* 卡號  */
-		{0	,"szDate"			,pobTran->srBRec.szDate				,strlen(pobTran->srBRec.szDate)			},	/* YYYYMMDD */
-		{0	,"szOrgDate"			,pobTran->srBRec.szOrgDate			,strlen(pobTran->srBRec.szOrgDate)		},	/* YYYYMMDD */
-		{0	,"szTime"			,pobTran->srBRec.szTime				,strlen(pobTran->srBRec.szTime)			},	/* HHMMSS */
-		{0	,"szOrgTime"			,pobTran->srBRec.szOrgTime			,strlen(pobTran->srBRec.szOrgTime)		},	/* HHMMSS */
-		{0	,"szCardTime"			,pobTran->srBRec.szCardTime			,strlen(pobTran->srBRec.szCardTime)		},	/* 晶片卡讀卡時間 , YYYYMMDDHHMMSS */
-		{0	,"szRefNo"			,pobTran->srBRec.szRefNo			,strlen(pobTran->srBRec.szRefNo)		},	/* 序號  */
-		{0	,"szExpDate"			,pobTran->srBRec.szExpDate			,strlen(pobTran->srBRec.szExpDate)		},	/* Expiration date */
-		{0	,"szServiceCode"		,pobTran->srBRec.szServiceCode			,strlen(pobTran->srBRec.szServiceCode)		},	/* Service code from track */
-		{0	,"szCardHolder"			,pobTran->srBRec.szCardHolder			,strlen(pobTran->srBRec.szCardHolder)		},	/* 持卡人名字 */
-		{0	,"szAMEX4DBC"			,pobTran->srBRec.szAMEX4DBC			,strlen(pobTran->srBRec.szAMEX4DBC)		},		
-		{0	,"szFiscIssuerID"		,pobTran->srBRec.szFiscIssuerID			,strlen(pobTran->srBRec.szFiscIssuerID)		},	/* 發卡單位代號 */
-		{0	,"szFiscCardComment"		,pobTran->srBRec.szFiscCardComment		,strlen(pobTran->srBRec.szFiscCardComment)	},	/* 金融卡備註欄 */
-		{0	,"szFiscAccount"		,pobTran->srBRec.szFiscAccount			,strlen(pobTran->srBRec.szFiscAccount)		},	/* 金融卡帳號 */
-		{0	,"szFiscOutAccount"		,pobTran->srBRec.szFiscOutAccount		,strlen(pobTran->srBRec.szFiscOutAccount)	},	/* 金融卡轉出帳號 */
-		{0	,"szFiscSTAN"			,pobTran->srBRec.szFiscSTAN			,strlen(pobTran->srBRec.szFiscSTAN)		},	/* 金融卡交易序號 */
-		{0	,"szFiscTacLength"		,pobTran->srBRec.szFiscTacLength		,strlen(pobTran->srBRec.szFiscTacLength)	},	/* 金融卡Tac長度 */
-		{0	,"szFiscTac"			,pobTran->srBRec.szFiscTac			,strlen(pobTran->srBRec.szFiscTac)		},	/* 金融卡Tac */
-		{0	,"szFiscTCC"			,pobTran->srBRec.szFiscTCC			,strlen(pobTran->srBRec.szFiscTCC)		},	/* 端末設備查核碼 */
-		{0	,"szFiscMCC"			,pobTran->srBRec.szFiscMCC			,strlen(pobTran->srBRec.szFiscMCC)		},	/* 金融卡MCC */
-		{0	,"szFiscRRN"			,pobTran->srBRec.szFiscRRN			,strlen(pobTran->srBRec.szFiscRRN)		},	/* 金融卡調單編號 */
-		{0	,"szFiscRefundDate"		,pobTran->srBRec.szFiscRefundDate		,strlen(pobTran->srBRec.szFiscRefundDate)	},	/* 金融卡退貨原始交易日期(YYYYMMDD) */
-		{0	,"szFiscDateTime"		,pobTran->srBRec.szFiscDateTime			,strlen(pobTran->srBRec.szFiscDateTime)		},	/* 計算TAC(S2)的交易日期時間 */
-		{0	,"szFiscPayDevice"		,pobTran->srBRec.szFiscPayDevice		,strlen(pobTran->srBRec.szFiscPayDevice)	},	/* 金融卡付款裝置 1 = 手機 2 = 卡片 */
-		{0	,"szFiscMobileDevice"		,pobTran->srBRec.szFiscMobileDevice		,strlen(pobTran->srBRec.szFiscMobileDevice)	},	/* SE 類型，0x05：雲端卡片(Cloud-Based) */
-		{0	,"szFiscMobileNFType"		,pobTran->srBRec.szFiscMobileNFType		,strlen(pobTran->srBRec.szFiscMobileNFType)	},	/* 行動金融卡是否需輸入密碼 00不需要 01視情況 02一定要 */
-		{0	,"szFiscMobileNFSetting"	,pobTran->srBRec.szFiscMobileNFSetting		,strlen(pobTran->srBRec.szFiscMobileNFSetting)	},	/* 近端交易類型設定 0x00：Single Issuer Wallet 0x01：國內Third-Party Wallet 0x02~9：保留 0x0A：其他 */
-		{0	,"szInstallmentIndicator"	,pobTran->srBRec.szInstallmentIndicator		,strlen(pobTran->srBRec.szInstallmentIndicator)	},
-		{0	,"szRedeemIndicator"		,pobTran->srBRec.szRedeemIndicator		,strlen(pobTran->srBRec.szRedeemIndicator)	},
-		{0	,"szRedeemSignOfBalance"	,pobTran->srBRec.szRedeemSignOfBalance		,strlen(pobTran->srBRec.szRedeemSignOfBalance)	},
-		{0	,"szHGCardLabel"		,pobTran->srBRec.szHGCardLabel			,strlen(pobTran->srBRec.szHGCardLabel)		},	/* HAPPY_GO 卡別 */
-		{0	,"szHGPAN"			,pobTran->srBRec.szHGPAN			,strlen(pobTran->srBRec.szHGPAN)		},	/* HAPPY_GO Account number */
-		{0	,"szHGAuthCode"			,pobTran->srBRec.szHGAuthCode			,strlen(pobTran->srBRec.szHGAuthCode)		},	/* HAPPY_GO 授權碼 */
-		{0	,"szHGRefNo"			,pobTran->srBRec.szHGRefNo			,strlen(pobTran->srBRec.szHGRefNo)		},	/* HAPPY_GO Reference Number */
-		{0	,"szHGRespCode"			,pobTran->srBRec.szHGRespCode			,strlen(pobTran->srBRec.szHGRespCode)		},	/* HG Response Code */
-		{0	,"szCUP_TN"			,pobTran->srBRec.szCUP_TN			,strlen(pobTran->srBRec.szCUP_TN)		},	/* CUP Trace Number (TN) */
-		{0	,"szCUP_TD"			,pobTran->srBRec.szCUP_TD			,strlen(pobTran->srBRec.szCUP_TD)		},	/* CUP Transaction Date (MMDD) */
-		{0	,"szCUP_TT"			,pobTran->srBRec.szCUP_TT			,strlen(pobTran->srBRec.szCUP_TT)		},	/* CUP Transaction Time (hhmmss) */
-		{0	,"szCUP_RRN"			,pobTran->srBRec.szCUP_RRN			,strlen(pobTran->srBRec.szCUP_RRN)		},	/* CUP Retrieve Reference Number (CRRN) */
-		{0	,"szCUP_STD"			,pobTran->srBRec.szCUP_STD			,strlen(pobTran->srBRec.szCUP_STD)		},	/* CUP Settlement Date(MMDD) Of Host Response */
-		{0	,"szCUP_EMVAID"			,pobTran->srBRec.szCUP_EMVAID			,strlen(pobTran->srBRec.szCUP_EMVAID)		},	/* CUP晶片交易存AID帳單列印使用 */
-		{0	,"szTranAbbrev"			,pobTran->srBRec.szTranAbbrev			,strlen(pobTran->srBRec.szTranAbbrev)		},	/* Tran abbrev for reports */
-		{0	,"szIssueNumber"		,pobTran->srBRec.szIssueNumber			,strlen(pobTran->srBRec.szIssueNumber)		},
-		{0	,"szStore_DREAM_MALL"		,pobTran->srBRec.szStore_DREAM_MALL		,strlen(pobTran->srBRec.szStore_DREAM_MALL	)	},	/* 存Dream_Mall Account Number And Member ID*/
-		{0	,"szDCC_FCNFR"			,pobTran->srBRec.szDCC_FCNFR			,strlen(pobTran->srBRec.szDCC_FCNFR)		},	/* Foreign Currency No. For Rate */
-		{0	,"szDCC_AC"			,pobTran->srBRec.szDCC_AC			,strlen(pobTran->srBRec.szDCC_AC)		},	/* Action Code */
-		{0	,"szDCC_FCN"			,pobTran->srBRec.szDCC_FCN			,strlen(pobTran->srBRec.szDCC_FCN)		},	/* Foreign Currency Number */
-		{0	,"szDCC_FCA"			,pobTran->srBRec.szDCC_FCA			,strlen(pobTran->srBRec.szDCC_FCA)		},	/* Foreign Currency Amount */
-		{0	,"szDCC_FCMU"			,pobTran->srBRec.szDCC_FCMU			,strlen(pobTran->srBRec.szDCC_FCMU)		},	/* Foreign Currency Minor Unit */
-		{0	,"szDCC_FCAC"			,pobTran->srBRec.szDCC_FCAC			,strlen(pobTran->srBRec.szDCC_FCAC)		},	/* Foreign currcncy Alphabetic Code */
-		{0	,"szDCC_ERMU"			,pobTran->srBRec.szDCC_ERMU			,strlen(pobTran->srBRec.szDCC_ERMU)		},	/* Exchange Rate Minor Unit */
-		{0	,"szDCC_ERV"			,pobTran->srBRec.szDCC_ERV			,strlen(pobTran->srBRec.szDCC_ERV)		},	/* Exchange Rate Value */
-		{0	,"szDCC_IRMU"			,pobTran->srBRec.szDCC_IRMU			,strlen(pobTran->srBRec.szDCC_IRMU)		},	/* Inverted Rate Minor Unit */
-		{0	,"szDCC_IRV"			,pobTran->srBRec.szDCC_IRV			,strlen(pobTran->srBRec.szDCC_IRV)		},	/* Inverted Rate Value */
-		{0	,"szDCC_IRDU"			,pobTran->srBRec.szDCC_IRDU			,strlen(pobTran->srBRec.szDCC_IRDU)		},	/* Inverted Rate Display Unit */
-		{0	,"szDCC_MPV"			,pobTran->srBRec.szDCC_MPV			,strlen(pobTran->srBRec.szDCC_MPV)		},	/* Markup Percentage Value */
-		{0	,"szDCC_MPDP"			,pobTran->srBRec.szDCC_MPDP			,strlen(pobTran->srBRec.szDCC_MPDP)		},	/* Markup Percentage Decimal Point */
-		{0	,"szDCC_CVCN"			,pobTran->srBRec.szDCC_CVCN			,strlen(pobTran->srBRec.szDCC_CVCN)		},	/* Commissino Value Currency Number */
-		{0	,"szDCC_CVCA"			,pobTran->srBRec.szDCC_CVCA			,strlen(pobTran->srBRec.szDCC_CVCA)		},	/* Commission Value Currency Amount */
-		{0	,"szDCC_CVCMU"			,pobTran->srBRec.szDCC_CVCMU			,strlen(pobTran->srBRec.szDCC_CVCMU)		},	/* Commission Value Currency Minor Unit */
-		{0	,"szDCC_TIPFCA"			,pobTran->srBRec.szDCC_TIPFCA			,strlen(pobTran->srBRec.szDCC_TIPFCA)		},	/* Tip Foreign Currency Amount */
+		{0	,"szAuthCode"                   ,pobTran->srBRec.szAuthCode			,strlen(pobTran->srBRec.szAuthCode)		},	/* Auth Code */
+		{0	,"szMPASAuthCode"               ,pobTran->srBRec.szMPASAuthCode			,strlen(pobTran->srBRec.szMPASAuthCode)		},	/* MPAS Auth Code */
+		{0	,"szRespCode"                   ,pobTran->srBRec.szRespCode			,strlen(pobTran->srBRec.szRespCode)		},	/* Response Code */
+		{0	,"szStoreID"                    ,pobTran->srBRec.szStoreID			,strlen(pobTran->srBRec.szStoreID)		},	/* StoreID */
+		{0	,"szCardLabel"                  ,pobTran->srBRec.szCardLabel			,strlen(pobTran->srBRec.szCardLabel)		},	/* 卡別  */
+		{0	,"szPAN"                        ,pobTran->srBRec.szPAN				,strlen(pobTran->srBRec.szPAN)			},	/* 卡號  */
+		{0	,"szDate"                       ,pobTran->srBRec.szDate				,strlen(pobTran->srBRec.szDate)			},	/* YYYYMMDD */
+		{0	,"szOrgDate"                    ,pobTran->srBRec.szOrgDate			,strlen(pobTran->srBRec.szOrgDate)		},	/* YYYYMMDD */
+		{0	,"szTime"                       ,pobTran->srBRec.szTime				,strlen(pobTran->srBRec.szTime)			},	/* HHMMSS */
+		{0	,"szOrgTime"                    ,pobTran->srBRec.szOrgTime			,strlen(pobTran->srBRec.szOrgTime)		},	/* HHMMSS */
+		{0	,"szCardTime"                   ,pobTran->srBRec.szCardTime			,strlen(pobTran->srBRec.szCardTime)		},	/* 晶片卡讀卡時間 , YYYYMMDDHHMMSS */
+		{0	,"szRefNo"                      ,pobTran->srBRec.szRefNo			,strlen(pobTran->srBRec.szRefNo)		},	/* 序號  */
+		{0	,"szExpDate"                    ,pobTran->srBRec.szExpDate			,strlen(pobTran->srBRec.szExpDate)		},	/* Expiration date */
+		{0	,"szServiceCode"                ,pobTran->srBRec.szServiceCode			,strlen(pobTran->srBRec.szServiceCode)		},	/* Service code from track */
+		{0	,"szCardHolder"                 ,pobTran->srBRec.szCardHolder			,strlen(pobTran->srBRec.szCardHolder)		},	/* 持卡人名字 */
+		{0	,"szAMEX4DBC"                   ,pobTran->srBRec.szAMEX4DBC			,strlen(pobTran->srBRec.szAMEX4DBC)		},		
+		{0	,"szFiscIssuerID"               ,pobTran->srBRec.szFiscIssuerID			,strlen(pobTran->srBRec.szFiscIssuerID)		},	/* 發卡單位代號 */
+		{0	,"szFiscCardComment"            ,pobTran->srBRec.szFiscCardComment		,strlen(pobTran->srBRec.szFiscCardComment)	},	/* 金融卡備註欄 */
+		{0	,"szFiscAccount"                ,pobTran->srBRec.szFiscAccount			,strlen(pobTran->srBRec.szFiscAccount)		},	/* 金融卡帳號 */
+		{0	,"szFiscOutAccount"             ,pobTran->srBRec.szFiscOutAccount		,strlen(pobTran->srBRec.szFiscOutAccount)	},	/* 金融卡轉出帳號 */
+		{0	,"szFiscSTAN"                   ,pobTran->srBRec.szFiscSTAN			,strlen(pobTran->srBRec.szFiscSTAN)		},	/* 金融卡交易序號 */
+		{0	,"szFiscTacLength"              ,pobTran->srBRec.szFiscTacLength		,strlen(pobTran->srBRec.szFiscTacLength)	},	/* 金融卡Tac長度 */
+		{0	,"szFiscTac"                    ,pobTran->srBRec.szFiscTac			,strlen(pobTran->srBRec.szFiscTac)		},	/* 金融卡Tac */
+		{0	,"szFiscTCC"                    ,pobTran->srBRec.szFiscTCC			,strlen(pobTran->srBRec.szFiscTCC)		},	/* 端末設備查核碼 */
+		{0	,"szFiscMCC"                    ,pobTran->srBRec.szFiscMCC			,strlen(pobTran->srBRec.szFiscMCC)		},	/* 金融卡MCC */
+		{0	,"szFiscRRN"                    ,pobTran->srBRec.szFiscRRN			,strlen(pobTran->srBRec.szFiscRRN)		},	/* 金融卡調單編號 */
+		{0	,"szFiscRefundDate"             ,pobTran->srBRec.szFiscRefundDate		,strlen(pobTran->srBRec.szFiscRefundDate)	},	/* 金融卡退貨原始交易日期(YYYYMMDD) */
+		{0	,"szFiscDateTime"               ,pobTran->srBRec.szFiscDateTime			,strlen(pobTran->srBRec.szFiscDateTime)		},	/* 計算TAC(S2)的交易日期時間 */
+		{0	,"szFiscPayDevice"              ,pobTran->srBRec.szFiscPayDevice		,strlen(pobTran->srBRec.szFiscPayDevice)	},	/* 金融卡付款裝置 1 = 手機 2 = 卡片 */
+		{0	,"szFiscMobileDevice"           ,pobTran->srBRec.szFiscMobileDevice		,strlen(pobTran->srBRec.szFiscMobileDevice)	},	/* SE 類型，0x05：雲端卡片(Cloud-Based) */
+		{0	,"szFiscMobileNFType"           ,pobTran->srBRec.szFiscMobileNFType		,strlen(pobTran->srBRec.szFiscMobileNFType)	},	/* 行動金融卡是否需輸入密碼 00不需要 01視情況 02一定要 */
+		{0	,"szFiscMobileNFSetting"        ,pobTran->srBRec.szFiscMobileNFSetting		,strlen(pobTran->srBRec.szFiscMobileNFSetting)	},	/* 近端交易類型設定 0x00：Single Issuer Wallet 0x01：國內Third-Party Wallet 0x02~9：保留 0x0A：其他 */
+		{0	,"szInstallmentIndicator"       ,pobTran->srBRec.szInstallmentIndicator		,strlen(pobTran->srBRec.szInstallmentIndicator)	},
+		{0	,"szRedeemIndicator"            ,pobTran->srBRec.szRedeemIndicator		,strlen(pobTran->srBRec.szRedeemIndicator)	},
+		{0	,"szRedeemSignOfBalance"        ,pobTran->srBRec.szRedeemSignOfBalance		,strlen(pobTran->srBRec.szRedeemSignOfBalance)	},
+		{0	,"szHGCardLabel"                ,pobTran->srBRec.szHGCardLabel			,strlen(pobTran->srBRec.szHGCardLabel)		},	/* HAPPY_GO 卡別 */
+		{0	,"szHGPAN"                      ,pobTran->srBRec.szHGPAN			,strlen(pobTran->srBRec.szHGPAN)		},	/* HAPPY_GO Account number */
+		{0	,"szHGAuthCode"                 ,pobTran->srBRec.szHGAuthCode			,strlen(pobTran->srBRec.szHGAuthCode)		},	/* HAPPY_GO 授權碼 */
+		{0	,"szHGRefNo"                    ,pobTran->srBRec.szHGRefNo			,strlen(pobTran->srBRec.szHGRefNo)		},	/* HAPPY_GO Reference Number */
+		{0	,"szHGRespCode"                 ,pobTran->srBRec.szHGRespCode			,strlen(pobTran->srBRec.szHGRespCode)		},	/* HG Response Code */
+		{0	,"szCUP_TN"                     ,pobTran->srBRec.szCUP_TN			,strlen(pobTran->srBRec.szCUP_TN)		},	/* CUP Trace Number (TN) */
+		{0	,"szCUP_TD"                     ,pobTran->srBRec.szCUP_TD			,strlen(pobTran->srBRec.szCUP_TD)		},	/* CUP Transaction Date (MMDD) */
+		{0	,"szCUP_TT"                     ,pobTran->srBRec.szCUP_TT			,strlen(pobTran->srBRec.szCUP_TT)		},	/* CUP Transaction Time (hhmmss) */
+		{0	,"szCUP_RRN"                    ,pobTran->srBRec.szCUP_RRN			,strlen(pobTran->srBRec.szCUP_RRN)		},	/* CUP Retrieve Reference Number (CRRN) */
+		{0	,"szCUP_STD"                    ,pobTran->srBRec.szCUP_STD			,strlen(pobTran->srBRec.szCUP_STD)		},	/* CUP Settlement Date(MMDD) Of Host Response */
+		{0	,"szCUP_EMVAID"                 ,pobTran->srBRec.szCUP_EMVAID			,strlen(pobTran->srBRec.szCUP_EMVAID)		},	/* CUP晶片交易存AID帳單列印使用 */
+		{0	,"szTranAbbrev"                 ,pobTran->srBRec.szTranAbbrev			,strlen(pobTran->srBRec.szTranAbbrev)		},	/* Tran abbrev for reports */
+		{0	,"szIssueNumber"                ,pobTran->srBRec.szIssueNumber			,strlen(pobTran->srBRec.szIssueNumber)		},
+		{0	,"szStore_DREAM_MALL"           ,pobTran->srBRec.szStore_DREAM_MALL		,strlen(pobTran->srBRec.szStore_DREAM_MALL	)	},	/* 存Dream_Mall Account Number And Member ID*/
+		{0	,"szDCC_FCNFR"                  ,pobTran->srBRec.szDCC_FCNFR			,strlen(pobTran->srBRec.szDCC_FCNFR)		},	/* Foreign Currency No. For Rate */
+		{0	,"szDCC_AC"                     ,pobTran->srBRec.szDCC_AC			,strlen(pobTran->srBRec.szDCC_AC)		},	/* Action Code */
+		{0	,"szDCC_FCN"                    ,pobTran->srBRec.szDCC_FCN			,strlen(pobTran->srBRec.szDCC_FCN)		},	/* Foreign Currency Number */
+		{0	,"szDCC_FCA"                    ,pobTran->srBRec.szDCC_FCA			,strlen(pobTran->srBRec.szDCC_FCA)		},	/* Foreign Currency Amount */
+		{0	,"szDCC_FCMU"                   ,pobTran->srBRec.szDCC_FCMU			,strlen(pobTran->srBRec.szDCC_FCMU)		},	/* Foreign Currency Minor Unit */
+		{0	,"szDCC_FCAC"                   ,pobTran->srBRec.szDCC_FCAC			,strlen(pobTran->srBRec.szDCC_FCAC)		},	/* Foreign currcncy Alphabetic Code */
+		{0	,"szDCC_ERMU"                   ,pobTran->srBRec.szDCC_ERMU			,strlen(pobTran->srBRec.szDCC_ERMU)		},	/* Exchange Rate Minor Unit */
+		{0	,"szDCC_ERV"                    ,pobTran->srBRec.szDCC_ERV			,strlen(pobTran->srBRec.szDCC_ERV)		},	/* Exchange Rate Value */
+		{0	,"szDCC_IRMU"                   ,pobTran->srBRec.szDCC_IRMU			,strlen(pobTran->srBRec.szDCC_IRMU)		},	/* Inverted Rate Minor Unit */
+		{0	,"szDCC_IRV"                    ,pobTran->srBRec.szDCC_IRV			,strlen(pobTran->srBRec.szDCC_IRV)		},	/* Inverted Rate Value */
+		{0	,"szDCC_IRDU"                   ,pobTran->srBRec.szDCC_IRDU			,strlen(pobTran->srBRec.szDCC_IRDU)		},	/* Inverted Rate Display Unit */
+		{0	,"szDCC_MPV"                    ,pobTran->srBRec.szDCC_MPV			,strlen(pobTran->srBRec.szDCC_MPV)		},	/* Markup Percentage Value */
+		{0	,"szDCC_MPDP"                   ,pobTran->srBRec.szDCC_MPDP			,strlen(pobTran->srBRec.szDCC_MPDP)		},	/* Markup Percentage Decimal Point */
+		{0	,"szDCC_CVCN"                   ,pobTran->srBRec.szDCC_CVCN			,strlen(pobTran->srBRec.szDCC_CVCN)		},	/* Commissino Value Currency Number */
+		{0	,"szDCC_CVCA"                   ,pobTran->srBRec.szDCC_CVCA			,strlen(pobTran->srBRec.szDCC_CVCA)		},	/* Commission Value Currency Amount */
+		{0	,"szDCC_CVCMU"                  ,pobTran->srBRec.szDCC_CVCMU			,strlen(pobTran->srBRec.szDCC_CVCMU)		},	/* Commission Value Currency Minor Unit */
+		{0	,"szDCC_TIPFCA"                 ,pobTran->srBRec.szDCC_TIPFCA			,strlen(pobTran->srBRec.szDCC_TIPFCA)		},	/* Tip Foreign Currency Amount */
 		{0	,"szDCC_OTD"			,pobTran->srBRec.szDCC_OTD			,strlen(pobTran->srBRec.szDCC_OTD)		},	/* Original Transaction Date & Time (MMDD) */
 		{0	,"szDCC_OTA"			,pobTran->srBRec.szDCC_OTA			,strlen(pobTran->srBRec.szDCC_OTA)		},	/* Original Transaction Amount */
-		{0	,"szProductCode"		,pobTran->srBRec.szProductCode			,strlen(pobTran->srBRec.szProductCode)		},	/* 產品代碼 */
+		{0	,"szProductCode"                ,pobTran->srBRec.szProductCode			,strlen(pobTran->srBRec.szProductCode)		},	/* 產品代碼 */
 		{0	,"szAwardNum"			,pobTran->srBRec.szAwardNum			,strlen(pobTran->srBRec.szAwardNum)		},	/* 優惠個數 */
 		{0	,"szAwardSN"			,pobTran->srBRec.szAwardSN			,strlen(pobTran->srBRec.szAwardSN)		},	/* 優惠序號(Award S/N) TID(8Bytes)+YYYYMMDDhhmmss(16 Bytes)，共22Bytes */
 		{0	,"szTxnNo"			,pobTran->srBRec.szTxnNo			,strlen(pobTran->srBRec.szTxnNo)		},	/* 交易編號 */
 		{0	,"szMCP_BANKID"			,pobTran->srBRec.szMCP_BANKID			,strlen(pobTran->srBRec.szMCP_BANKID)		},	/* 行動支付標記 金融機構代碼 */
-		{0	,"szPayItemCode"		,pobTran->srBRec.szPayItemCode			,strlen(pobTran->srBRec.szPayItemCode)		},	/* 繳費項目代碼 */
+		{0	,"szPayItemCode"                ,pobTran->srBRec.szPayItemCode			,strlen(pobTran->srBRec.szPayItemCode)		},	/* 繳費項目代碼 */
 		{0	,"szTableTD_Data"		,pobTran->srBRec.szTableTD_Data			,strlen(pobTran->srBRec.szTableTD_Data)		},	/* Table TD的資料， */
-		{0	,"szDFSTraceNum"		,pobTran->srBRec.szDFSTraceNum			,strlen(pobTran->srBRec.szDFSTraceNum)		},	/* DFS交易系統追蹤號 */
+		{0	,"szDFSTraceNum"                ,pobTran->srBRec.szDFSTraceNum			,strlen(pobTran->srBRec.szDFSTraceNum)		},	/* DFS交易系統追蹤號 */
 		{0	,"szCheckNO"			,pobTran->srBRec.szCheckNO			,strlen(pobTran->srBRec.szCheckNO)		},	/* 檢查碼，目前FOR SDK使用 */
-		{0	,"szEIVI_BANKID"		,pobTran->srBRec.szEIVI_BANKID			,strlen(pobTran->srBRec.szEIVI_BANKID)		},	/* E Invoice vehicle I ssue Bank ID 支援電子發票載具之發卡行代碼 */
-		{0	,"szBarCodeData"		,pobTran->srBRec.szBarCodeData			,strlen(pobTran->srBRec.szBarCodeData)		},	/* 掃碼交易資料內容 */
+		{0	,"szEIVI_BANKID"                ,pobTran->srBRec.szEIVI_BANKID			,strlen(pobTran->srBRec.szEIVI_BANKID)		},	/* E Invoice vehicle I ssue Bank ID 支援電子發票載具之發卡行代碼 */
+		{0	,"szBarCodeData"                ,pobTran->srBRec.szBarCodeData			,strlen(pobTran->srBRec.szBarCodeData)		},	/* 掃碼交易資料內容 */
 		{0	,"szUnyTransCode"		,pobTran->srBRec.szUnyTransCode			,strlen(pobTran->srBRec.szUnyTransCode)		},	/* Uny交易碼 */
 		{0	,"szUnyMaskedCardNo"		,pobTran->srBRec.szUnyMaskedCardNo		,strlen(pobTran->srBRec.szUnyMaskedCardNo)	},	/* 遮掩交易卡號資料(非完整卡號，有遮掩，故另設欄位) */
 		{0	,"szEInvoiceHASH"		,pobTran->srBRec.szEInvoiceHASH			,strlen(pobTran->srBRec.szEInvoiceHASH)		},	/* 電子發票HASH 值（發卡銀行若無參加電子發票載具，則此欄位回覆值 為空白 SPACE 。） */
@@ -606,11 +606,11 @@ int inSqlite_Table_Link_BRec(TRANSACTION_OBJECT *pobTran, SQLITE_ALL_TABLE *srAl
 		
 		{0	,"uszWAVESchemeID"		,&pobTran->srBRec.uszWAVESchemeID		,1						},	/* WAVE 使用用於組電文 Field_22 */
 		{0	,"uszVOIDBit"			,&pobTran->srBRec.uszVOIDBit			,1						},	/* 負向交易 */
-	        {0	,"uszUpload1Bit"		,&pobTran->srBRec.uszUpload1Bit			,1						},	/* Offline交易使用 (原交易advice是否已上傳)*/
-	        {0	,"uszUpload2Bit"		,&pobTran->srBRec.uszUpload2Bit			,1						},	/* Offline交易使用 (當前交易是否為advice)*/
-	        {0	,"uszUpload3Bit"		,&pobTran->srBRec.uszUpload3Bit			,1						},	/* Offline交易使用 */
+	        {0	,"uszUpload1Bit" 		,&pobTran->srBRec.uszUpload1Bit			,1						},	/* Offline交易使用 (原交易advice是否已上傳)*/
+	        {0	,"uszUpload2Bit" 		,&pobTran->srBRec.uszUpload2Bit			,1						},	/* Offline交易使用 (當前交易是否為advice)*/
+	        {0	,"uszUpload3Bit" 		,&pobTran->srBRec.uszUpload3Bit			,1						},	/* Offline交易使用 */
 	        {0	,"uszReferralBit"		,&pobTran->srBRec.uszReferralBit		,1						},	/* ISO Response Code 【01】【02】使用 */
-	        {0	,"uszOfflineBit"		,&pobTran->srBRec.uszOfflineBit			,1						},	/* 離線交易 */
+	        {0	,"uszOfflineBit" 		,&pobTran->srBRec.uszOfflineBit			,1						},	/* 離線交易 */
 	        {0	,"uszManualBit"			,&pobTran->srBRec.uszManualBit			,1						},	/* Manual Keyin */
 	        {0	,"uszNoSignatureBit"		,&pobTran->srBRec.uszNoSignatureBit		,1						},	/* 免簽名使用 (免簽名則為true)*/
 		{0	,"uszCUPTransBit"		,&pobTran->srBRec.uszCUPTransBit		,1						},	/* 是否為CUP */
@@ -632,11 +632,11 @@ int inSqlite_Table_Link_BRec(TRANSACTION_OBJECT *pobTran, SQLITE_ALL_TABLE *srAl
 		{0	,"uszVEPS_SignatureBit"		,&pobTran->srBRec.uszVEPS_SignatureBit		,1						},	/* VEPS 免簽名是否成立 */
 		{0	,"uszTCUploadBit"		,&pobTran->srBRec.uszTCUploadBit		,1						},	/* TCUpload是否已上傳 */
 		{0	,"uszFiscConfirmBit"		,&pobTran->srBRec.uszFiscConfirmBit		,1						},	/* SmartPay 0220 是否已上傳 */
-		{0	,"uszFiscVoidConfirmBit"	,&pobTran->srBRec.uszFiscVoidConfirmBit		,1						},	/* SmartPay Void 0220 是否已上傳 */
+		{0	,"uszFiscVoidConfirmBit"		,&pobTran->srBRec.uszFiscVoidConfirmBit		,1						},	/* SmartPay Void 0220 是否已上傳 */
 		{0	,"uszPinEnterBit"		,&pobTran->srBRec.uszPinEnterBit		,1						},	/* 此筆交易是否有鍵入密碼(只能確認原交易，若該筆之後的調整或取消不會將此Bit Off) */
 		{0	,"uszL2PrintADBit"		,&pobTran->srBRec.uszL2PrintADBit		,1						},	/* L2是否印AD，因L2原交易取消要判斷，只好增加 */
 		{0	,"uszInstallment"		,&pobTran->srBRec.uszInstallment		,1						},	/* HappyGo分期交易 */
-		{0	,"uszRedemption"		,&pobTran->srBRec.uszRedemption			,1						},	/* HappyGo點數兌換 */ 
+		{0	,"uszRedemption"   		,&pobTran->srBRec.uszRedemption			,1						},	/* HappyGo點數兌換 */ 
 		{0	,"uszHappyGoSingle"		,&pobTran->srBRec.uszHappyGoSingle		,1						},	/* HappyGo交易 */ 
 		{0	,"uszHappyGoMulti"		,&pobTran->srBRec.uszHappyGoMulti		,1						},	/* HappyGo混合交易 */
 		{0	,"uszCLSBatchBit"		,&pobTran->srBRec.uszCLSBatchBit		,1						},	/* 是否已接續上傳 */
@@ -657,6 +657,7 @@ int inSqlite_Table_Link_BRec(TRANSACTION_OBJECT *pobTran, SQLITE_ALL_TABLE *srAl
                 {0	,"uszUPlanTransBit"		,&pobTran->srBRec.uszUPlanTransBit		,1						},	/* 判斷是否為優計畫交易(使用銀聯優惠券) */	
 		{0	,""				,NULL						,0						}	/* 這行用Null用來知道尾端在哪 */
 	};
+
 	
         printf("%s\n", "inSqlite_Table_Link_BRec()_START");
         
@@ -686,7 +687,7 @@ int inSqlite_Table_Link(SQLITE_ALL_TABLE *srAll, int inLinkState, SQLITE_LINK_TA
 	unsigned char	uszFailBit = VS_FALSE;
 	
 
-        printf("%s\n", "inBatch_Table_Link_Reprint_Title()_START");
+        printf("%s\n", "inSqlite_Table_Link()_START");
         
 	
 	do
@@ -2241,5 +2242,393 @@ int inSqlite_Table_Show(SQLITE_ALL_TABLE *srAll)
         sprintf(szDebugMsg, "Table Show 成功");
         printf("%s\n", szDebugMsg);
         
+	return (VS_SUCCESS);
+}
+/*
+Function        :inSqlite_Get_Table_Count
+Date&Time       :2016/4/29 下午 1:17
+Describe        :可以取得table有幾筆資料
+*/
+int inSqlite_Get_Table_Count(char* szDBPath, char *szTableName, int *inTableCount)
+{
+	int		j = 0;
+	int		inRetVal;
+	char		szDebugMsg[128 + 1] = {0};
+	char		szQuerySql[_SQL_SENTENCE_MAX_ + 1] = {0};	/* INSERT INTO	szTableName( */
+	char		szErrorMessage[100 + 1] = {0};
+	sqlite3		*srDBConnection;	/* 建立到資料庫的connection */
+	sqlite3_stmt	*srSQLStat;
+	
+        printf("inSqlite_Get_Table_Count()_START\n");
+	
+	inRetVal = inSqlite_DB_Open_Or_Create(szDBPath, &srDBConnection, _SQLITE_DEFAULT_FLAGS_, NULL);
+	
+	if (inRetVal != SQLITE_OK)
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "%d", inRetVal);
+            printf("%s\n", szDebugMsg);
+
+            return (VS_ERROR);
+	}
+	else
+	{
+
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Open Database File OK");
+            printf("%s\n", szDebugMsg);
+		
+	}
+	/* 塞入SQL語句 */
+	
+	/* 為了使table name可變動，所以拉出來組 */
+	memset(szQuerySql, 0x00, sizeof(szQuerySql));
+
+	/* SQLite COUNT 計算資料庫中 table的行數 */
+	sprintf(szQuerySql, "SELECT count(*) FROM %s", szTableName);
+	
+	/* prepare語句 */
+	inRetVal = sqlite3_prepare_v2(srDBConnection, szQuerySql, -1, &srSQLStat, NULL);
+	if (inRetVal != SQLITE_OK)
+	{	
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Prepare Fail: %d", inRetVal);
+            printf("%s\n", szDebugMsg);
+
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Reason: %s", sqlite3_errmsg(gsrDBConnection));
+            printf("%s\n", szDebugMsg);	
+	}
+	
+	/* Qerry */
+	inRetVal = sqlite3_step(srSQLStat);
+	if (inRetVal == SQLITE_ROW)
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Get Table OK");
+            printf("%s\n", szDebugMsg);
+	}
+	else if (inRetVal == SQLITE_DONE)
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "NO DATA");
+            printf("%s\n", szDebugMsg);
+            /* 釋放事務 */
+            inSqlite_SQL_Finalize(&srSQLStat);
+            inSqlite_DB_Close(&srDBConnection);
+
+            return (VS_NO_RECORD);
+	}
+	else
+	{
+            memset(szErrorMessage, 0x00, sizeof(szErrorMessage));
+            strcpy(szErrorMessage, sqlite3_errmsg(srDBConnection));
+
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Get Table ERROR Num:%d", inRetVal);
+            printf("%s\n", szDebugMsg);
+
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Reason: %s", szErrorMessage);
+            printf("%s\n", szDebugMsg);
+
+            printf("%s\n", szQuerySql);
+
+
+            /* 釋放事務 */
+            inSqlite_SQL_Finalize(&srSQLStat);
+
+            /* 關閉 database, close null pointer 是NOP(No Operation) */
+            if (inSqlite_DB_Close(&srDBConnection) != VS_SUCCESS)
+            {
+                /* 如果資料還在更新就close會因為SQLITE_BUSY而失敗，而且正在更新的事務也會roll back（回復上一動）*/
+                return (VS_ERROR);
+            }
+            else
+            {
+                memset(szDebugMsg, 0x00, sizeof (szDebugMsg));
+                sprintf(szDebugMsg, "Close Database OK");
+                printf("%s\n", szDebugMsg);
+            }
+
+            /* 因為直接get 不存在的table回傳值是-1，只有在Error Msg才能得知錯誤原因 */
+            if (memcmp(szErrorMessage, "no such table", strlen("no such table")) == 0)
+            {
+                return (VS_NO_RECORD);
+            }
+            else
+            {
+                return (VS_ERROR);
+            }
+	}
+	
+	/* 若是成功，將值丟到輸入的位置。 */
+	j = 0;
+	*inTableCount = sqlite3_column_int(srSQLStat, j);
+
+        memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+        sprintf(szDebugMsg, "Get count(*) OK count:%d", *inTableCount);
+        printf("%s\n", szDebugMsg);
+	
+	/* 釋放事務 */
+	inSqlite_SQL_Finalize(&srSQLStat);
+	
+	/* 關閉 database, close null pointer 是NOP(No Operation) */
+	if (inSqlite_DB_Close(&srDBConnection) != VS_SUCCESS)
+	{
+            /* 如果資料還在更新就close會因為SQLITE_BUSY而失敗，而且正在更新的事務也會roll back（回復上一動）*/
+            return (VS_ERROR);
+	}
+	else
+	{
+		
+            memset(szDebugMsg, 0x00, sizeof (szDebugMsg));
+            sprintf(szDebugMsg, "Close Database OK");
+            printf("%s\n", szDebugMsg);
+		
+	}
+        printf("inSqlite_Get_Table_Count()_END\n");
+             
+	return (VS_SUCCESS);
+}
+/*
+Function        :inSqlite_Get_Data_Enormous_Search
+Date&Time       :2022/5/16 上午 9:10
+Describe        :
+*/
+int inSqlite_Get_Data_Enormous_Search(char* szDBPath, char* szQuerySql)
+{
+	int	inRetVal = VS_SUCCESS;
+	char	szDebugMsg[1024 + 1] = {0};
+        char    szErrorMessage[300 + 1] = {0};
+	
+        printf("inSqlite_Get_Data_Enormous_Search(%s)_START\n", szDBPath);
+        printf("SQL(%s)\n", szQuerySql);
+	inRetVal = inSqlite_DB_Open_Or_Create(szDBPath, &gsrDBConnection, _SQLITE_DEFAULT_FLAGS_, NULL);
+	
+	if (inRetVal != SQLITE_OK)
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "%d", inRetVal);
+            printf("%s\n", szDebugMsg);
+            return (VS_ERROR);
+	}
+	else
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Open Database File OK");
+            printf("%s\n", szDebugMsg);
+	}
+	/* 塞入SQL語句 */
+	
+	/* 為了使table name可變動，所以拉出來組 */
+	/* Example:"SELECT * FROM %s WHERE (uszUpdated = 0)ORDER BY lnOrgInvNum ASC" */
+	
+	/* prepare語句 */
+	inRetVal = sqlite3_prepare_v2(gsrDBConnection, szQuerySql, -1, &gsrSQLStat, NULL);
+	if (inRetVal != SQLITE_OK)
+	{
+            memset(szErrorMessage, 0x00, sizeof(szErrorMessage));
+            strcpy(szErrorMessage, sqlite3_errmsg(gsrDBConnection));
+
+
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Prepare Fail: %d", inRetVal);
+            printf("%s\n", szDebugMsg);
+
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Reason: %s", szErrorMessage);
+            printf("%s\n", szDebugMsg);
+
+
+            /* 因為直接get 不存在的table回傳值是-1，只有在Error Msg才能得知錯誤原因 */
+            if (memcmp(szErrorMessage, "no such table", strlen("no such table")) == 0)
+            {
+                    return (VS_NO_RECORD);
+            }
+            else
+            {
+                    return (VS_ERROR);
+            }
+	}
+	
+	/* 初始化計數 */
+//	ginEnormousNowCnt = 0;	
+        printf("inSqlite_Get_Data_Enormous_Search()_END\n");
+	return (VS_SUCCESS);
+}
+
+/*
+Function        :inSqlite_Get_Data_Enormous_Get
+Date&Time       :2022/5/16 上午 9:25
+Describe        :
+*/
+int inSqlite_Get_Data_Enormous_Get(SQLITE_ALL_TABLE *srAll)
+{
+	int			inRetVal = 0;
+	char			szDebugMsg[100 + 1] = {0};
+	
+        printf("inSqlite_Get_Data_Enormous_Get() START !\n");
+
+	/* 取得 database 裡所有的資料 */
+        do{
+            /* Qerry */
+            inRetVal = sqlite3_step(gsrSQLStat);
+            if (inRetVal == SQLITE_ROW)
+            {
+                memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+                sprintf(szDebugMsg, "Get Table OK");
+                printf("%s\n", szDebugMsg);
+                    
+            }
+            else if (inRetVal == SQLITE_DONE)
+            {  
+                memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+                sprintf(szDebugMsg, "NO DATA");
+                printf("%s\n", szDebugMsg);
+                return (VS_NO_RECORD);
+            }
+            else
+            {         
+                memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+                sprintf(szDebugMsg, "Get Table ERROR Num:%d", inRetVal);
+                printf("%s\n", szDebugMsg);
+                memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+                sprintf(szDebugMsg, "Reason: %s", sqlite3_errmsg(gsrDBConnection));
+                printf("%s\n", szDebugMsg);
+                return (VS_ERROR);
+            }
+            break;
+        }while(1);
+
+	/* binding 取得值 */
+	inSqlite_Get_Binding_Value(&gsrSQLStat, srAll);
+	
+        printf("inSqlite_Get_Data_Enormous_Get() END !\n");	
+	return (VS_SUCCESS);
+}
+
+/*
+Function        :inSqlite_Delete_Record
+Date&Time       :
+Describe        :刪除inTableID最新一筆資料
+*/
+int inSqlite_Delete_Record(TRANSACTION_OBJECT *pobTran, char* szTableName)
+{
+	int		inRetVal;
+	char		szDebugMsg[84 + 1];
+	char		szQuerySql[_SQL_SENTENCE_MAX_ + 1];	/* INSERT INTO	szTableName( */
+	char		*szErrorMessage = NULL;
+	sqlite3		*srDBConnection;	/* 建立到資料庫的connection */
+	
+        printf("inSqlite_Delete_Record()_START\n");   	
+	inRetVal = inSqlite_DB_Open_Or_Create(gszTranDBPath, &srDBConnection, _SQLITE_DEFAULT_FLAGS_, NULL);
+	
+	if (inRetVal != SQLITE_OK)
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "%d", inRetVal);
+            printf("%s\n", szDebugMsg);	
+            return (VS_ERROR);
+	}
+	else
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Open Database File OK");
+            printf("%s\n", szDebugMsg);
+	}
+	
+	/* 塞入SQL語句 */
+	
+	/* 為了使table name可變動，所以拉出來組 */
+	memset(szQuerySql, 0x00, sizeof(szQuerySql));
+	sprintf(szQuerySql, "DELETE FROM %s WHERE inTableID = (SELECT MAX(inTableID) FROM %s)", szTableName, szTableName);
+	
+	/* 取得 database 裡所有的資料 */
+	inRetVal = sqlite3_exec(srDBConnection , szQuerySql, 0 , 0, &szErrorMessage);
+	if (inRetVal != SQLITE_OK)
+	{	
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Delete Record ERROR Num:%d,", inRetVal);
+            printf("%s\n", szDebugMsg);
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Reason:%s", szErrorMessage);
+            printf("%s\n", szDebugMsg);
+            printf("%s\n", szQuerySql);
+	
+            if (szErrorMessage != NULL)
+            {
+                sqlite3_free(szErrorMessage);
+            }
+
+            /* 關閉 database, close null pointer 是NOP(No Operation) */
+            if (inSqlite_DB_Close(&srDBConnection) != VS_SUCCESS)
+            {
+                    /* 如果資料還在更新就close會因為SQLITE_BUSY而失敗，而且正在更新的事務也會roll back（回復上一動）*/
+                    return (VS_ERROR);
+            }
+            else
+            {             
+                memset(szDebugMsg, 0x00, sizeof (szDebugMsg));
+                sprintf(szDebugMsg, "Close Database OK");
+                printf("%s\n", szDebugMsg);             
+            }
+
+            return (VS_ERROR);
+	}
+	else
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "Delete Record OK");
+            printf("%s\n", szDebugMsg);
+	}
+	
+	/* 關閉 database, close null pointer 是NOP(No Operation) */
+	if (inSqlite_DB_Close(&srDBConnection) != VS_SUCCESS)
+	{
+		/* 如果資料還在更新就close會因為SQLITE_BUSY而失敗，而且正在更新的事務也會roll back（回復上一動）*/
+		return (VS_ERROR);
+	}
+	else
+	{
+            memset(szDebugMsg, 0x00, sizeof (szDebugMsg));
+            sprintf(szDebugMsg, "Close Database OK");
+            printf("%s\n", szDebugMsg);
+	}
+        printf("inSqlite_ESC_Delete_Record()_END\n");
+	return (VS_SUCCESS);
+}
+/*
+Function        :inSqlite_Get_Data_Enormous_Free
+Date&Time       :2022/5/16 上午 9:54
+Describe        :用完資料Free
+*/
+int inSqlite_Get_Data_Enormous_Free()
+{
+	char	szDebugMsg[100 + 1] = {0};
+        printf("inSqlite_Get_Data_Enormous_Free() START !\n");
+	
+	/* 釋放事務 */
+	inSqlite_SQL_Finalize(&gsrSQLStat);
+	
+	/* 計數歸0 */
+//	ginEnormousNowCnt = 0;
+//	guszEnormousNoNeedResetBit = VS_FALSE;
+	
+	/* 關閉 database, close null pointer 是NOP(No Operation) */
+	if (inSqlite_DB_Close(&gsrDBConnection) != VS_SUCCESS)
+	{
+		/* 如果資料還在更新就close會因為SQLITE_BUSY而失敗，而且正在更新的事務也會roll back（回復上一動）*/
+		return (VS_ERROR);
+	}
+	else
+	{
+            memset(szDebugMsg, 0x00, sizeof (szDebugMsg));
+            sprintf(szDebugMsg, "Close Database OK");
+            printf("%s\n", szDebugMsg);	
+	}
+
+        printf("inSqlite_Get_Data_Enormous_Free() END !\n");
+
 	return (VS_SUCCESS);
 }

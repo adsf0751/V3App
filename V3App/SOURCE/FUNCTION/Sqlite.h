@@ -29,3 +29,8 @@ int inSqlite_Get_Data_By_External_SQL(char* szDBName, SQLITE_ALL_TABLE* srAll, c
 int inSqlite_Get_Binding_Value(sqlite3_stmt** srSQLStat, SQLITE_ALL_TABLE* srAll);
 int inSqlite_Table_Show(SQLITE_ALL_TABLE *srAll);
 int inSqlite_Table_Link(SQLITE_ALL_TABLE *srAll, int inLinkState, SQLITE_LINK_TABLE* srLink);
+int inSqlite_Get_Table_Count(char* szDBPath, char *szTableName, int *inTableCount);
+int inSqlite_Get_Data_Enormous_Search(char* szDBPath, char* szQuerySql);
+int inSqlite_Get_Data_Enormous_Get(SQLITE_ALL_TABLE *srAll);
+int inSqlite_Delete_Record(TRANSACTION_OBJECT *pobTran, char* szTableName);
+int inSqlite_Get_Data_Enormous_Free(void);

@@ -4,7 +4,8 @@
  *
  * Created on 2015年6月7日, 下午 5:02
  */
-
+#ifndef DEFINE_1_H
+#define DEFINE_1_H
 /* 宣示是那一種機型 並宣告有哪些能力 START */
 #define	_CASTLE_TYPE_V3C_	0
 #define	_CASTLE_TYPE_V3M_	1
@@ -374,3 +375,5 @@ typedef enum
 
 #define	_RESPONSE_CODE_CALL_BANK_	"01"
 #define	_RESPONSE_CODE_CALL_BANK_LEN_	2
+
+#endif

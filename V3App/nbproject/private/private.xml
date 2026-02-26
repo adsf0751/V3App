@@ -10,9 +10,11 @@
         <group>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/NCCCats.c</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/CREDIT/CreditptrByBuffer.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/CREDIT/Creditfunc.h</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/PrtMsg.h</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/Sqlite_Struct.h</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/Sqlite.h</file>
+            <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/RS232.c</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/CREDIT/CreditptrByBuffer.c</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/appmain.c</file>
             <file>file:/C:/MyProject/V3App/V3App/V3App/SOURCE/FUNCTION/Batch.c</file>

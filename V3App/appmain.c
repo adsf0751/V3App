@@ -20,7 +20,7 @@
 #include "SOURCE/CREDIT/CreditptrByBuffer.h"
 #include "SOURCE/FUNCTION/Sqlite.h"
 #include "SOURCE/CREDIT/Creditfunc.h"
-
+#include "SOURCE/FUNCTION/Batch.h"
 #define _AP_ROOT_PATH_   "./"
 #define _SHORT_RECEIPT_U_   "U"
 #define _NCCC_TEXT_LOGO_    "財團法人聯合信用卡處理中心"
@@ -47,7 +47,7 @@ SQLITE_TAG_TABLE TABLE_BATCH_TAG[] =
 	{"inTableID"			,"INTEGER"	,"PRIMARY KEY"	,""},	/* Table ID Primary key, sqlite table專用避免PRIMARY KEY重複 */
 	{"inCode"			,"INTEGER"	,""		,""},	/* Trans Code */
 	{"inOrgCode"			,"INTEGER"	,""		,""},	/* Original Trans Code  */
-	{"inPrintOption"		,"INTEGER"	,""		,""},	/* Print Option Flag */
+	{"inPrintOption"    		,"INTEGER"	,""		,""},	/* Print Option Flag */
 	{"inHDTIndex"			,"INTEGER"	,""		,""},	/* 紀錄HDTindex */
 	{"inCDTIndex"			,"INTEGER"	,""		,""},	/* 紀錄CDTindex */
 	{"inCPTIndex"			,"INTEGER"	,""		,""},	/* 紀錄CPTindex */
@@ -72,7 +72,7 @@ SQLITE_TAG_TABLE TABLE_BATCH_TAG[] =
 	{"lnInvNum"			,"INTEGER"	,""		,""},	/* 調閱編號  */
 	{"lnOrgInvNum"			,"INTEGER"	,""		,""},	/* Original 調閱編號  */
 	{"lnBatchNum"			,"INTEGER"	,""		,""},	/* Batch Number */
-	{"lnOrgBatchNum"		,"INTEGER"	,""		,""},	/* Original Batch Number */
+	{"lnOrgBatchNum"    		,"INTEGER"	,""		,""},	/* Original Batch Number */
 	{"lnSTANNum"			,"INTEGER"	,""		,""},	/* Stan Number */
 	{"lnOrgSTANNum"			,"INTEGER"	,""		,""},	/* Original Stan Number */
 	{"lnInstallmentPeriod"		,"INTEGER"	,""		,""},	/* 分期付款_期數 */
@@ -100,7 +100,7 @@ SQLITE_TAG_TABLE TABLE_BATCH_TAG[] =
 	{"szRespCode"			,"BLOB"		,""		,""},	/* Response Code */
 	{"szStoreID"			,"BLOB"		,""		,""},	/* StoreID */
 	{"szCardLabel"			,"BLOB"		,""		,""},	/* 卡別  */
-	{"szPAN"			,"BLOB"		,""		,""},	/* 卡號  */
+	{"szPAN"            		,"BLOB"		,""		,""},	/* 卡號  */
 	{"szDate"			,"BLOB"		,""		,""},	/* YYYYMMDD */
 	{"szOrgDate"			,"BLOB"		,""		,""},	/* YYYYMMDD */
 	{"szTime"			,"BLOB"		,""		,""},	/* HHMMSS */
@@ -108,12 +108,12 @@ SQLITE_TAG_TABLE TABLE_BATCH_TAG[] =
 	{"szCardTime"			,"BLOB"		,""		,""},	/* 晶片卡讀卡時間 , YYYYMMDDHHMMSS */
 	{"szRefNo"			,"BLOB"		,""		,""},	/* 序號  */
 	{"szExpDate"			,"BLOB"		,""		,""},	/* Expiration date */
-	{"szServiceCode"		,"BLOB"		,""		,""},	/* Service code from track */
+	{"szServiceCode"    		,"BLOB"		,""		,""},	/* Service code from track */
 	{"szCardHolder"			,"BLOB"		,""		,""},	/* 持卡人名字 */
 	{"szAMEX4DBC"			,"BLOB"		,""		,""},		
 	{"szFiscIssuerID"		,"BLOB"		,""		,""},	/* 發卡單位代號 */
 	{"szFiscCardComment"		,"BLOB"		,""		,""},	/* 金融卡備註欄 */
-	{"szFiscAccount"		,"BLOB"		,""		,""},	/* 金融卡帳號 */
+	{"szFiscAccount"			,"BLOB"		,""		,""},	/* 金融卡帳號 */
 	{"szFiscOutAccount"		,"BLOB"		,""		,""},	/* 金融卡轉出帳號 */
 	{"szFiscSTAN"			,"BLOB"		,""		,""},	/* 金融卡交易序號 */
 	{"szFiscTacLength"		,"BLOB"		,""		,""},	/* 金融卡Tac長度 */
@@ -126,11 +126,11 @@ SQLITE_TAG_TABLE TABLE_BATCH_TAG[] =
 	{"szFiscPayDevice"		,"BLOB"		,""		,""},	/* 金融卡付款裝置 1 = 手機 2 = 卡片 */
 	{"szFiscMobileDevice"		,"BLOB"		,""		,""},	/* SE 類型，0x05：雲端卡片(Cloud-Based) */
 	{"szFiscMobileNFType"		,"BLOB"		,""		,""},	/* 行動金融卡是否需輸入密碼 00不需要 01視情況 02一定要 */
-	{"szFiscMobileNFSetting"	,"BLOB"		,""		,""},	/* 近端交易類型設定 0x00：Single Issuer Wallet 0x01：國內Third-Party Wallet 0x02~9：保留 0x0A：其他 */
+	{"szFiscMobileNFSetting"		,"BLOB"		,""		,""},	/* 近端交易類型設定 0x00：Single Issuer Wallet 0x01：國內Third-Party Wallet 0x02~9：保留 0x0A：其他 */
 	{"szInstallmentIndicator"	,"BLOB"		,""		,""},
 	{"szRedeemIndicator"		,"BLOB"		,""		,""},
-	{"szRedeemSignOfBalance"	,"BLOB"		,""		,""},
-	{"szHGCardLabel"		,"BLOB"		,""		,""},	/* HAPPY_GO 卡別 */
+	{"szRedeemSignOfBalance"		,"BLOB"		,""		,""},
+	{"szHGCardLabel"			,"BLOB"		,""		,""},	/* HAPPY_GO 卡別 */
 	{"szHGPAN"			,"BLOB"		,""		,""},	/* HAPPY_GO Account number */
 	{"szHGAuthCode"			,"BLOB"		,""		,""},	/* HAPPY_GO 授權碼 */
 	{"szHGRefNo"			,"BLOB"		,""		,""},	/* HAPPY_GO Reference Number */
@@ -142,7 +142,7 @@ SQLITE_TAG_TABLE TABLE_BATCH_TAG[] =
 	{"szCUP_STD"			,"BLOB"		,""		,""},	/* CUP Settlement Date(MMDD) Of Host Response */
 	{"szCUP_EMVAID"			,"BLOB"		,""		,""},	/* CUP晶片交易存AID帳單列印使用 */
 	{"szTranAbbrev"			,"BLOB"		,""		,""},	/* Tran abbrev for reports */
-	{"szIssueNumber"		,"BLOB"		,""		,""},
+	{"szIssueNumber"			,"BLOB"		,""		,""},
 	{"szStore_DREAM_MALL"		,"BLOB"		,""		,""},	/* 存Dream_Mall Account Number And Member ID*/
 	{"szDCC_FCNFR"			,"BLOB"		,""		,""},	/* Foreign Currency No. For Rate */
 	{"szDCC_AC"			,"BLOB"		,""		,""},	/* Action Code */
@@ -163,36 +163,36 @@ SQLITE_TAG_TABLE TABLE_BATCH_TAG[] =
 	{"szDCC_TIPFCA"			,"BLOB"		,""		,""},	/* Tip Foreign Currency Amount */
 	{"szDCC_OTD"			,"BLOB"		,""		,""},	/* Original Transaction Date & Time (MMDD) */
 	{"szDCC_OTA"			,"BLOB"		,""		,""},	/* Original Transaction Amount */
-	{"szProductCode"		,"BLOB"		,""		,""},	/* 產品代碼 */
+	{"szProductCode"			,"BLOB"		,""		,""},	/* 產品代碼 */
 	{"szAwardNum"			,"BLOB"		,""		,""},	/* 優惠個數 */
 	{"szAwardSN"			,"BLOB"		,""		,""},	/* 優惠序號(Award S/N) TID(8Bytes)+YYYYMMDDhhmmss(16 Bytes)，共22Bytes */
 	{"szTxnNo"			,"BLOB"		,""		,""},	/* 交易編號 */
 	{"szMCP_BANKID"			,"BLOB"		,""		,""},	/* 行動支付標記 金融機構代碼 */
-	{"szPayItemCode"		,"BLOB"		,""		,""},	/* 繳費項目代碼 */
+	{"szPayItemCode"			,"BLOB"		,""		,""},	/* 繳費項目代碼 */
 	{"szTableTD_Data"		,"BLOB"		,""		,""},	/* Table TD的資料 */
-	{"szDFSTraceNum"		,"BLOB"		,""		,""},	/* DFS交易系統追蹤號 */
+	{"szDFSTraceNum"			,"BLOB"		,""		,""},	/* DFS交易系統追蹤號 */
 	{"szCheckNO"			,"BLOB"		,""		,""},	/* 檢查碼，目前FOR SDK使用 */
-	{"szEIVI_BANKID"		,"BLOB"		,""		,""},	/* E Invoice vehicle I ssue Bank ID 支援電子發票載具之發卡行代碼 */
-	{"szBarCodeData"		,"BLOB"		,""		,""},	/* 掃碼交易資料內容 */
+	{"szEIVI_BANKID"			,"BLOB"		,""		,""},	/* E Invoice vehicle I ssue Bank ID 支援電子發票載具之發卡行代碼 */
+	{"szBarCodeData"			,"BLOB"		,""		,""},	/* 掃碼交易資料內容 */
 	{"szUnyTransCode"		,"BLOB"		,""		,""},	/* Uny交易碼 */
 	{"szUnyMaskedCardNo"		,"BLOB"		,""		,""},	/* 遮掩交易卡號資料(非完整卡號，有遮掩，故另設欄位) */
 	{"szEInvoiceHASH"		,"BLOB"		,""		,""},	/* 電子發票HASH 值（發卡銀行若無參加電子發票載具，則此欄位回覆值 為空白 SPACE 。） */
 	{"szUnyCardLabelLen"		,"BLOB"		,""		,""},	/* 卡別名稱長度，szMCP_BANKID為Twin卡專用，故另設欄位 */
 	{"szUnyCardLabel"		,"BLOB"		,""		,""},	/* 卡別名稱，szMCP_BANKID為Twin卡專用，故另設欄位 */
 	{"szFPG_FTC_Invoice"		,"BLOB"		,""		,""},	/* 台塑生醫生技客製化專屬【005】　台亞福懋加油站客製化專屬【006】發票號碼 */
-        {"szUPlan_Coupon"               ,"BLOB"		,""		,""},	/* 銀聯優計畫的優惠訊息 */
-        {"szUPlan_RemarksInformation"   ,"BLOB"		,""		,""},	/* 銀聯優計畫-備註訊息 */
-        {"szFlightTicketTransBit"       ,"BLOB"		,""		,""},	/* 判斷是否是機票交易 不設定為空值 機票交易為1 非機票交易為2 */
-        {"szFlightTicketPDS0523"        ,"BLOB"		,""		,""},	/* 出發地機場代碼（PDS 0523）左靠右補空白 */
-        {"szFlightTicketPDS0524"        ,"BLOB"		,""		,""},	/* 目的地機場代碼（PDS 0524）左靠右補空白 */
-        {"szFlightTicketPDS0530"        ,"BLOB"		,""		,""},	/* 航班號碼（PDS 0530） */
+        {"szUPlan_Coupon"        	,"BLOB"		,""		,""},	/* 銀聯優計畫的優惠訊息 */
+        {"szUPlan_RemarksInformation"	,"BLOB"		,""		,""},	/* 銀聯優計畫-備註訊息 */
+        {"szFlightTicketTransBit"	,"BLOB"		,""		,""},	/* 判斷是否是機票交易 不設定為空值 機票交易為1 非機票交易為2 */
+        {"szFlightTicketPDS0523"		,"BLOB"		,""		,""},	/* 出發地機場代碼（PDS 0523）左靠右補空白 */
+        {"szFlightTicketPDS0524"		,"BLOB"		,""		,""},	/* 目的地機場代碼（PDS 0524）左靠右補空白 */
+        {"szFlightTicketPDS0530"		,"BLOB"		,""		,""},	/* 航班號碼（PDS 0530） */
 	{"uszWAVESchemeID"		,"BLOB"		,""		,""},	/* WAVE 使用用於組電文 Field_22 */
 	{"uszVOIDBit"			,"BLOB"		,""		,""},	/* 負向交易 */
-        {"uszUpload1Bit"		,"BLOB"		,""		,""},	/* Offline交易使用 (原交易advice是否已上傳)*/
-        {"uszUpload2Bit"		,"BLOB"		,""		,""},	/* Offline交易使用 (當前交易是否為advice)*/
-        {"uszUpload3Bit"		,"BLOB"		,""		,""},	/* Offline交易使用 */
+        {"uszUpload1Bit"			,"BLOB"		,""		,""},	/* Offline交易使用 (原交易advice是否已上傳)*/
+        {"uszUpload2Bit"			,"BLOB"		,""		,""},	/* Offline交易使用 (當前交易是否為advice)*/
+        {"uszUpload3Bit"			,"BLOB"		,""		,""},	/* Offline交易使用 */
         {"uszReferralBit"		,"BLOB"		,""		,""},	/* ISO Response Code 【01】【02】使用 */
-        {"uszOfflineBit"		,"BLOB"		,""		,""},	/* 離線交易 */
+        {"uszOfflineBit"			,"BLOB"		,""		,""},	/* 離線交易 */
         {"uszManualBit"			,"BLOB"		,""		,""},	/* Manual Keyin */
         {"uszNoSignatureBit"		,"BLOB"		,""		,""},	/* 免簽名使用 (免簽名則為true)*/
 	{"uszCUPTransBit"		,"BLOB"		,""		,""},	/* 是否為CUP */
@@ -214,11 +214,11 @@ SQLITE_TAG_TABLE TABLE_BATCH_TAG[] =
 	{"uszVEPS_SignatureBit"		,"BLOB"		,""		,""},	/* VEPS 免簽名是否成立 */
 	{"uszTCUploadBit"		,"BLOB"		,""		,""},	/* TCUpload是否已上傳 */
 	{"uszFiscConfirmBit"		,"BLOB"		,""		,""},	/* SmartPay 0220 是否已上傳 */
-	{"uszFiscVoidConfirmBit"	,"BLOB"		,""		,""},	/* SmartPay Void 0220 是否已上傳 */
+	{"uszFiscVoidConfirmBit"		,"BLOB"		,""		,""},	/* SmartPay Void 0220 是否已上傳 */
 	{"uszPinEnterBit"		,"BLOB"		,""		,""},	/* 此筆交易是否有鍵入密碼(只能確認原交易，若該筆之後的調整或取消不會將此Bit Off) */
 	{"uszL2PrintADBit"		,"BLOB"		,""		,""},	/* L2是否印AD，因L2原交易取消要判斷，只好增加 */
 	{"uszInstallment"		,"BLOB"		,""		,""},	/* HappyGo分期交易 */
-        {"uszRedemption"		,"BLOB"		,""		,""},	/* HappyGo點數兌換 */ 
+        {"uszRedemption"			,"BLOB"		,""		,""},	/* HappyGo點數兌換 */ 
         {"uszHappyGoSingle"		,"BLOB"		,""		,""},	/* HappyGo交易 */ 
         {"uszHappyGoMulti"		,"BLOB"		,""		,""},	/* HappyGo混合交易 */
 	{"uszCLSBatchBit"		,"BLOB"		,""		,""},	/* 是否已接續上傳 */
@@ -333,11 +333,7 @@ int inFuncInsertTxnRecord_By_Sqlite(TRANSACTION_OBJECT *pobTran)
 	 * 虹堡文件有提到，這個指令會減少NAND壽命，但為了不掉帳還是要用 
 	 * 
 	 */
-	sync();
-
-	
-
-       
+	sync();  
         return (VS_SUCCESS);
 }
 void vdEthernetMenu(void)
@@ -481,7 +477,98 @@ void vdEthernetMenu(void)
             break;
     }
 }
+void vdSQLOpMenu(TRANSACTION_OBJECT* pobTran)
+{
+    int i;
+    BYTE key;
+    int breakFlag = 0;
+    int inRetVal = VS_ERROR;
+    char    szMaxTableID[10 + 1] = {0};
+    SQLITE_ALL_TABLE srAll;
+    char szQuerySql[100+1];
+    while(1)
+    {
+        CTOS_LCDTClearDisplay();
+        CTOS_LCDTPrintXY(1, 1, "Sql Operation Menu");
+        CTOS_LCDTPrintXY(1, 2, "1:Get Top Record");
+        CTOS_LCDTPrintXY(1, 3, "2:Get Records");
+        CTOS_LCDTPrintXY(1, 4, "3:Delete Top Record");
+        CTOS_LCDTPrintXY(1, 16, "X.Exit");
+        CTOS_KBDGet(&key);
+        breakFlag = 0;
+        switch(key)
+        { 
+            case d_KBD_1: 
+            {    
+                memset(szMaxTableID, 0x00, sizeof(szMaxTableID));
+                inRetVal = inSqlite_Get_Max_TableID(gszTranDBPath, szTableName, szMaxTableID);
+                if (inRetVal == VS_SUCCESS && atoi(szMaxTableID) > 0)
+                {
+                    printf("Max RowID is %s\n",szMaxTableID);
+                    /*============單筆查詢============*/
+                    memset(&srAll, 0x00, sizeof(SQLITE_ALL_TABLE));
+                    memset(&pobTran->srBRec, 0x00, sizeof(pobTran->srBRec));
+                    printf("\nbefore query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
+                    inRetVal = inSqlite_Table_Link_BRec(pobTran, &srAll, _LS_READ_);
+   
+                    memset(szQuerySql, 0x00, sizeof(szQuerySql));
+                    sprintf(szQuerySql, "SELECT * FROM %s WHERE inTableID = %s ", szTableName,szMaxTableID);
 
+                    inRetVal = inSqlite_Get_Data_By_External_SQL(gszTranDBPath, &srAll, szQuerySql);
+                    /*顯示sql結果在監看程式上*/
+                    inSqlite_Table_Show(&srAll);
+                    printf("\nafter query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
+                    /*============單筆查詢============*/     
+                }
+                break;                
+            }
+            case d_KBD_2: 
+            {   
+                int inTableCnt = -1;
+                inRetVal = inSqlite_Get_Table_Count(gszTranDBPath,szTableName,&inTableCnt);
+                if(inRetVal == VS_SUCCESS)
+                {
+                    printf("Get Table Count Successed,inTableCnt is %d\n",inTableCnt);
+                    inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_SEARCH_);
+                    
+                    for(i=0; i<inTableCnt; i++)
+                    {
+                        inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_READ_);
+                    }
+                    inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_FREE_);             
+                }
+                else
+                {
+                    printf("Get Table Count Failed\n");
+                }
+                break;
+            }
+            case d_KBD_3: 
+            { 
+                inRetVal = inSqlite_Delete_Record(pobTran,szTableName);
+                if(inRetVal == VS_SUCCESS)
+                {
+                    CTOS_LCDTClearDisplay();    
+                    CTOS_LCDTPrintXY(1, 1, "Delete Record Success!!!");
+                    CTOS_Delay(2000);
+                }
+                break;
+            }
+            case d_KBD_4: 
+            {
+
+                break;
+            }
+            case d_KBD_CANCEL: 
+            { 
+                breakFlag = 1;
+                break;
+            }
+        }
+        if(breakFlag)
+            break;
+    }
+}
 void vdRS232Menu(TRANSACTION_OBJECT* pobTran)
 {
     BYTE key;
@@ -591,7 +678,7 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
     BYTE uszPackBuf[984];
     memset(uszPackBuf,0x00,sizeof(uszPackBuf));
     unsigned char uszKey = 0;
-    int breakFlag = 0;
+    int i = 0;
     int inRetVal = 0;
     SQLITE_ALL_TABLE	srAll;
     CTOS_LCDTClearDisplay(); 
@@ -627,6 +714,11 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
                     pobTran->inMenuKeyin = uszKey;
                     
                     inRetVal  = inCREDIT_Func_Get_OPT_Amount(pobTran);
+                    /*
+                        * inCREDIT_Func_Get_OPT_Amount > inDISP_EnglishFont_Color會改到字型和大小，
+                        *  這邊重新呼叫inDISP_Initial()
+                    */
+                    inDISP_Initial();
                     if(  inRetVal == VS_SUCCESS)
                     {
                         printf("Amount is %06ld\n",pobTran->srBRec.lnTxnAmount);
@@ -635,7 +727,7 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
                     {
                         printf("Get Amount Failed\n");
                         return ;
-                    }         
+                    }     
                     break;
             }
             //取得金額後發送電文
@@ -683,30 +775,7 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
              * 2.列印簽單            
              */
             inFuncInsertTxnRecord_By_Sqlite(pobTran);
-            
-            char    szMaxTableID[10 + 1] = {0};
-            memset(szMaxTableID, 0x00, sizeof(szMaxTableID));
-            inRetVal = inSqlite_Get_Max_TableID(gszTranDBPath, szTableName, szMaxTableID);
-            if (inRetVal != VS_SUCCESS)
-            {
-                    return ;
-            }
-            else
-            {
-                printf("Max RowID is %s\n",szMaxTableID);
-                /*============單筆查詢============*/
-                memset(&srAll, 0x00, sizeof(SQLITE_ALL_TABLE));
-                memset(&pobTran->srBRec, 0x00, sizeof(pobTran->srBRec));
-                printf("\nbefore query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
-                inRetVal = inSqlite_Table_Link_BRec(pobTran, &srAll, _LS_READ_);
-                char szQuerySql[100+1];
-                memset(szQuerySql, 0x00, sizeof(szQuerySql));
-                sprintf(szQuerySql, "SELECT * FROM %s WHERE inTableID = %s ", szTableName,szMaxTableID);
-                inRetVal = inSqlite_Get_Data_By_External_SQL(gszTranDBPath, &srAll, szQuerySql);
-                inSqlite_Table_Show(&srAll);
-                printf("\nafter query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
-                /*============單筆查詢============*/
-            }
+
             break;
         }
     }
@@ -716,6 +785,7 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
 int main(int argc, char *argv[]) {
     BYTE key;
     CTOS_LCDTClearDisplay();
+    int i;
     int  inRetVal = 0;
     unsigned char uszBuffer[PB_CANVAS_X_SIZE * 8 * _BUFFER_MAX_LINE_];
     BufferHandle srBhandle;
@@ -733,7 +803,9 @@ int main(int argc, char *argv[]) {
     strcpy(pobTran.srBRec.szAuthCode, "777777");
     strcpy(pobTran.srBRec.szRefNo, "999999999999");
     /*============假資料============*/
-    
+    /*============LCD設定============*/
+    inDISP_Initial();
+    /*============LCD設定============*/
     BMPHeight gsrBMPHeight;
     /* 可查看是否有fs_data路徑(是否有Load img.mci) */
 //    inFunc_ls("-R -l", _AP_ROOT_PATH_); 
@@ -742,9 +814,7 @@ int main(int argc, char *argv[]) {
     CTOS_LCDTPrintXY(1, 3, "Configuring Printer...");
     CTOS_LCDTPrintXY(1, 4, "DB Setting..."); 
     CTOS_Delay(1000);
-    /*============LCD設定============*/
-    inDISP_Initial();
-    /*============LCD設定============*/
+
     //要先Load APP.mci，再來才是Load img.mci
     inFunc_Booting_Flow_Print_Image_Initial(&pobTran,&gsrBMPHeight);
     printf("初始化圖片預設高度\n");
@@ -776,6 +846,7 @@ int main(int argc, char *argv[]) {
         CTOS_LCDTPrintXY(1, 3, "2:Ethernet COMM");
         CTOS_LCDTPrintXY(1, 4, "3:Rs232 COMM");
         CTOS_LCDTPrintXY(1, 5, "4:__SALE__");
+        CTOS_LCDTPrintXY(1, 6, "5:Sql Operation");
         CTOS_LCDTPrintXY(1, 16, "X:Exit");
         CTOS_KBDGet(&key);
         breakFlag = 0;
@@ -809,8 +880,13 @@ int main(int argc, char *argv[]) {
             }
             case d_KBD_4: 
             {   
-                //期望做到直接跳到輸入金額 > 組裝封包 > 送電文 > 寫入資料庫 > 列印簽單               
+                //期望做到直接跳到輸入金額 > 組裝封包 > 送電文 > 寫入資料庫 > 列印簽單         
                 vdSALEMenu(&pobTran);
+                break;
+            }
+            case d_KBD_5:
+            {
+                vdSQLOpMenu(&pobTran);
                 break;
             }
             case d_KBD_CANCEL: 

@@ -30,6 +30,7 @@
       </logicalFolder>
       <logicalFolder name="FUNCTION" displayName="FUNCTION" projectFiles="true">
         <itemPath>SOURCE/FUNCTION/Batch.c</itemPath>
+        <itemPath>SOURCE/FUNCTION/Batch.h</itemPath>
         <itemPath>SOURCE/FUNCTION/ECR.c</itemPath>
         <itemPath>SOURCE/FUNCTION/ECR.h</itemPath>
         <itemPath>SOURCE/FUNCTION/ECR_Define.h</itemPath>
@@ -155,6 +156,8 @@
       </item>
       <item path="SOURCE/FUNCTION/Batch.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="SOURCE/FUNCTION/Batch.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SOURCE/FUNCTION/ECR.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/ECR.h" ex="false" tool="3" flavor2="0">
@@ -274,6 +277,8 @@
       <item path="SOURCE/DISPLAY/Display.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/Batch.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/FUNCTION/Batch.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/ECR.c" ex="false" tool="0" flavor2="0">
       </item>
