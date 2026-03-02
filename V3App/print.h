@@ -61,9 +61,9 @@ typedef enum
 #define _PRINT_RIGHT_			d_PRINTER_ALIGNRIGHT
 #define _PRINT_BY_X_			127
 
-
+#define _PRT_DOUBLE_HEIGHT_WIDTH_       d_FONT_16x30
 #define _PRT_HEIGHT_                    d_FONT_12x24
-
+#define _PRT_AMOUNT_			_PRT_DOUBLE_HEIGHT_WIDTH_
 
 /* 定義字型Style */
 #define _FONT_PRINT_REGULAR_		d_FONT_STYLE_NORMAL
@@ -74,6 +74,22 @@ typedef enum
 
 #define _PRT_NORMAL_            d_FONT_8x16
 #define d_FONT_8x16             0x0810
+#define _PRT_NORMAL2_           0x080F	/* d_FONT_8x15(_PRT_DOUBLE_HEIGHT_WIDTH_的一半) */
+/* Print 定義 特殊 X座標 */
+#define _PRINT_DEFINE_X_01_		192			/* 定義Print特定座標點 */
+#define _PRINT_DEFINE_X_02_		216			/* 定義Print特定座標點 */
+#define _PRINT_DEFINE_X_03_		120			/* QRCODE_45X45置中使用 */
+#define _PRINT_DEFINE_X_04_		40			/* 筆數(CNT) */
+#define _PRINT_DEFINE_X_05_		90			/* 總額報表筆數的位置 */
+#define _PRINT_DEFINE_X_06_		100			/* 046電票總額報表筆數的位置 */
+#define _PRINT_DEFINE_X_07_		176			/* 定義Print特定座標點(AP Label使用，否則會蓋到AE 的P Label) */
+#define _PRINT_DEFINE_X_08_		90			/* 定義Print特定座標點(出發地機場)使用 */
+#define _PRINT_DEFINE_X_09_		112			/* 信託交易日期 */
+#define _PRINT_DEFINE_X_010_		256			/* 信託交易主機 */
+#define _PRINT_DEFINE_X_011_		64			/* 信託交易交易類別 */
+#define _PRINT_DEFINE_X_012_		128			/* 信託結帳交易類別 */
+#define _PRINT_DEFINE_X_013_		128			/* 信託結帳筆數位置 */
+#define _PRINT_DEFINE_X_014_		160			/* 信託結帳機構代碼筆數位置 */
 
 typedef struct					
 {

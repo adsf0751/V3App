@@ -1,10 +1,11 @@
 #include "../../EDC.h" // For  EDC_REC
+#include <string.h>
 #define _COMM_RECEIVE_MAX_LENGTH_	1536
 // Define Ethernet Data //
 #define IPADDR      "10.105.109.155"
 #define MASK        "255.255.254.0"
 #define GATEWAY     "10.105.109.254"
-#define HOSTIP      "10.105.108.23"
+#define HOSTIP      "127.0.0.1"
 #define HOSTPORT    "18012"
 typedef struct
 {
@@ -22,9 +23,9 @@ typedef struct
         char szCarrierTimeOut[2 + 1];           /* 連線等候時間。(超過等候時間，自動撥第二授權電話或IP Address) */
         char szHostResponseTimeOut[2 + 1];      /* 授權等候時間。(超過等候時間，自動斷線) */
 }CPT_REC;
-
 CPT_REC srCPTRec;	/* construct CPT record */
 EDC_REC srEDCRec;
+
 int ginTrans_ClientFd;
 int inGetHostIPPrimary(char* );
 int inGetHostPortNoPrimary(char* );
@@ -54,3 +55,6 @@ int inSetTermIPAddress(char* szTermIPAddress);
 int inSetTermMASKAddress(char* szTermMASKAddress);
 int inSetTermGetewayAddress(char* szTermGetewayAddress);
 void vdEthernetGetNetWorkValue(int ethernetTag,unsigned char* uszTemplate);
+int inETHERNET_Close(void);
+int inETHERNET_Flush(void);
+int inETHERNET_Flush_Rx(void);

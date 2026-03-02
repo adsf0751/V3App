@@ -13,4 +13,5 @@ int inPRINT_Buffer_Initial(unsigned char*, int , FONT_ATTRIB*, BufferHandle*);
 int inPRINT_Buffer_PutGraphic(unsigned char *, unsigned char* , BufferHandle*, int , int );
 int inPRINT_Buffer_PutIn(char* , int , unsigned char*, FONT_ATTRIB*, BufferHandle*, int , unsigned char);
 int inPRINT_Buffer_OutPut(unsigned char *, BufferHandle *);
+int inPRINT_Buffer_PutIn_Specific_X_Position(char* szString, int inFontSize, unsigned char *uszBuffer, FONT_ATTRIB *srFont_Attrib, BufferHandle *srBhandle, int inNextLine, int intXPosition);
 

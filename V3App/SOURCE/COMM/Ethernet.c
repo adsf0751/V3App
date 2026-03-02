@@ -16,9 +16,15 @@
 #include "../../PrtMsg.h"
 #include "../INCLUDE/Define_1.h"
 extern int ginTrans_ClientFd;
-extern CPT_REC srCPTRec;
-extern EDC_REC srEDCRec;
-
+CPT_REC srCPTRec = {
+                    .szHostIPPrimary= HOSTIP,
+                    .szHostPortNoPrimary = HOSTPORT
+                   };
+EDC_REC srEDCRec = {
+                    .szTermIPAddress = IPADDR,
+                    .szTermGetewayAddress = GATEWAY,
+                    .szTermMASKAddress = MASK
+                   };
 
 /*
 Function        :inGetHostIPPrimary
@@ -134,25 +140,26 @@ int inETHERNET_DisConnect_By_Native()
 {
 	int		inRetVal = VS_ERROR;
 	char		szDebugMsg[100 + 1];
-		
+        printf("inETHERNET_DisConnect_By_Native ginTrans_ClientFd is %d\n",ginTrans_ClientFd);
 //	/* 防呆，小於0會存取到錯的記憶體 */
 	if (ginTrans_ClientFd > 0)
 	{
-		inRetVal = close(ginTrans_ClientFd);
+           
+            inRetVal = close(ginTrans_ClientFd);
 	}
 	else
 	{
-		inRetVal = VS_ERROR;
+            inRetVal = VS_ERROR;
 	}
 	
 	if (inRetVal == 0)
 	{
-		inRetVal= VS_SUCCESS;
-//		inFile_Open_File_Cnt_Decrease();
+            inRetVal= VS_SUCCESS;
+            //inFile_Open_File_Cnt_Decrease();
 	}
 	else
 	{
-		return (VS_ERROR);
+            return (VS_ERROR);
 	}
 	return (VS_SUCCESS);
 }
@@ -197,13 +204,14 @@ int inETHERNET_DisConnect_Flow()
 	
 	if (inRetVal == VS_SUCCESS)
 	{
-//		vdUtility_SYSFIN_LogMessage(AT, "Ethernet Disconect Success");
-		return (VS_SUCCESS);
+            //vdUtility_SYSFIN_LogMessage(AT, "Ethernet Disconect Success");
+            printf("Ethernet Disconect Success\n");
+            return (VS_SUCCESS);
 	}
 	else
 	{
-//		vdUtility_SYSFIN_LogMessage(AT, "Ethernet Disconect Fail");
-		return (VS_ERROR);
+            //vdUtility_SYSFIN_LogMessage(AT, "Ethernet Disconect Fail");
+            return (VS_ERROR);
 	}
 }
 /*
@@ -432,32 +440,32 @@ int inETHERNET_SetConfig(void)
         memset(szHostIPPrimary,0x00,sizeof(szHostIPPrimary));
         if (inGetHostIPPrimary(szHostIPPrimary) == VS_ERROR)
         {
-                /* inGetHostIPPrimary ERROR */
-                printf("inGetHostIPPrimary failed\n");
-                return (VS_ERROR);
+            /* inGetHostIPPrimary ERROR */
+            printf("inGetHostIPPrimary failed\n");
+            return (VS_ERROR);
         }
         
 	inRetVal = inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_HOSTIP, (unsigned char*)szHostIPPrimary, strlen(szHostIPPrimary));
 	if (inRetVal != VS_SUCCESS)
 	{	
             printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_HOSTIP failed\n");
-                return (VS_ERROR);
+            return (VS_ERROR);
 	}
-        
+        printf("Host Ip is %s\n",szHostIPPrimary);
 	/* Set Host Port */
         memset(szHostPortNoPrimary,0x00,sizeof(szHostPortNoPrimary));
         if (inGetHostPortNoPrimary(szHostPortNoPrimary) == VS_ERROR)
         {
-                /* Get HostPortNumber Primary ERROR */
-                printf("inGetHostPortNoPrimary failed\n");
-                return (VS_ERROR);
+            /* Get HostPortNumber Primary ERROR */
+            printf("inGetHostPortNoPrimary failed\n");
+            return (VS_ERROR);
         }
         
 	inRetVal = inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_HOSTPORT, (unsigned char*)szHostPortNoPrimary, strlen(szHostPortNoPrimary));
 	if (inRetVal != VS_SUCCESS)
 	{        
-                printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_HOSTPORT failed\n");
-                return (VS_ERROR);
+            printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_HOSTPORT failed\n");
+            return (VS_ERROR);
 	}
         
         /*
@@ -477,14 +485,15 @@ int inETHERNET_SetConfig(void)
 //	}
 //	else
 //	{
-		szConfig[0] = '2';
+        szConfig[0] = '2';
 //	}
 	if (inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_AUTOCON, (unsigned char*)szConfig, 1) != VS_SUCCESS)
 	{
             printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_AUTOCON failed\n");
-                return (VS_ERROR);
+            return (VS_ERROR);
 	}
-
+        printf("Host Port is %s\n",szHostPortNoPrimary);
+        
         /*
                 d_ETHERNET_CONFIG_DHCP
                 Set IP configuration.
@@ -507,7 +516,7 @@ int inETHERNET_SetConfig(void)
 	if (inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_DHCP, (unsigned char*)szConfig, 1) != VS_SUCCESS)
 	{
             printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_DHCP failed\n");
-                return (VS_ERROR);
+            return (VS_ERROR);
 	}
 
         /*
@@ -518,7 +527,7 @@ int inETHERNET_SetConfig(void)
 	if (inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_UPDATE_EXIT, (unsigned char*)szConfig, 0) != VS_SUCCESS)
 	{
             printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_UPDATE_EXIT failed\n");
-                return (VS_ERROR);
+            return (VS_ERROR);
 	}
 
 	/* 重置目前重試次數 */
@@ -693,7 +702,7 @@ int inETHERNET_Send_Ready_By_Native(int inFileHandle)
 	else
 	{
 //		inUtility_StoreTraceLog_OneStep("inETHERNET_Send_Ready_By_Native Fail, errno:%d", errno);
-		return (VS_ERROR);
+            return (VS_ERROR);
 	}
 	
 	return (VS_SUCCESS);
@@ -715,12 +724,7 @@ int inETHERNET_Initial(void) {
     unsigned short usRetVal = 0x00;
     char szDispMsg[16 + 1] = {0};
     unsigned char uszLen = 0;
-    
-    inSetTermIPAddress(IPADDR);
-    inSetTermMASKAddress(MASK);
-    inSetTermGetewayAddress(GATEWAY);
-    memcpy(&srCPTRec.szHostIPPrimary[0]    , HOSTIP  , strlen(HOSTIP));
-    memcpy(&srCPTRec.szHostPortNoPrimary[0], HOSTPORT, strlen(HOSTPORT));
+
     //暫不實現
     //	inDISP_ClearAll();
     //	inFunc_Display_LOGO( 0,  _COORDINATE_Y_LINE_16_2_);				/* 第一層顯示 LOGO */
@@ -1502,49 +1506,206 @@ Function	:
 Date&Time	:2016/12/29 上午 11:20
 Describe	:
 */
-int inFunc_Get_HostIP(TRANSACTION_OBJECT *pobTran)
+int inFunc_Ethernet_Edit(TRANSACTION_OBJECT *pobTran)
 {
 	int		inRetVal;
         char		szTemplate[_DISP_MSG_SIZE_ + 1];
         DISPLAY_OBJECT  srDispObj;
-        int isValidIp = -1;
-        do {
-                isValidIp = -1;
-                memset(&srDispObj, 0x00, sizeof(DISPLAY_OBJECT));
-		memset(szTemplate, 0x00, sizeof(szTemplate));
 
-		srDispObj.inY = _LINE_8_7_;
-		srDispObj.inR_L = _DISP_RIGHT_;
-//		srDispObj.inMaxLen = inFunc_Check_Digit();      /* 不可超過9，long變數最多放9位 */
-		srDispObj.inMaxLen = 15; 
-//              srDispObj.inMenuKeyIn = ginEventCode;
-                srDispObj.inMenuKeyIn = pobTran->inMenuKeyin;
-		srDispObj.inCanNotBypass = VS_TRUE;
-		srDispObj.inCanNotZero = VS_TRUE;
-		srDispObj.inColor = _COLOR_RED_;
-		strcpy(srDispObj.szPromptMsg, "");
- 
-		inDISP_Clear_Line(_LINE_8_4_, _LINE_8_8_);
-		inDISP_PutGraphic(_MENU_SET_COMM_TITLE_, 0, _COORDINATE_Y_LINE_8_4_);
-               
+        memset(&srDispObj, 0x00, sizeof(DISPLAY_OBJECT));
+        memset(szTemplate, 0x00, sizeof(szTemplate));
 
-		memset(srDispObj.szOutput, 0x00, sizeof(srDispObj.szOutput));
-		srDispObj.inOutputLen = 0;
-                
-		inRetVal = inDISP_Enter8x16_GetSetting(&srDispObj);
-                    
-		if (inRetVal == VS_TIMEOUT || inRetVal == VS_USER_CANCEL)
-		{
-                        printf("inCREDIT_Func_Get_OPT_Amount Timeout_Or_UserCancel(%d) END!\n",inRetVal);
-                        return (inRetVal);
-		}
-                struct sockaddr_in sa;
-                isValidIp  = inet_pton(AF_INET,srDispObj.szOutput , &(sa.sin_addr));
-                printf("isValidIp is %d\n",isValidIp);
-                printf("srDispObj.szOutput is %s\n",srDispObj.szOutput);
-            
-        }while(isValidIp != 1);
+        srDispObj.inY = _LINE_8_7_;
+        srDispObj.inR_L = _DISP_RIGHT_;
+        //srDispObj.inMaxLen = inFunc_Check_Digit();      /* 不可超過9，long變數最多放9位 */
+        //srDispObj.inMenuKeyIn = ginEventCode;
+        srDispObj.inMaxLen = 15; 
+        srDispObj.inMenuKeyIn = pobTran->inMenuKeyin;
+        srDispObj.inCanNotBypass = VS_FALSE;
+        srDispObj.inCanNotZero = VS_FALSE;
+        srDispObj.inColor = _COLOR_RED_;
+        strcpy(srDispObj.szPromptMsg, "");
+
+        inDISP_Clear_Line(_LINE_8_4_, _LINE_8_8_);
+        inDISP_PutGraphic(_MENU_SET_COMM_TITLE_, 0, _COORDINATE_Y_LINE_8_4_);
+        inDISP_EnglishFont_Color("IP", _FONTSIZE_8X22_, _LINE_8_5_, _COLOR_BLACK_, _DISP_LEFT_);
+
+        memset(srDispObj.szOutput, 0x00, sizeof(srDispObj.szOutput));
+        srDispObj.inOutputLen = 0;
         
+        memcpy(srDispObj.szOutput,srEDCRec.szTermIPAddress,strlen(srEDCRec.szTermIPAddress));
+        inDISP_EnglishFont_Color(srDispObj.szOutput, _FONTSIZE_8X16_, srDispObj.inY, _COLOR_RED_, _DISP_RIGHT_);
 
+        inRetVal = inDISP_Enter8x16_GetSetting(&srDispObj);
+
+        if (inRetVal == VS_TIMEOUT || inRetVal == VS_USER_CANCEL)
+        {
+                printf("inCREDIT_Func_Get_OPT_Amount Timeout_Or_UserCancel(%d) END!\n",inRetVal);
+                return (inRetVal);
+        }
+        memset(srEDCRec.szTermIPAddress, 0x00, sizeof(srEDCRec.szTermIPAddress));
+        memcpy(srEDCRec.szTermIPAddress,srDispObj.szOutput,strlen(srDispObj.szOutput));
+        //GATEWAY
+        inDISP_Clear_Line(_LINE_8_5_, _LINE_8_7_);
+        inDISP_EnglishFont_Color("GATEWAY", _FONTSIZE_8X22_, _LINE_8_5_, _COLOR_BLACK_, _DISP_LEFT_);
+
+        memset(srDispObj.szOutput, 0x00, sizeof(srDispObj.szOutput));
+        srDispObj.inOutputLen = 0;
+        
+        memcpy(srDispObj.szOutput,srEDCRec.szTermGetewayAddress,strlen(srEDCRec.szTermGetewayAddress));
+        inDISP_EnglishFont_Color(srDispObj.szOutput, _FONTSIZE_8X16_, srDispObj.inY, _COLOR_RED_, _DISP_RIGHT_);
+
+        inRetVal = inDISP_Enter8x16_GetSetting(&srDispObj);
+
+        if (inRetVal == VS_TIMEOUT || inRetVal == VS_USER_CANCEL)
+        {
+                printf("inCREDIT_Func_Get_OPT_Amount Timeout_Or_UserCancel(%d) END!\n",inRetVal);
+                return (inRetVal);
+        }
+        memset(srEDCRec.szTermGetewayAddress, 0x00, sizeof(srEDCRec.szTermGetewayAddress));
+        memcpy(srEDCRec.szTermGetewayAddress,srDispObj.szOutput,strlen(srDispObj.szOutput));
+        
+        inDISP_Clear_Line(_LINE_8_5_, _LINE_8_7_);
+        inDISP_EnglishFont_Color("MASK", _FONTSIZE_8X22_, _LINE_8_5_, _COLOR_BLACK_, _DISP_LEFT_);
+
+        memset(srDispObj.szOutput, 0x00, sizeof(srDispObj.szOutput));
+        srDispObj.inOutputLen = 0;
+        
+        memcpy(srDispObj.szOutput,srEDCRec.szTermMASKAddress,strlen(srEDCRec.szTermMASKAddress));
+        inDISP_EnglishFont_Color(srDispObj.szOutput, _FONTSIZE_8X16_, srDispObj.inY, _COLOR_RED_, _DISP_RIGHT_);
+
+        inRetVal = inDISP_Enter8x16_GetSetting(&srDispObj);
+
+        if (inRetVal == VS_TIMEOUT || inRetVal == VS_USER_CANCEL)
+        {
+                printf("inCREDIT_Func_Get_OPT_Amount Timeout_Or_UserCancel(%d) END!\n",inRetVal);
+                return (inRetVal);
+        }
+        memset(srEDCRec.szTermMASKAddress,0x00,sizeof(srEDCRec.szTermMASKAddress));
+        memcpy(srEDCRec.szTermMASKAddress,srDispObj.szOutput,strlen(srDispObj.szOutput));
+        
+        inDISP_Clear_Line(_LINE_8_5_, _LINE_8_7_);
+        inDISP_EnglishFont_Color("HOST IP", _FONTSIZE_8X22_, _LINE_8_5_, _COLOR_BLACK_, _DISP_LEFT_);
+
+        memset(srDispObj.szOutput, 0x00, sizeof(srDispObj.szOutput));
+        srDispObj.inOutputLen = 0;
+        
+        memcpy(srDispObj.szOutput,srCPTRec.szHostIPPrimary,strlen(srCPTRec.szHostIPPrimary));
+        inDISP_EnglishFont_Color(srDispObj.szOutput, _FONTSIZE_8X16_, srDispObj.inY, _COLOR_RED_, _DISP_RIGHT_);
+
+        inRetVal = inDISP_Enter8x16_GetSetting(&srDispObj);
+
+        if (inRetVal == VS_TIMEOUT || inRetVal == VS_USER_CANCEL)
+        {
+                printf("inCREDIT_Func_Get_OPT_Amount Timeout_Or_UserCancel(%d) END!\n",inRetVal);
+                return (inRetVal);
+        }
+        memset(srCPTRec.szHostIPPrimary,0x00,sizeof(srCPTRec.szHostIPPrimary));
+        memcpy(srCPTRec.szHostIPPrimary,srDispObj.szOutput,strlen(srDispObj.szOutput));
+        
+        inDISP_Clear_Line(_LINE_8_5_, _LINE_8_7_);
+        inDISP_EnglishFont_Color("HOST PORT", _FONTSIZE_8X22_, _LINE_8_5_, _COLOR_BLACK_, _DISP_LEFT_);
+
+        memset(srDispObj.szOutput, 0x00, sizeof(srDispObj.szOutput));
+        srDispObj.inOutputLen = 0;
+        
+        memcpy(srDispObj.szOutput,srCPTRec.szHostPortNoPrimary,strlen(srCPTRec.szHostPortNoPrimary));
+        inDISP_EnglishFont_Color(srDispObj.szOutput, _FONTSIZE_8X16_, srDispObj.inY, _COLOR_RED_, _DISP_RIGHT_);
+
+        inRetVal = inDISP_Enter8x16_GetSetting(&srDispObj);
+
+        if (inRetVal == VS_TIMEOUT || inRetVal == VS_USER_CANCEL)
+        {
+                printf("inCREDIT_Func_Get_OPT_Amount Timeout_Or_UserCancel(%d) END!\n",inRetVal);
+                return (inRetVal);
+        }
+        memset(srCPTRec.szHostPortNoPrimary,0x00,sizeof(srCPTRec.szHostPortNoPrimary));
+        memcpy(srCPTRec.szHostPortNoPrimary,srDispObj.szOutput,strlen(srDispObj.szOutput));   
+	return (VS_SUCCESS);
+}
+/*
+Function        inETHERNET_IsPhysicalOnine
+Date&Time       :2018/3/9 下午 1:27
+Describe        :回傳成功代表有插實體網路線
+*/
+int inETHERNET_IsPhysicalOnine()
+{
+	unsigned int	uiStatus = 0;	
+	/* Get the status of the Ethernet */
+	inETHERNET_Get_Status(&uiStatus);
+	
+	/* if Ethernet is phyical online */
+	if (uiStatus & d_STATUS_ETHERNET_PHYICAL_ONLINE)
+	{
+		return (VS_SUCCESS);
+	}
+	else
+	{
+		return (VS_ERROR);
+	}
+}
+/*
+Function        :inETHERNET_Close
+Date&Time       :2017/7/19 上午 11:21
+Describe        :
+*/
+int inETHERNET_Close()
+{
+	char		szDebugMsg[100 + 1];
+	unsigned short	usRetVal;
+	
+	usRetVal = CTOS_EthernetClose();
+	if (usRetVal == d_OK)
+	{
+            printf("ETHERNET_CLOSE OK!\n");
+	}
+	else
+	{
+            memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+            sprintf(szDebugMsg, "CTOS_EthernetClose Err :0x%04X", usRetVal);
+            printf("%s\n", szDebugMsg);
+
+            return (VS_ERROR);
+	}
+	return (VS_SUCCESS);
+}
+/*
+Function        :inETHERNET_Flush
+Date&Time       :2017/7/19 上午 11:14
+Describe        :清空Comport的資料
+*/
+int inETHERNET_Flush(void)
+{
+	int	inRetVal = 0;       
+	inRetVal = inETHERNET_Flush_Rx();
+	if (inRetVal != VS_SUCCESS)
+	{
+            printf("inETHERNET_Flush Error\n");
+            return (VS_ERROR);
+	}
+        return (VS_SUCCESS);
+}
+
+/*
+Function        :inETHERNET_Flush_Rx
+Date&Time       :2017/7/19 上午 11:18
+Describe        :清空Comport
+*/
+int inETHERNET_Flush_Rx()
+{
+	char		szDebugMsg[100 + 1];
+	unsigned short	usRetVal;
+	
+	usRetVal = CTOS_EthernetFlushRxData();
+	if (usRetVal == d_OK)
+	{
+		
+	}
+	else
+	{
+            printf("CTOS_EthernetFlushRxData Err :0x%04X\n", usRetVal);    
+            return (VS_ERROR);
+	}
+	
 	return (VS_SUCCESS);
 }

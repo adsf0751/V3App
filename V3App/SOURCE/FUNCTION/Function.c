@@ -474,3 +474,58 @@ int inPRINT_Buffer_GetHeightFlow(BMPHeight* gsrBMPHeight) {
 //    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inNoticeHeight);
     return (VS_SUCCESS);
 }
+
+/*
+Function        :vdFunc_Display_Ethernet_Status
+Date&Time       :2018/3/9 上午 11:18
+Describe        :icon 30*30
+*/
+void vdFunc_Display_Ethernet_Status()
+{
+	unsigned int	uiXPos = 165;
+	
+	if (inETHERNET_IsPhysicalOnine() == VS_SUCCESS)
+	{
+		inDISP_PutGraphic(_ICON_ETHERNET_CONNECTED_, uiXPos, _COORDINATE_Y_LINE_16_1_);
+	}
+	else
+	{
+		inDISP_PutGraphic(_ICON_ETHERNET_DISCONNECTED_, uiXPos, _COORDINATE_Y_LINE_16_1_);
+	}
+}
+
+/*
+Function        :inFunc_GetSystemDateAndTime
+Date&Time       :2016/10/21 上午 11:42
+Describe        :Get出端末機系統日期時間，放到自定義的結構
+*/
+int inFunc_GetSystemDateAndTime(RTC_NEXSYS *srRTC)
+{
+	int		inRetVal = 0;
+	char		szDebugMsg[100 + 1] = {0};
+	CTOS_RTC	srSysRTC;
+	
+	memset(&srSysRTC, 0x00, sizeof(srSysRTC));
+	inRetVal = CTOS_RTCGet(&srSysRTC);
+	
+	if (inRetVal != d_OK)
+	{
+            printf("CTOS_RTCGet Failed inRetVal: 0x%04X\n", inRetVal);
+            return (VS_ERROR);
+	}
+	else
+	{
+		srRTC->uszYear = srSysRTC.bYear;
+		srRTC->uszMonth = srSysRTC.bMonth;
+		srRTC->uszDay = srSysRTC.bDay;
+		srRTC->uszHour = srSysRTC.bHour;
+		srRTC->uszMinute = srSysRTC.bMinute;
+		srRTC->uszSecond = srSysRTC.bSecond;
+		
+		/* 不一定每一種機型都Get的到星期幾，所以可以斟酌是否要這個 */
+		srRTC->uszDoW = srSysRTC.bDoW;
+
+		return (VS_SUCCESS);
+	}
+	
+}

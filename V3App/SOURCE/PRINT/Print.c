@@ -249,3 +249,45 @@ int inPRINT_Buffer_PutIn(char* szString, int inFontSize, unsigned char *uszBuffe
     inRetVal = inPRINT_Buffer_Sync_UnderLine(szString, uszBuffer, srFont_Attrib, srBhandle, inNextLine, uszPrintPosition, 0);
     return (inRetVal);
 }
+/*
+Function	:inPRINT_Buffer_PutIn_Specific_X_Position
+Date&Time	:2016/9/9 下午 1:46
+Describe	:此function說明同inPRINT_Buffer_PutIn，但可強制控制x軸位置，以應付要對齊某一座標點的時候
+ *szString:		put in 的字串
+ *inFontSize:		put in的字型大小	
+ *uszBuffer:		用來列印的Buffer
+ *srBhandle:		用來管理buffer現在寫到哪裡，是否寫超過紙張或Buffer最底部
+ *srFont_Attrib:	字的大小，字與字之間的間距
+ *inNextLine:		下次在Put in會在這一行還是下一行，放_LAST_ENTRY_表示下一次put in會放下一行
+ *intXPosition:		x軸位置
+ *
+*/
+int inPRINT_Buffer_PutIn_Specific_X_Position(char* szString, int inFontSize, unsigned char *uszBuffer, FONT_ATTRIB *srFont_Attrib, BufferHandle *srBhandle, int inNextLine, int intXPosition)
+{
+	int			inRetVal;		/* 若回傳沒紙要重印 */
+		
+	/* 設定列印字型大小 */
+	srFont_Attrib->FontSize = inFontSize;
+			
+	/* 放超過Buffer高度，回傳錯誤(直接假設該行印最大字型，若會超出bound就直接印出來) */
+	if ((srBhandle->inYcurrent + _MAX_Y_LENGTH_) > srBhandle->inYbound)
+	{
+		
+		/* 當放超過高度 直接OutPut並清空Buffer(保險起見) */
+		do
+		{
+			inRetVal = inPRINT_Buffer_OutPut(uszBuffer, srBhandle);
+			
+		} while (inRetVal != VS_SUCCESS);
+			
+		memset(uszBuffer, 0x00, srBhandle->inXbound * srBhandle->inYbound);
+
+		srBhandle->inXcurrent = 0;
+		srBhandle->inYcurrent = 0;
+		srBhandle->inYcurrentMAX = 0;
+	}
+	
+	inRetVal = inPRINT_Buffer_Sync_UnderLine(szString, uszBuffer, srFont_Attrib, srBhandle, inNextLine, _PRINT_BY_X_, intXPosition);
+	
+	return (inRetVal);
+}

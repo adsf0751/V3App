@@ -15,7 +15,7 @@ extern "C" {
 #include "../../PrtMsg.h"
 #include "../PRINT/Print.h"
 #include "../FUNCTION/Function.h"
-
+#include "../INCLUDE/TransType.h"
 typedef struct {
     int inBankLogoHeight; /* 銀行LOGO高度 */
     int inMerchantLogoHeight; /* 商店LOGO高度 */
@@ -32,7 +32,7 @@ int inCREDIT_PRINT_MerchantName(TRANSACTION_OBJECT *pobTran, unsigned char *uszB
 int inCREDIT_PRINT_Logo_ByBuffer(TRANSACTION_OBJECT *pobTran, unsigned char *uszBuffer, FONT_ATTRIB *srFont_Attrib, BufferHandle *srBhandle,BMPHeight*	gsrBMPHeight);
 int inCREDIT_PRINT_Tidmid_ByBuffer(TRANSACTION_OBJECT *pobTran, unsigned char *uszBuffer, FONT_ATTRIB *srFont_Attrib, BufferHandle *srBhandle);
 int inCREDIT_PRINT_Data_ByBuffer(TRANSACTION_OBJECT *pobTran, unsigned char *uszBuffer, FONT_ATTRIB *srFont_Attrib, BufferHandle *srBhandle);
-
+int inCREDIT_PRINT_ReceiptEND_ByBuffer(TRANSACTION_OBJECT *pobTran, unsigned char *uszBuffer, FONT_ATTRIB *srFont_Attrib, BufferHandle *srBhandle);
 #ifdef __cplusplus
 }
 #endif

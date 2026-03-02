@@ -865,7 +865,6 @@ int inDISP_Enter8x16_GetSetting(DISPLAY_OBJECT  *srDispObj)
                         case _KEY_8_ :
                         case _KEY_9_ :
                         case _KEY_ALPHA_:
-                            printf("----\n");
 				/* 金額第一位數不能為0 */
 //                                if (srDispObj->inOutputLen == 0 && uszkey - 48 == 0)
 //                                {
@@ -898,11 +897,10 @@ int inDISP_Enter8x16_GetSetting(DISPLAY_OBJECT  *srDispObj)
 
                 /* 一律先把畫面清掉後再顯示輸入訊息 */
                 if (srDispObj->inX != 0)
-                        //不懂
 			inDISP_Clear_Area(srDispObj->inX, srDispObj->inY, 16, srDispObj->inY, srDispObj->inFoneSize);
 		else
 			inDISP_Clear_Area(1, srDispObj->inY, 16, srDispObj->inY, srDispObj->inFoneSize);
-
+                
 		memset(szTemplate, 0x00, sizeof(szTemplate));
 		strcpy(szTemplate, srDispObj->szOutput);
 		/* 如果砍到沒金額，顯示0元而不是空白 */
@@ -913,14 +911,13 @@ int inDISP_Enter8x16_GetSetting(DISPLAY_OBJECT  *srDispObj)
 		
                 if (srDispObj->inR_L == _DISP_LEFT_)
                 {
-			inFunc_Amount_Comma(szTemplate, srDispObj->szPromptMsg, 0x00, _SIGNED_NONE_, 16, _PADDING_RIGHT_);
+//			inFunc_Amount_Comma(szTemplate, srDispObj->szPromptMsg, 0x00, _SIGNED_NONE_, 16, _PADDING_RIGHT_);
                         inDISP_EnglishFont_Color(szTemplate, _FONTSIZE_8X16_, srDispObj->inY, inColor, _DISP_LEFT_);
                 }
                 else if (srDispObj->inR_L == _DISP_RIGHT_)
                 {       
 
 //			inFunc_Amount_Comma(szTemplate, srDispObj->szPromptMsg, 0x00, _SIGNED_NONE_, 16, _PADDING_RIGHT_);                   
-                        printf("srDispObj->szOutput is %s\n",szTemplate);
                         inDISP_EnglishFont_Color(szTemplate, _FONTSIZE_8X16_, srDispObj->inY, inColor, _DISP_RIGHT_);
                 }
 		

@@ -47,6 +47,7 @@
       </logicalFolder>
       <logicalFolder name="INCLUDE" displayName="INCLUDE" projectFiles="true">
         <itemPath>SOURCE/INCLUDE/Define_1.h</itemPath>
+        <itemPath>SOURCE/INCLUDE/TransType.h</itemPath>
       </logicalFolder>
       <logicalFolder name="NCCC" displayName="NCCC" projectFiles="true">
         <itemPath>SOURCE/NCCCats.c</itemPath>
@@ -186,6 +187,8 @@
       </item>
       <item path="SOURCE/INCLUDE/Define_1.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SOURCE/INCLUDE/TransType.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SOURCE/NCCC/NCCCats.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/NCCCats.c" ex="false" tool="0" flavor2="0">
@@ -307,6 +310,8 @@
       <item path="SOURCE/FUNCTION/Sqlite_Struct.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/INCLUDE/Define_1.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/INCLUDE/TransType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/NCCC/NCCCats.h" ex="false" tool="3" flavor2="0">
       </item>

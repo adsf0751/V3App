@@ -39,9 +39,14 @@
 #define SO_REUSEADDR            2
 #define SOL_TCP                 6	/* TCP level */
 #define	TCP_MAXSEG              2	/* Set maximum segment size  */
-extern MY_ECR_DATA myECRTable[43];
-extern  char		gszTranDBPath[100 + 1];
+extern  MY_ECR_DATA myECRTable[43];
+extern  char    gszTranDBPath[100 + 1];
+unsigned char uszBuffer[PB_CANVAS_X_SIZE * 8 * _BUFFER_MAX_LINE_];
+BufferHandle srBhandle;
+FONT_ATTRIB srFont_Attrib;
+BMPHeight gsrBMPHeight;
 char szTableName[30+1] = "NCCC0001";
+RTC_NEXSYS  srRTC;
 SQLITE_TAG_TABLE TABLE_BATCH_TAG[] = 
 {
 	{"inTableID"			,"INTEGER"	,"PRIMARY KEY"	,""},	/* Table ID Primary key, sqlite table專用避免PRIMARY KEY重複 */
@@ -336,155 +341,153 @@ int inFuncInsertTxnRecord_By_Sqlite(TRANSACTION_OBJECT *pobTran)
 	sync();  
         return (VS_SUCCESS);
 }
+void vdDisplayPysicalOnline()
+{
+//    int inRetVal = inETHERNET_Open();
+//    if (inRetVal != VS_SUCCESS)
+//    {
+//        printf("inETHERNET_Open Failed\n");
+//        return;
+//    }
+    vdFunc_Display_Ethernet_Status();
+//    inRetVal = inETHERNET_Close();
+//    if (inRetVal != VS_SUCCESS)
+//    {
+//        printf("inETHERNET_Close ERR\n");
+//    }
+}
 void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
 {
     BYTE key;
-    int breakFlag = 0;
     int inRetVal = VS_ERROR;
     BYTE uszPackBuf[984];
     memset(uszPackBuf,0x00,sizeof(uszPackBuf));
     int inCnt = myPackData(uszPackBuf);
-    unsigned char   uszTemplate[60 + 1];
     BYTE uszRecvPacket[_NCCC_ATS_ISO_SEND_ + 1];
     int  inReceiveTimeout = 10;
     int	 inReceiveSize = _COMM_RECEIVE_MAX_LENGTH_;
-    while(1)
+    unsigned char   uszKey = 0;
+    memset(&srRTC,0x00,sizeof(RTC_NEXSYS));
+    CTOS_LCDTClearDisplay();
+    inRetVal = inETHERNET_Open();
+    if (inRetVal != VS_SUCCESS)
     {
-        CTOS_LCDTClearDisplay();
-        CTOS_LCDTPrintXY(1, 1, "Ethernet Menu");
-        CTOS_LCDTPrintXY(1, 2, "1:Set Config");
-        CTOS_LCDTPrintXY(1, 3, "2:Get Config");
-        CTOS_LCDTPrintXY(1, 4, "3:Connect");
-        CTOS_LCDTPrintXY(1, 5, "4:Tx Data");
-        CTOS_LCDTPrintXY(1, 6, "5.Rx Data");
-        CTOS_LCDTPrintXY(1, 7, "6.TEST");
-        CTOS_LCDTPrintXY(1, 16, "X.Exit");
-        CTOS_KBDGet(&key);
-        breakFlag = 0;
-        switch(key)
-        { 
-            case d_KBD_1: 
-            { 
-                CTOS_LCDTClearDisplay();               
-                inRetVal = inETHERNET_Initial();
-                if(inRetVal == VS_SUCCESS)
-                {
-                    CTOS_LCDTPrintXY(1, 1, "Config Set Success!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                    CTOS_LCDTPrintXY(1, 1, "Config Set Fail!!!");
-                    CTOS_Delay(2000);
-                }
-                break;                
-            }
-            case d_KBD_2: 
-            {   
-                CTOS_LCDTClearDisplay();
-                memset(uszTemplate, 0x00, sizeof(uszTemplate));               
-                memcpy(uszTemplate,"IP:", 3);
-                vdEthernetGetNetWorkValue(d_ETHERNET_CONFIG_IP,(unsigned char*)uszTemplate);
-                CTOS_LCDTPrintXY(1,1,uszTemplate);
-
-                memset(uszTemplate, 0x00, sizeof(uszTemplate));               
-                memcpy(uszTemplate,"GW:", 3);
-                vdEthernetGetNetWorkValue(d_ETHERNET_CONFIG_GATEWAY,(unsigned char*)uszTemplate);
-                CTOS_LCDTPrintXY(1,2,uszTemplate);
-
-                memset(uszTemplate, 0x00, sizeof(uszTemplate));               
-                memcpy(uszTemplate,"MASK:", 5);
-                vdEthernetGetNetWorkValue(d_ETHERNET_CONFIG_MASK,(unsigned char*)uszTemplate);
-                CTOS_LCDTPrintXY(1,3,uszTemplate);
-
-                CTOS_Delay(2000);
-                break;
-            }
-            case d_KBD_3: 
-            { 
-                CTOS_LCDTClearDisplay();
-                if(inETHERNET_SetConfig() == VS_SUCCESS)
-                {
-                    CTOS_LCDTPrintXY(1,1,"Connect Host Success!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                    CTOS_LCDTPrintXY(1, 1, "Connect Host Fail!!!");
-                    CTOS_Delay(2000);
-                }
-                break;
-            }
-            case d_KBD_4: 
-            {
-                CTOS_LCDTClearDisplay(); 
-                /*
-                 * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
-                 * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length，
-                 * 所以在此function會自動+2，為了不改動用到function，故再此先讓inSendSize -2
-                 */
-                if( inETHERNET_Send(uszPackBuf,inCnt-2,0) == VS_SUCCESS)
-                {
-                    CTOS_LCDTPrintXY(1,1,"EthernetTx Success!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                    CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
-                    CTOS_Delay(2000);
-                }
-                break;
-            }
-            case d_KBD_5: 
-            {   //BUG:Tx完按Rx可以正常使用，但只按RX多次會報錯，先記錄，暫時不改
-                CTOS_LCDTClearDisplay(); 
-                inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
-                if(inReceiveSize > 0 )
-                {
-                    myUnPackData( uszRecvPacket , inReceiveSize);
-                    CTOS_LCDTPrintXY(1,1,"EthernetRx Success!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                   CTOS_LCDTPrintXY(1,1,"EthernetRx Fail!!!");
-                   CTOS_Delay(2000); 
-                }
-                break;
-            }
-            case d_KBD_6: 
-            {   
-                //TODO:未使用到ETHERNET_PING()
-                CTOS_LCDTClearDisplay();
-                inFunc_Get_HostIP(pobTran);
-                break;
-            }
-            case d_KBD_CANCEL: 
-            { 
-                breakFlag = 1;
-                CTOS_LCDTClearDisplay(); 
-                if(inETHERNET_END() == VS_SUCCESS)
-                {
-                    CTOS_LCDTPrintXY(1,1,"EthernetDisconnSuccess!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                    CTOS_LCDTPrintXY(1,1,"EthernetDisconnFail!!!");
-                    CTOS_Delay(2000);
-                }
-                break;
-            }
+        printf("inETHERNET_Open Failed\n");
+        return;
+    }
+    while(1)
+    {  
+        if (srRTC.uszSecond % 10 == 0 )
+        {
+            vdDisplayPysicalOnline();
         }
-        if(breakFlag)
-            break;
+        if (inFunc_GetSystemDateAndTime(&srRTC) != VS_SUCCESS)
+        {
+                return (VS_ERROR);
+        }
+        CTOS_LCDTPrintXY(1, 2, "Ethernet Menu");
+        CTOS_LCDTPrintXY(1, 3, "1:Set Config");
+        CTOS_LCDTPrintXY(1, 4, "2:Connect");
+        CTOS_LCDTPrintXY(1, 5, "3:Tx Data");
+        CTOS_LCDTPrintXY(1, 6, "4:Rx Data");
+        CTOS_LCDTPrintXY(1, 7, "X:Exit");
+        uszKey = 0x00;
+        uszKey = uszKBD_Key();
+        if (uszKey != 0x00)
+        {    
+//        CTOS_KBDGet(&key);   
+            switch(uszKey)
+            { 
+                case d_KBD_1: 
+                { 
+                    CTOS_LCDTClearDisplay();               
+                    inFunc_Ethernet_Edit(pobTran);
+                    /*============開啟Ethernet設定============*/
+                    inRetVal = inETHERNET_Initial();
+                    /*============開啟Ethernet設定============*/
+                    break;                
+                }
+                case d_KBD_2: 
+                { 
+                    CTOS_LCDTClearDisplay();
+                    if(inETHERNET_SetConfig() == VS_SUCCESS)
+                    {
+                        CTOS_LCDTPrintXY(1,1,"Connect Host Success!!!");
+                        CTOS_Delay(2000);
+                    }
+                    else
+                    {
+                        CTOS_LCDTPrintXY(1, 1, "Connect Host Fail!!!");
+                        CTOS_Delay(2000);
+                    }
+                    break;
+                }
+                case d_KBD_3: 
+                {
+                    CTOS_LCDTClearDisplay(); 
+                    /*
+                     * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
+                     * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length，
+                     * 所以在此function會自動+2，為了不改動用到function，故再此先讓inSendSize -2
+                     */
+                    if( inETHERNET_Send(uszPackBuf,inCnt-2,0) == VS_SUCCESS)
+                    {
+                        CTOS_LCDTPrintXY(1,1,"EthernetTx Success!!!");
+                        CTOS_Delay(2000);
+                    }
+                    else
+                    {
+                        CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
+                        CTOS_Delay(2000);
+                    }
+                    break;
+                }
+                case d_KBD_4: 
+                {   //BUG:Tx完按Rx可以正常使用，但只按RX多次會報錯，先記錄，暫時不改
+                    CTOS_LCDTClearDisplay();
+                    memset(uszRecvPacket,0x00,sizeof(uszRecvPacket));
+                    inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
+                    if(inReceiveSize > 0 )
+                    {
+                        myUnPackData( uszRecvPacket , inReceiveSize);
+                        CTOS_LCDTPrintXY(1,1,"EthernetRx Success!!!");
+                        CTOS_Delay(2000);
+                    }
+                    else
+                    {
+                       CTOS_LCDTPrintXY(1,1,"EthernetRx Fail!!!");
+                       CTOS_Delay(2000); 
+                    }
+                    break;
+                }
+                case d_KBD_6: 
+                {   
+                    //TODO:未使用到ETHERNET_PING()
+                    CTOS_LCDTClearDisplay();            
+                    break;
+                }
+                case d_KBD_CANCEL: 
+                {  
+                    if (inETHERNET_END() != VS_SUCCESS)
+                    {
+                        printf("inETHERNET_END ERR\n");
+                    }
+                    if (inETHERNET_Close() != VS_SUCCESS)
+                    {
+                        printf("inETHERNET_Close ERR\n");
+                    }
+                    return;
+                }
+            }
+            CTOS_LCDTClearDisplay();
+            vdDisplayPysicalOnline();
+        }
     }
 }
 void vdSQLOpMenu(TRANSACTION_OBJECT* pobTran)
 {
     int i;
     BYTE key;
-    int breakFlag = 0;
     int inRetVal = VS_ERROR;
     char    szMaxTableID[10 + 1] = {0};
     SQLITE_ALL_TABLE srAll;
@@ -496,9 +499,8 @@ void vdSQLOpMenu(TRANSACTION_OBJECT* pobTran)
         CTOS_LCDTPrintXY(1, 2, "1:Get Top Record");
         CTOS_LCDTPrintXY(1, 3, "2:Get Records");
         CTOS_LCDTPrintXY(1, 4, "3:Delete Top Record");
-        CTOS_LCDTPrintXY(1, 16, "X.Exit");
+        CTOS_LCDTPrintXY(1, 5, "X:Exit");
         CTOS_KBDGet(&key);
-        breakFlag = 0;
         switch(key)
         { 
             case d_KBD_1: 
@@ -564,31 +566,25 @@ void vdSQLOpMenu(TRANSACTION_OBJECT* pobTran)
             }
             case d_KBD_CANCEL: 
             { 
-                breakFlag = 1;
-                break;
+                return;
             }
         }
-        if(breakFlag)
-            break;
     }
 }
 void vdRS232Menu(TRANSACTION_OBJECT* pobTran)
 {
     BYTE key;
-    int breakFlag = 0;
     int inRetVal = 0;
     ECR_TABLE   gsrECROb = {.srSetting.uszComPort = d_COM2};
     while(1)
     {
         CTOS_LCDTClearDisplay();
         CTOS_LCDTPrintXY(1, 1, "Rs232 Menu");
-        CTOS_LCDTPrintXY(1, 2, "1:Set Config");
-        
+        CTOS_LCDTPrintXY(1, 2, "1:Set Config"); 
         CTOS_LCDTPrintXY(1, 3, "2:Rx Data");
         CTOS_LCDTPrintXY(1, 4, "3:Tx Data");
-        CTOS_LCDTPrintXY(1, 16, "X.Exit");
+        CTOS_LCDTPrintXY(1, 5, "X:Exit");
         CTOS_KBDGet(&key);
-        breakFlag = 0;
         switch(key)
         { 
             case d_KBD_1: 
@@ -655,23 +651,9 @@ void vdRS232Menu(TRANSACTION_OBJECT* pobTran)
             
             case d_KBD_CANCEL: 
             { 
-                breakFlag = 1;
-                CTOS_LCDTClearDisplay(); 
-                if(inRS232_Close(gsrECROb.srSetting.uszComPort) == VS_SUCCESS)
-                {
-                    CTOS_LCDTPrintXY(1,1,"RS232DisconnSuccess!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                    CTOS_LCDTPrintXY(1,1,"RS232DisconnFail!!!");
-                    CTOS_Delay(2000);
-                }
-                break;
+                return;
             }
         }
-        if(breakFlag)
-            break;
     }
 }
 
@@ -680,8 +662,10 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
     BYTE key;
     BYTE uszPackBuf[984];
     memset(uszPackBuf,0x00,sizeof(uszPackBuf));
+    BYTE uszRecvPacket[_NCCC_ATS_ISO_SEND_ + 1];
+    int  inReceiveTimeout = 10;
+    int	 inReceiveSize = _COMM_RECEIVE_MAX_LENGTH_;
     unsigned char uszKey = 0;
-    int i = 0;
     int inRetVal = 0;
     SQLITE_ALL_TABLE	srAll;
     CTOS_LCDTClearDisplay(); 
@@ -729,95 +713,159 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
                     else
                     {
                         printf("Get Amount Failed\n");
-                        return ;
                     }     
                     break;
             }
             //取得金額後發送電文
             CTOS_LCDTClearDisplay();
-//            int inCnt = mySalePackData(pobTran,uszPackBuf);
-//
-//            inRetVal = inETHERNET_Initial();
-//            if(inRetVal == VS_SUCCESS)
-//            {
-//                CTOS_LCDTPrintXY(1, 1, "Config Set Success!!!");
-//                CTOS_Delay(2000);
-//            }
-//            else
-//            {
-//                CTOS_LCDTPrintXY(1, 1, "Config Set Fail!!!");
-//                CTOS_Delay(2000);
-//            }
-//            CTOS_LCDTClearDisplay();
-//            if(inETHERNET_SetConfig() == VS_SUCCESS)
-//            {
-//                CTOS_LCDTPrintXY(1,1,"Connect Host Success!!!");
-//                CTOS_Delay(2000);
-//            }
-//            else
-//            {
-//                CTOS_LCDTPrintXY(1, 1, "Connect Host Fail!!!");
-//                CTOS_Delay(2000);
-//            }
-//            
-//            CTOS_LCDTClearDisplay(); 
-//            if( inETHERNET_Send(uszPackBuf,inCnt-2,0) == VS_SUCCESS)
-//            {
-//                CTOS_LCDTPrintXY(1,1,"EthernetTx Success!!!");
-//                CTOS_Delay(2000);
-//            }
-//            else
-//            {
-//                CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
-//                CTOS_Delay(2000);
-//            }
-            /*
-             * TODO:
-             * 1.Insert into table 可以存每筆交易，
-             * 可能包含 流水號、MID、TID、金額、交易類型、建立時間等
-             * 2.列印簽單            
-             */
-            inFuncInsertTxnRecord_By_Sqlite(pobTran);
+            int inCnt = mySalePackData(pobTran,uszPackBuf);
 
+            inRetVal = inETHERNET_Initial();
+            if(inRetVal == VS_SUCCESS)
+            {
+                CTOS_LCDTPrintXY(1, 1, "Config Set Success!!!");
+                CTOS_Delay(2000);
+            }
+            else
+            {
+                CTOS_LCDTPrintXY(1, 1, "Config Set Fail!!!");
+                CTOS_Delay(2000);
+            }
+            CTOS_LCDTClearDisplay();
+            if(inETHERNET_SetConfig() == VS_SUCCESS)
+            {
+                CTOS_LCDTPrintXY(1,1,"Connect Host Success!!!");
+                CTOS_Delay(2000);
+            }
+            else
+            {
+                CTOS_LCDTPrintXY(1, 1, "Connect Host Fail!!!");
+                CTOS_Delay(2000);
+                break;
+            }
+          
+            CTOS_LCDTClearDisplay(); 
+            if( inETHERNET_Send(uszPackBuf,inCnt-2,0) == VS_SUCCESS)
+            {
+                CTOS_LCDTPrintXY(1,1,"EthernetTx Success!!!");
+                CTOS_Delay(2000);
+            }
+            else
+            {
+                CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
+                CTOS_Delay(2000);
+                break;
+            }
+            CTOS_LCDTClearDisplay();
+            memset(uszRecvPacket,0x00,sizeof(uszRecvPacket));
+            inReceiveSize = inETHERNET_Receive(uszRecvPacket,inReceiveSize,inReceiveTimeout);
+            if(inReceiveSize > 0 )
+            {
+                myUnPackData( uszRecvPacket , inReceiveSize);
+                CTOS_LCDTPrintXY(1,1,"EthernetRx Success!!!");
+                CTOS_Delay(2000);
+            }
+            else
+            {
+               CTOS_LCDTPrintXY(1,1,"EthernetRx Fail!!!");
+               CTOS_Delay(2000);
+               break;
+            }
+            if (inETHERNET_END() != VS_SUCCESS)
+            {
+                printf("inETHERNET_END ERR\n");
+                break;
+            }
+            if (inETHERNET_Close() != VS_SUCCESS)
+            {
+                printf("inETHERNET_Close ERR\n");
+                break;
+            }
+            inFuncInsertTxnRecord_By_Sqlite(pobTran);
+            inCREDIT_PRINT_Receipt_ByBuffer(pobTran);
             break;
         }
     }
 }
 
-
+/*
+Function        :inCREDIT_PRINT_Receipt_ByBuffer
+Date&Time       :2015/8/10 上午 10:24
+Describe        :列印信用卡
+*/
+int inCREDIT_PRINT_Receipt_ByBuffer(TRANSACTION_OBJECT *pobTran)
+{
+    int inRetVal = VS_ERROR;
+    if ((inRetVal = inCREDIT_PRINT_Logo_ByBuffer(pobTran, uszBuffer, &srFont_Attrib, &srBhandle,&gsrBMPHeight)) != VS_SUCCESS)
+    {
+        printf("inCREDIT_PRINT_Logo_ByBuffer failed, ret=%d\n",inRetVal);
+        return inRetVal;
+    }
+        
+    if ((inRetVal = inCREDIT_PRINT_Tidmid_ByBuffer(pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)
+    {
+        printf("inCREDIT_PRINT_Tidmid_ByBuffer failed, ret=%d\n",inRetVal);
+        return inRetVal;
+    }    
+    if ((inRetVal = inCREDIT_PRINT_Data_ByBuffer(pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)
+    {
+        printf("inCREDIT_PRINT_Data_ByBuffer failed, ret=%d\n",inRetVal);
+        return inRetVal;
+    }      
+    if ((inRetVal = inCREDIT_PRINT_Amount_ByBuffer(pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)
+    {
+        printf("inCREDIT_PRINT_Amount_ByBuffer failed, ret=%d\n",inRetVal);
+        return inRetVal;
+    }     
+    if ((inRetVal = inCREDIT_PRINT_ReceiptEND_ByBuffer(pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)
+    {
+        printf("inCREDIT_PRINT_ReceiptEND_ByBuffer failed, ret=%d\n",inRetVal);
+        return inRetVal;
+    }                  
+    if ((inRetVal = inPRINT_Buffer_OutPut(uszBuffer, &srBhandle)) != VS_SUCCESS)
+    {
+        printf("inPRINT_Buffer_OutPut failed, ret=%d\n",inRetVal);
+        return inRetVal;
+    }   
+    return inRetVal;
+}
 int main(int argc, char *argv[]) {
     BYTE key;
     CTOS_LCDTClearDisplay();
     int i;
     int  inRetVal = 0;
-    unsigned char uszBuffer[PB_CANVAS_X_SIZE * 8 * _BUFFER_MAX_LINE_];
-    BufferHandle srBhandle;
-    FONT_ATTRIB srFont_Attrib;
     TRANSACTION_OBJECT pobTran;
     memset(&pobTran, 0, sizeof(TRANSACTION_OBJECT));
     /*============假資料============*/
-    pobTran.srBRec.inPrintOption = _PRT_CUST_;
+    pobTran.srBRec.inCode = _SALE_;
+    pobTran.srBRec.inPrintOption = _PRT_MERCH_;
     strcpy(pobTran.srBRec.szCardLabel, "VISA"); //卡別
     strcpy(pobTran.srBRec.szPAN, "493817******1411"); //卡號
-    strcpy(pobTran.srBRec.szDate, "1223"); //日期
+    strcpy(pobTran.srBRec.szCheckNO, "56795"); //檢查碼
+    strcpy(pobTran.srBRec.szDate, "20260302"); //日期
     strcpy(pobTran.srBRec.szTime, "143059"); //時間
-    pobTran.srBRec.lnOrgInvNum = 1;
+    pobTran.srBRec.lnOrgInvNum = 35;
     pobTran.srBRec.lnBatchNum  = 1;
     strcpy(pobTran.srBRec.szAuthCode, "777777");
-    strcpy(pobTran.srBRec.szRefNo, "999999999999");
+    strcpy(pobTran.srBRec.szRefNo, "99202001035");
+    strcpy(pobTran.srBRec.szRespCode, "00");
+    strcpy(pobTran.srBRec.szStoreID,"2222");
+    strcpy(pobTran.srBRec.szCardHolder,"Huang");
+    pobTran.srBRec.lnTxnAmount = 19999;
+    pobTran.srBRec.uszNoSignatureBit == VS_TRUE;
     /*============假資料============*/
     /*============LCD設定============*/
     inDISP_Initial();
     /*============LCD設定============*/
-    BMPHeight gsrBMPHeight;
+    
     /* 可查看是否有fs_data路徑(是否有Load img.mci) */
 //    inFunc_ls("-R -l", _AP_ROOT_PATH_); 
     CTOS_LCDTPrintXY(1, 1, "System Startup");
     CTOS_LCDTPrintXY(1, 2, "Loading Image...");
     CTOS_LCDTPrintXY(1, 3, "Configuring Printer...");
-    CTOS_LCDTPrintXY(1, 4, "DB Setting..."); 
+    CTOS_LCDTPrintXY(1, 3, "Initializing Ethernet...");
+    CTOS_LCDTPrintXY(1, 4, "Setting DB...");
     CTOS_Delay(1000);
-
     //要先Load APP.mci，再來才是Load img.mci
     inFunc_Booting_Flow_Print_Image_Initial(&pobTran,&gsrBMPHeight);
     printf("初始化圖片預設高度\n");
@@ -830,9 +878,8 @@ int main(int argc, char *argv[]) {
     CTOS_FontTTFSelectFontFile(d_FONT_DEVICE_PRINTER, "tsuyuan.ttf", 0);
     CTOS_FontTTFSelectStyle(d_FONT_DEVICE_PRINTER, d_FONT_STYLE_NORMAL);
     /*============印表機設定============*/
-    int breakFlag = 0;
     inPRINT_Buffer_Initial(uszBuffer, _BUFFER_MAX_LINE_, &srFont_Attrib, &srBhandle);
-    
+  
     /*============開啟資料庫============*/
     if(inSqlite_Initial() != VS_SUCCESS)
     {
@@ -843,31 +890,23 @@ int main(int argc, char *argv[]) {
     
     while(1)
     {
+        /*============LCD設定============*/
+        inDISP_Initial();
+        /*============LCD設定============*/
         CTOS_LCDTClearDisplay();
         CTOS_LCDTPrintXY(1, 1, "Main Menu");
         CTOS_LCDTPrintXY(1, 2, "1:Print Receipt");
-        CTOS_LCDTPrintXY(1, 3, "2:Ethernet COMM");
-        CTOS_LCDTPrintXY(1, 4, "3:Rs232 COMM");
+        CTOS_LCDTPrintXY(1, 3, "2:Ethernet Comm");
+        CTOS_LCDTPrintXY(1, 4, "3:Rs232 Comm");
         CTOS_LCDTPrintXY(1, 5, "4:__SALE__");
         CTOS_LCDTPrintXY(1, 6, "5:Sql Operation");
         CTOS_LCDTPrintXY(1, 16, "X:Exit");
         CTOS_KBDGet(&key);
-        breakFlag = 0;
         switch(key)
         { 
             case d_KBD_1: 
             { 
-                /*
-                 * TODO:改放在一個function table 呼叫下方列印簽單。
-                 */
-                if ((inRetVal = inCREDIT_PRINT_Logo_ByBuffer(&pobTran, uszBuffer, &srFont_Attrib, &srBhandle,&gsrBMPHeight)) != VS_SUCCESS)
-                    printf("inCREDIT_PRINT_Logo_ByBuffer failed, ret=%d\n",inRetVal);
-                if ((inRetVal = inCREDIT_PRINT_Tidmid_ByBuffer(&pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)
-                    printf("inCREDIT_PRINT_Tidmid_ByBuffer failed, ret=%d\n",inRetVal);
-                if ((inRetVal = inCREDIT_PRINT_Data_ByBuffer(&pobTran, uszBuffer, &srFont_Attrib, &srBhandle)) != VS_SUCCESS)
-                    printf("inCREDIT_PRINT_Data_ByBuffer failed, ret=%d\n",inRetVal);
-                if ((inRetVal = inPRINT_Buffer_OutPut(uszBuffer, &srBhandle)) != VS_SUCCESS)
-                    printf("inPRINT_Buffer_OutPut failed, ret=%d\n",inRetVal);
+               inCREDIT_PRINT_Receipt_ByBuffer(&pobTran);
                break;
             }
             //BUG:進入選單直接選擇跳出會因為 跳出做disconnet 但因為沒有open過而顯示diconn fail
@@ -894,12 +933,9 @@ int main(int argc, char *argv[]) {
             }
             case d_KBD_CANCEL: 
             { 
-                breakFlag = 1;
-                break;
+               exit(0);
             }
         }
-        if(breakFlag)
-            break;
     }
-    exit(0);
+    
 }
