@@ -25,8 +25,13 @@
         <itemPath>SOURCE/CREDIT/CreditptrByBuffer.h</itemPath>
       </logicalFolder>
       <logicalFolder name="DISPLAY" displayName="DISPLAY" projectFiles="true">
+        <itemPath>SOURCE/DISPLAY/DisTouch.c</itemPath>
+        <itemPath>SOURCE/DISPLAY/DisTouch.h</itemPath>
         <itemPath>SOURCE/DISPLAY/Display.c</itemPath>
         <itemPath>SOURCE/DISPLAY/Display.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="EVENT" displayName="EVENT" projectFiles="true">
+        <itemPath>SOURCE/EVENT/MenuMsg.h</itemPath>
       </logicalFolder>
       <logicalFolder name="FUNCTION" displayName="FUNCTION" projectFiles="true">
         <itemPath>SOURCE/FUNCTION/Batch.c</itemPath>
@@ -151,9 +156,15 @@
       </item>
       <item path="SOURCE/CREDIT/CreditptrByBuffer.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SOURCE/DISPLAY/DisTouch.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/DISPLAY/DisTouch.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SOURCE/DISPLAY/Display.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/DISPLAY/Display.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/EVENT/MenuMsg.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/Batch.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -275,9 +286,15 @@
       </item>
       <item path="SOURCE/CREDIT/CreditptrByBuffer.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SOURCE/DISPLAY/DisTouch.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="SOURCE/DISPLAY/DisTouch.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SOURCE/DISPLAY/Display.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="SOURCE/DISPLAY/Display.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SOURCE/EVENT/MenuMsg.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SOURCE/FUNCTION/Batch.c" ex="false" tool="0" flavor2="0">
       </item>

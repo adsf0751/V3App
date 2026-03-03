@@ -4,7 +4,8 @@
  *
  * Created on 2015年7月27日, 下午 5:05
  */
-
+#ifndef TRANSTYPE_H
+#define TRANSTYPE_H
 typedef enum
 {
 	_TRANS_TYPE_NULL_ = 0x00,
@@ -164,3 +165,4 @@ typedef enum
 	_TRUST_SALE_,
 	_TRUST_VOID_,
 } TRANS_TYPE;
+#endif 

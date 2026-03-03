@@ -1,6 +1,7 @@
 
 #include "Function.h" //FOR _PADDING_RIGHT_ /_PADDING_LEFT_
 //extern BMPHeight gsrBMPHeight;
+extern RTC_NEXSYS  srRTC;
 
 /*
 Function        :inFunc_Amount_Comma
@@ -528,4 +529,233 @@ int inFunc_GetSystemDateAndTime(RTC_NEXSYS *srRTC)
 		return (VS_SUCCESS);
 	}
 	
+}
+
+/*
+Function        :inFunc_GetMenuNum_NewUI
+Date&Time       :2017/10/31 下午 5:09
+Describe        :
+*/
+int inFunc_GetMenuNum_NewUI(TRANSACTION_OBJECT *pobTran,char menuText[][49],int menuCount,int* inKey)
+{
+	int		inOpenHostCnt = 0;      /* 記錄有幾個Host有開 */
+	int		i, j = 0;               /* j是inHostIndex陣列索引 */
+	int		inHostIndex[12 + 1];    /* 記錄HostEnable為Y的HostIndex */
+	int		inChoice = 0;
+	int		inTouchSensorFunc = _Touch_NEWUI_CHOOSE_HOST_;
+	int		inRetVal = VS_SUCCESS;
+	int		inRetVal2 = VS_ERROR;	/* inFunc_Load_Last_Txn_Host使用 */
+	int		inLastHDTIndex = -1;
+        int             inFindHDTIndex = -1;
+	char		szKey = 0;
+	char		szHostEnable[2 + 1] = {0};
+	char		szHostName[42 + 1] = {0};
+	char		szTemp[48 + 1] = {0};
+	char		szLine1[48 + 1] = {0};		/* 存第一行要顯示的Host */	/* linux系統中文字length一個字為3，小心爆掉 */
+	char		szLine2[48 + 1] = {0};		/* 存第二行要顯示的Host */
+	char		szLine3[48 + 1] = {0};		/* 存第三行要顯示的Host */
+	char		szLine4[48 + 1] = {0};
+	char		szLine5[48 + 1] = {0};
+	char		szLine6[48 + 1] = {0};
+	char		szTemp2[48 + 1] = {0};
+	char		szLine1_2[48 + 1] = {0};	/* 存第一行要顯示的Host */	/* linux系統中文字length一個字為3，小心爆掉 */
+	char		szLine2_2[48 + 1] = {0};	/* 存第二行要顯示的Host */
+	char		szLine3_2[48 + 1] = {0};	/* 存第三行要顯示的Host */
+	char		szLine4_2[48 + 1] = {0};
+	char		szLine5_2[48 + 1] = {0};
+	char		szLine6_2[48 + 1] = {0};
+	char		szBatchNum[6 + 1] = {0};
+	char		szTimeout[4 + 1] = {0};
+	char		szDebugMsg[42 + 1] = {0};
+	char		szCustomerIndicator[3 + 1] = {0};
+	DISPLAY_OBJECT  srDispObj;
+        
+        printf("inFunc_GetHostNum_NewUI START!\n");
+
+        memset(szLine1, 0x00, sizeof(szLine1));
+        memset(szLine2, 0x00, sizeof(szLine2));
+        memset(szLine3, 0x00, sizeof(szLine3));
+        memset(szLine4, 0x00, sizeof(szLine4));
+	memset(szLine5, 0x00, sizeof(szLine5));
+	memset(szLine6, 0x00, sizeof(szLine6));
+	memset(szLine1_2, 0x00, sizeof(szLine1_2));
+        memset(szLine2_2, 0x00, sizeof(szLine2_2));
+        memset(szLine3_2, 0x00, sizeof(szLine3_2));
+        memset(szLine4_2, 0x00, sizeof(szLine4_2));
+	memset(szLine5_2, 0x00, sizeof(szLine5_2));
+	memset(szLine6_2, 0x00, sizeof(szLine6_2));
+        memset(szTimeout, 0x00, sizeof(szTimeout));
+        memset(inHostIndex, 0x00, sizeof(inHostIndex));
+        memset(&srDispObj, 0x00, sizeof(DISPLAY_OBJECT));
+	for(i=0;i < menuCount;i++)
+        {
+            switch (i+1)
+            {
+                case 1:
+                    memcpy(&szLine1[0], &menuText[i], strlen(menuText[i]));
+                    sprintf(szLine1_2,"%d",i+1);    
+                    break;
+                case 2:
+                    memcpy(&szLine2[0], &menuText[i], strlen(menuText[i]));
+                    sprintf(szLine2_2,"%d",i+1);
+                    break;
+                case 3:
+                    memcpy(&szLine3[0], &menuText[i], strlen(menuText[i]));
+                    sprintf(szLine3_2,"%d",i+1);
+                    break;
+                case 4:
+                    memcpy(&szLine4[0], &menuText[i], strlen(menuText[i]));
+                    sprintf(szLine4_2,"%d",i+1);
+                    break;
+                case 5:
+                    memcpy(&szLine5[0], &menuText[i], strlen(menuText[i]));
+                    sprintf(szLine5_2,"%d",i+1);
+                    break;
+                case 6:
+                    memcpy(&szLine6[0], &menuText[i], strlen(menuText[i]));
+                    sprintf(szLine6_2,"%d",i+1);
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+//        CTOS_LCDTClearDisplay();
+        switch (i)
+        {
+            case 2:
+                inDISP_PutGraphic(_CHOOSE_HOST_2_, 0,_COORDINATE_Y_LINE_8_1_);
+                break;
+
+            case 3:
+                inDISP_PutGraphic(_CHOOSE_HOST_3_, 0,_COORDINATE_Y_LINE_8_1_);
+                break;
+
+            case 4:
+                inDISP_PutGraphic(_CHOOSE_HOST_4_, 0,_COORDINATE_Y_LINE_8_1_);
+                break;
+
+            case 5:
+                inDISP_PutGraphic(_CHOOSE_HOST_5_, 0,_COORDINATE_Y_LINE_8_1_);
+                break;
+
+            case 6:
+                inDISP_PutGraphic(_CHOOSE_HOST_6_, 0,_COORDINATE_Y_LINE_8_1_);
+                break;
+
+            default:
+                inDISP_PutGraphic(_CHOOSE_HOST_6_, 0,_COORDINATE_Y_LINE_8_1_);
+                break;
+        }
+        /* 這邊是類似原先有display graphic 三個藍框，然後把主機名填上去?*/
+        /*有開多個Host */
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine1  , _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_1_, _COORDINATE_Y_LINE_16_3_, VS_FALSE);
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine1_2, _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_1_, _COORDINATE_Y_LINE_16_4_, VS_FALSE);
+
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine2  , _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_2_-5, _COORDINATE_Y_LINE_16_3_, VS_FALSE);
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine2_2, _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_2_-5, _COORDINATE_Y_LINE_16_4_, VS_FALSE);
+
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine3  , _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_3_-10, _COORDINATE_Y_LINE_16_3_, VS_FALSE);
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine3_2, _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_3_-10, _COORDINATE_Y_LINE_16_4_, VS_FALSE);
+
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine4  , _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_1_, _COORDINATE_Y_LINE_16_7_, VS_FALSE);
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine4_2, _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_1_, _COORDINATE_Y_LINE_16_8_, VS_FALSE);
+
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine5  , _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_2_-5, _COORDINATE_Y_LINE_16_7_, VS_FALSE);
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine5_2, _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_2_-5, _COORDINATE_Y_LINE_16_8_, VS_FALSE);
+
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine6  , _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_3_-10, _COORDINATE_Y_LINE_16_7_, VS_FALSE);
+        inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine6_2, _FONTSIZE_24X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_MENU_3_-10, _COORDINATE_Y_LINE_16_8_, VS_FALSE);
+      
+        inDISP_Timer_Start(_TIMER_NEXSYS_1_, 30);
+        while (1)
+        {
+                inChoice = inDisTouch_TouchSensor_Click_Slide(inTouchSensorFunc);
+                szKey = uszKBD_Key();
+
+                /* 轉成數字判斷是否在inOpenHostCnt的範圍內 */
+                *inKey = 0;
+                /* 有觸摸*/
+                if (inChoice != _DisTouch_No_Event_)
+                {
+                        switch (inChoice)
+                        {
+                                case _NEWUI_CHOOSE_HOST_Touch_HOST_1_:
+                                        *inKey = 1;
+                                        break;
+                                case _NEWUI_CHOOSE_HOST_Touch_HOST_2_:
+                                        *inKey = 2;
+                                        break;
+                                case _NEWUI_CHOOSE_HOST_Touch_HOST_3_:
+                                        *inKey = 3;
+                                        break;
+                                case _NEWUI_CHOOSE_HOST_Touch_HOST_4_:
+                                        *inKey = 4;
+                                        break;
+                                case _NEWUI_CHOOSE_HOST_Touch_HOST_5_:
+                                        *inKey = 5;
+                                        break;
+                                case _NEWUI_CHOOSE_HOST_Touch_HOST_6_:
+                                        *inKey = 6;
+                                        break;
+                                default:
+                                        *inKey = 0;
+                                        break;
+                        }
+                }
+                /* 有按按鍵 */
+                else if (szKey != 0)
+                {
+                        switch (szKey)
+                        {
+                                case _KEY_1_:
+                                        *inKey = 1;
+                                        break;
+                                case _KEY_2_:
+                                        *inKey = 2;
+                                        break;
+                                case _KEY_3_:
+                                        *inKey = 3;
+                                        break;
+                                case _KEY_4_:
+                                        *inKey = 4;
+                                        break;
+                                case _KEY_5_:
+                                        *inKey = 5;
+                                        break;
+                                case _KEY_6_:
+                                        *inKey = 6;
+                                        break;
+                                default:
+                                        *inKey = 0;
+                                        break;
+                        }
+                }
+
+                /* Timeout */
+                if (inTimerGet(_TIMER_NEXSYS_1_) == VS_SUCCESS)
+                {
+                    szKey = _KEY_TIMEOUT_;
+                }
+
+                if (szKey == _KEY_CANCEL_)
+                {
+                    inRetVal = VS_USER_CANCEL;
+                    break;
+                }
+                else if (szKey == _KEY_TIMEOUT_)
+                {
+                    inRetVal = VS_TIMEOUT;
+                    break;
+                }
+                else if (*inKey >= 1 && *inKey <= i)
+                {
+                    printf("inkey is %d\n",*inKey);
+                    break;
+                    //do nothing
+                }
+        }
+        /* 清空Touch資料 */
+        inDisTouch_Flush_TouchFile();
+	return (inRetVal);
 }

@@ -523,6 +523,10 @@ int inDISP_EnglishFont_Color(char *szMessage, int inFontSize, int inLINE, int in
 int inDISP_TTF_SetFont(int inLanguage, int inFontStyle);
 int inDISP_Decide_FontSize(int inFontSize, int inLanguage, unsigned short* usFontsize);
 int inDISP_Enter8x16_GetSetting(DISPLAY_OBJECT  *srDispObj);
+int inDISP_ChineseFont_Point_Color_By_Graphic_Mode(char *szMessage, int inFontSize, int inForeColor, int inBackColor, int inX, int inY, unsigned char uszReverse);
+
+
+
 #ifdef __cplusplus
 }
 #endif

@@ -975,11 +975,11 @@ int inDISP_PutGraphic(char *szFileName, int inX, int inY) {
     inY_Modify = inY;
 
     usRetVal = CTOS_LCDGShowBMPPic(inX, inY_Modify, (BYTE *) szFileName);
-    ;
+    
     if (usRetVal == d_OK) {
         printf(" CTOS_LCDGShowBMPPic == d_OK\n");
     } else {
-        printf("VS_ERROR\n");
+        printf("VS_ERROR,FileName is %s\n",szFileName);
         return (VS_ERROR);
     }
     return (VS_SUCCESS);
@@ -1118,4 +1118,48 @@ int inTimerStart(int inTimerNbr, long lnDelay) {
     CTOS_TimeOutSet(inTimerNbr, lnDelay * 100);
 
     return (VS_SUCCESS);
+}
+
+/*
+Function        :inDISP_ChineseFont_Point_Color_By_Graphic_Mode
+Date&Time       :2018/4/11 上午 9:20
+Describe        :如果用Text Mode會有中文字和英文字對不齊的問題，這時候可以改用Graphic_Mode
+*/
+//("1", _FONTSIZE_16X22_, _COLOR_BLACK_, _COLOR_WHITE_, _Distouch_KEY_IN_MENU_LINE_3_TO_8_3X4_Touch_KEY_1_BUTTON_Xm_, _Distouch_KEY_IN_MENU_LINE_3_TO_8_3X4_Touch_KEY_1_BUTTON_Y1_, VS_FALSE);
+int inDISP_ChineseFont_Point_Color_By_Graphic_Mode(char *szMessage, int inFontSize, int inForeColor, int inBackColor, int inX, int inY, unsigned char uszReverse)
+{
+	int		inY_Modify;
+	int		inRetVal = VS_SUCCESS;
+	unsigned short	usFontSize = 0;
+	
+        if (ginSetFont != _DISP_CHINESE_ )
+        {
+                /* 判斷是否已經SetFont過_DISP_CHINESE_，如果沒有就要Set */
+                inDISP_TTF_SetFont(_DISP_CHINESE_, _FONT_DISPLAY_REGULAR_);     /* 微軟正黑體 */
+        }
+	
+	/* 將字體顏色換色 */
+        CTOS_LCDForeGndColor(inForeColor);
+	/* 將背景顏色換色 */
+	CTOS_LCDBackGndColor(inBackColor);
+	
+	inDISP_Decide_FontSize(inFontSize, _DISP_CHINESE_, &usFontSize);
+
+//	if (ginHalfLCD == VS_TRUE)
+//		inY_Modify = inY / 2;
+//	else
+		inY_Modify = inY;
+	
+        inRetVal = CTOS_LCDGTextOut(inX, inY_Modify, (unsigned char*)szMessage, usFontSize, uszReverse);
+	if (inRetVal != d_OK)
+	{
+            printf("0x%04X\n", inRetVal);
+	}
+
+        /* 將字體顏色換回黑色 */
+        CTOS_LCDForeGndColor(0x00000000);
+	/* 將背景顏色換回白色 */
+	CTOS_LCDBackGndColor(0x00FFFFFF);
+
+        return (VS_SUCCESS);
 }

@@ -10,7 +10,9 @@ extern "C" {
 #include <string.h>
 #include <stdlib.h>
 #include "../CREDIT/CreditptrByBuffer.h"
-
+#include "../EVENT/MenuMsg.h"
+#include "../DISPLAY/DisTouch.h"
+#include "../INCLUDE/Define_1.h"
 #define _PADDING_RIGHT_         0  /* 靠左右補字元 */
 #define _PADDING_LEFT_          1  /* 靠右左補字元 */
 #define _SIGNED_NONE_		0
@@ -31,6 +33,9 @@ int inFunc_ShellCommand_System(char *);
 int inFunc_ls(char* , char* );
 int inFunc_PAD_ASCII(char *, char *, char , int , int );
 int inFunc_Amount_Comma(char *szAmt, char *szCurSymbol, char szPad_char, int inSigned, int inWide, int inAlign);
+int inFunc_GetMenuNum_NewUI(TRANSACTION_OBJECT *pobTran,char menuText[][49],int menuCount,int* inKey);
+
+
 #ifdef __cplusplus
 }
 #endif

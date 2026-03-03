@@ -375,6 +375,7 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
         printf("inETHERNET_Open Failed\n");
         return;
     }
+   
     while(1)
     {  
         if (srRTC.uszSecond % 10 == 0 )
@@ -390,12 +391,11 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
         CTOS_LCDTPrintXY(1, 4, "2:Connect");
         CTOS_LCDTPrintXY(1, 5, "3:Tx Data");
         CTOS_LCDTPrintXY(1, 6, "4:Rx Data");
-        CTOS_LCDTPrintXY(1, 7, "X:Exit");
+        CTOS_LCDTPrintXY(1, 7, "X:Exit");    
         uszKey = 0x00;
         uszKey = uszKBD_Key();
         if (uszKey != 0x00)
-        {    
-//        CTOS_KBDGet(&key);   
+        {
             switch(uszKey)
             { 
                 case d_KBD_1: 
@@ -442,7 +442,7 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                     }
                     break;
                 }
-                case d_KBD_4: 
+                case d_KBD_4:
                 {   //BUG:Tx完按Rx可以正常使用，但只按RX多次會報錯，先記錄，暫時不改
                     CTOS_LCDTClearDisplay();
                     memset(uszRecvPacket,0x00,sizeof(uszRecvPacket));
@@ -460,7 +460,7 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                     }
                     break;
                 }
-                case d_KBD_6: 
+                case d_KBD_5: 
                 {   
                     //TODO:未使用到ETHERNET_PING()
                     CTOS_LCDTClearDisplay();            
@@ -477,11 +477,11 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                         printf("inETHERNET_Close ERR\n");
                     }
                     return;
-                }
+                }   
             }
             CTOS_LCDTClearDisplay();
             vdDisplayPysicalOnline();
-        }
+        }  
     }
 }
 void vdSQLOpMenu(TRANSACTION_OBJECT* pobTran)
@@ -492,169 +492,330 @@ void vdSQLOpMenu(TRANSACTION_OBJECT* pobTran)
     char    szMaxTableID[10 + 1] = {0};
     SQLITE_ALL_TABLE srAll;
     char szQuerySql[100+1];
+    char sqlMenu[][48+1]={"ShowOne","ShowAll","DeleteOne"};
+    int cnt = sizeof(sqlMenu)/sizeof(sqlMenu[0]);
+    int inkey = 0;
+    CTOS_LCDTClearDisplay();
     while(1)
     {
-        CTOS_LCDTClearDisplay();
-        CTOS_LCDTPrintXY(1, 1, "Sql Operation Menu");
-        CTOS_LCDTPrintXY(1, 2, "1:Get Top Record");
-        CTOS_LCDTPrintXY(1, 3, "2:Get Records");
-        CTOS_LCDTPrintXY(1, 4, "3:Delete Top Record");
-        CTOS_LCDTPrintXY(1, 5, "X:Exit");
-        CTOS_KBDGet(&key);
-        switch(key)
-        { 
-            case d_KBD_1: 
-            {    
-                memset(szMaxTableID, 0x00, sizeof(szMaxTableID));
-                inRetVal = inSqlite_Get_Max_TableID(gszTranDBPath, szTableName, szMaxTableID);
-                if (inRetVal == VS_SUCCESS && atoi(szMaxTableID) > 0)
-                {
-                    printf("Max RowID is %s\n",szMaxTableID);
-                    /*============單筆查詢============*/
-                    memset(&srAll, 0x00, sizeof(SQLITE_ALL_TABLE));
-                    memset(&pobTran->srBRec, 0x00, sizeof(pobTran->srBRec));
-                    printf("\nbefore query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
-                    inRetVal = inSqlite_Table_Link_BRec(pobTran, &srAll, _LS_READ_);
-   
-                    memset(szQuerySql, 0x00, sizeof(szQuerySql));
-                    sprintf(szQuerySql, "SELECT * FROM %s WHERE inTableID = %s ", szTableName,szMaxTableID);
+        inkey = 0;
+        inRetVal = inFunc_GetMenuNum_NewUI(&pobTran,sqlMenu,cnt,&inkey);
 
-                    inRetVal = inSqlite_Get_Data_By_External_SQL(gszTranDBPath, &srAll, szQuerySql);
-                    /*顯示sql結果在監看程式上*/
-                    inSqlite_Table_Show(&srAll);
-                    printf("\nafter query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
-                    /*============單筆查詢============*/     
-                }
-                break;                
-            }
-            case d_KBD_2: 
-            {   
-                int inTableCnt = -1;
-                inRetVal = inSqlite_Get_Table_Count(gszTranDBPath,szTableName,&inTableCnt);
-                if(inRetVal == VS_SUCCESS)
-                {
-                    printf("Get Table Count Successed,inTableCnt is %d\n",inTableCnt);
-                    inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_SEARCH_);
-                    
-                    for(i=0; i<inTableCnt; i++)
+        if(inRetVal == VS_USER_CANCEL || inRetVal == VS_TIMEOUT)
+        {
+            return;
+        }
+        else
+        {
+            switch(inkey)
+            { 
+                case 1: 
+                { 
+                    memset(szMaxTableID, 0x00, sizeof(szMaxTableID));
+                    inRetVal = inSqlite_Get_Max_TableID(gszTranDBPath, szTableName, szMaxTableID);
+                    if (inRetVal == VS_SUCCESS && atoi(szMaxTableID) > 0)
                     {
-                        inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_READ_);
-                    }
-                    inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_FREE_);             
-                }
-                else
-                {
-                    printf("Get Table Count Failed\n");
-                }
-                break;
-            }
-            case d_KBD_3: 
-            { 
-                inRetVal = inSqlite_Delete_Record(pobTran,szTableName);
-                if(inRetVal == VS_SUCCESS)
-                {
-                    CTOS_LCDTClearDisplay();    
-                    CTOS_LCDTPrintXY(1, 1, "Delete Record Success!!!");
-                    CTOS_Delay(2000);
-                }
-                break;
-            }
-            case d_KBD_4: 
-            {
+                        printf("Max RowID is %s\n",szMaxTableID);
+                        /*============單筆查詢============*/
+                        memset(&srAll, 0x00, sizeof(SQLITE_ALL_TABLE));
+                        memset(&pobTran->srBRec, 0x00, sizeof(pobTran->srBRec));
+                        printf("\nbefore query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
+                        inRetVal = inSqlite_Table_Link_BRec(pobTran, &srAll, _LS_READ_);
 
-                break;
-            }
-            case d_KBD_CANCEL: 
-            { 
-                return;
+                        memset(szQuerySql, 0x00, sizeof(szQuerySql));
+                        sprintf(szQuerySql, "SELECT * FROM %s WHERE inTableID = %s ", szTableName,szMaxTableID);
+
+                        inRetVal = inSqlite_Get_Data_By_External_SQL(gszTranDBPath, &srAll, szQuerySql);
+                        /*顯示sql結果在監看程式上*/
+                        inSqlite_Table_Show(&srAll);
+                        printf("\nafter query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
+                        /*============單筆查詢============*/
+                        CTOS_LCDTClearDisplay();    
+                        CTOS_LCDTPrintXY(1, 1, "Select One Record Success!!!");
+                        CTOS_Delay(2000);
+                    }
+                    break;   
+                }
+                case 2: 
+                {   
+                    int inTableCnt = -1;
+                    inRetVal = inSqlite_Get_Table_Count(gszTranDBPath,szTableName,&inTableCnt);
+                    if(inRetVal == VS_SUCCESS)
+                    {
+                        printf("Get Table Count Successed,inTableCnt is %d\n",inTableCnt);
+                        inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_SEARCH_);
+                        
+                        for(i=0; i<inTableCnt; i++)
+                        {
+                            inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_READ_);
+                        }
+                        inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_FREE_);             
+                        CTOS_LCDTClearDisplay();    
+                        CTOS_LCDTPrintXY(1, 1, "Select All Records Success!!!");
+                        CTOS_Delay(2000);
+                    }
+                    else
+                    {
+                        printf("Get Table Count Failed\n");
+                    }
+                    break;
+                }
+                case 3: 
+                { 
+                    inRetVal = inSqlite_Delete_Record(pobTran,szTableName);
+                    if(inRetVal == VS_SUCCESS)
+                    {
+                        CTOS_LCDTClearDisplay();    
+                        CTOS_LCDTPrintXY(1, 1, "Delete Record Success!!!");
+                        CTOS_Delay(2000);
+                    }
+                    break;
+                }
             }
         }
     }
+//    while(1)
+//    {
+//        CTOS_LCDTClearDisplay();
+//        CTOS_LCDTPrintXY(1, 1, "Sql Operation Menu");
+//        CTOS_LCDTPrintXY(1, 2, "1:Get Top Record");
+//        CTOS_LCDTPrintXY(1, 3, "2:Get Records");
+//        CTOS_LCDTPrintXY(1, 4, "3:Delete Top Record");
+//        CTOS_LCDTPrintXY(1, 5, "X:Exit");
+//        CTOS_KBDGet(&key);
+//        switch(key)
+//        { 
+//            case d_KBD_1: 
+//            {    
+//                memset(szMaxTableID, 0x00, sizeof(szMaxTableID));
+//                inRetVal = inSqlite_Get_Max_TableID(gszTranDBPath, szTableName, szMaxTableID);
+//                if (inRetVal == VS_SUCCESS && atoi(szMaxTableID) > 0)
+//                {
+//                    printf("Max RowID is %s\n",szMaxTableID);
+//                    /*============單筆查詢============*/
+//                    memset(&srAll, 0x00, sizeof(SQLITE_ALL_TABLE));
+//                    memset(&pobTran->srBRec, 0x00, sizeof(pobTran->srBRec));
+//                    printf("\nbefore query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
+//                    inRetVal = inSqlite_Table_Link_BRec(pobTran, &srAll, _LS_READ_);
+//   
+//                    memset(szQuerySql, 0x00, sizeof(szQuerySql));
+//                    sprintf(szQuerySql, "SELECT * FROM %s WHERE inTableID = %s ", szTableName,szMaxTableID);
+//
+//                    inRetVal = inSqlite_Get_Data_By_External_SQL(gszTranDBPath, &srAll, szQuerySql);
+//                    /*顯示sql結果在監看程式上*/
+//                    inSqlite_Table_Show(&srAll);
+//                    printf("\nafter query TxnAmount is %ld\n",pobTran->srBRec.lnTxnAmount);
+//                    /*============單筆查詢============*/     
+//                }
+//                break;                
+//            }
+//            case d_KBD_2: 
+//            {   
+//                int inTableCnt = -1;
+//                inRetVal = inSqlite_Get_Table_Count(gszTranDBPath,szTableName,&inTableCnt);
+//                if(inRetVal == VS_SUCCESS)
+//                {
+//                    printf("Get Table Count Successed,inTableCnt is %d\n",inTableCnt);
+//                    inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_SEARCH_);
+//                    
+//                    for(i=0; i<inTableCnt; i++)
+//                    {
+//                        inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_READ_);
+//                    }
+//                    inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_FREE_);             
+//                }
+//                else
+//                {
+//                    printf("Get Table Count Failed\n");
+//                }
+//                break;
+//            }
+//            case d_KBD_3: 
+//            { 
+//                inRetVal = inSqlite_Delete_Record(pobTran,szTableName);
+//                if(inRetVal == VS_SUCCESS)
+//                {
+//                    CTOS_LCDTClearDisplay();    
+//                    CTOS_LCDTPrintXY(1, 1, "Delete Record Success!!!");
+//                    CTOS_Delay(2000);
+//                }
+//                break;
+//            }
+//            case d_KBD_4: 
+//            {
+//
+//                break;
+//            }
+//            case d_KBD_CANCEL: 
+//            { 
+//                return;
+//            }
+//        }
+//    }
 }
 void vdRS232Menu(TRANSACTION_OBJECT* pobTran)
 {
     BYTE key;
     int inRetVal = 0;
     ECR_TABLE   gsrECROb = {.srSetting.uszComPort = d_COM2};
+    char rs232Menu[][48+1]={"Config","RxData","TxData"};
+    int cnt = sizeof(rs232Menu)/sizeof(rs232Menu[0]);
+    int inkey = 0;
+    CTOS_LCDTClearDisplay();
     while(1)
     {
-        CTOS_LCDTClearDisplay();
-        CTOS_LCDTPrintXY(1, 1, "Rs232 Menu");
-        CTOS_LCDTPrintXY(1, 2, "1:Set Config"); 
-        CTOS_LCDTPrintXY(1, 3, "2:Rx Data");
-        CTOS_LCDTPrintXY(1, 4, "3:Tx Data");
-        CTOS_LCDTPrintXY(1, 5, "X:Exit");
-        CTOS_KBDGet(&key);
-        switch(key)
-        { 
-            case d_KBD_1: 
-            { 
-                CTOS_LCDTClearDisplay();               
-                if(inECR_Initial() == VS_SUCCESS)
-                {
-                    CTOS_LCDTPrintXY(1, 1, "RS232ConnSuccess!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                    CTOS_LCDTPrintXY(1, 1, "RS232ConnFail!!!");
-                    CTOS_Delay(2000);
-                }
-                break;                
-            }
-            case d_KBD_2: 
-            {   
-                CTOS_LCDTClearDisplay();
-                CTOS_LCDTPrintXY(1, 1, "Processing....");
-                inRetVal = inRS232_ECR_8N1_Standard_Receive_Packet(pobTran, &gsrECROb);
-                CTOS_LCDTClearDisplay();
-                if( inRetVal == VS_SUCCESS)
-                {
-                    CTOS_LCDTPrintXY(1,1,"Rx Data Success!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                    CTOS_LCDTPrintXY(1,1,"Rx Data Fail!!!");
-                    CTOS_Delay(2000);
-                }
-                printf("***-------------------------***\n");
-                int i;
-                for(i= 0; i< 43 ;i++)
-                {
-                    printf("%s:[%s]\n",myECRTable[i].FieldName,myECRTable[i].Data);
-                }
+        inkey = 0;
+        inRetVal = inFunc_GetMenuNum_NewUI(&pobTran,rs232Menu,cnt,&inkey);
 
-                printf("***-------------------------***\n");
-                break;
-            }
-            //BUG:單純做Tx會傳送電文時失敗, 超過重試次數，但做Rx+Tx可以，不確定是否為正常流程
-            case d_KBD_3: 
-            {              
-                CTOS_LCDTClearDisplay();
-                CTOS_LCDTPrintXY(1, 1, "Processing....");
-                inRetVal = inRS232_ECR_8N1_Standard_Send_Packet(pobTran, &gsrECROb);
-                CTOS_LCDTClearDisplay();
-                if(  inRetVal == VS_SUCCESS)
-                {
-                    CTOS_LCDTPrintXY(1,1,"Tx Data Success!!!");
-                    CTOS_Delay(2000);
-                }
-                else
-                {
-                    CTOS_LCDTPrintXY(1,1,"Tx Data Fail!!!");
-                    CTOS_Delay(2000);
-                }
-               
-                break;
-            }
-            
-            case d_KBD_CANCEL: 
+        if(inRetVal == VS_USER_CANCEL || inRetVal == VS_TIMEOUT)
+        {
+            return;
+        }
+        else
+        {
+            switch(inkey)
             { 
-                return;
+                case 1: 
+                { 
+                    CTOS_LCDTClearDisplay();               
+                    if(inECR_Initial() == VS_SUCCESS)
+                    {
+                        CTOS_LCDTPrintXY(1, 1, "RS232ConnSuccess!!!");
+                        CTOS_Delay(2000);
+                    }
+                    else
+                    {
+                        CTOS_LCDTPrintXY(1, 1, "RS232ConnFail!!!");
+                        CTOS_Delay(2000);
+                    }
+                    break; 
+                }
+                case 2: 
+                {   
+                    CTOS_LCDTClearDisplay();
+                    CTOS_LCDTPrintXY(1, 1, "Processing....");
+                    inRetVal = inRS232_ECR_8N1_Standard_Receive_Packet(pobTran, &gsrECROb);
+                    CTOS_LCDTClearDisplay();
+                    if( inRetVal == VS_SUCCESS)
+                    {
+                        CTOS_LCDTPrintXY(1,1,"Rx Data Success!!!");
+                        CTOS_Delay(2000);
+                    }
+                    else
+                    {
+                        CTOS_LCDTPrintXY(1,1,"Rx Data Fail!!!");
+                        CTOS_Delay(2000);
+                    }
+                    printf("***-------------------------***\n");
+                    int i;
+                    for(i= 0; i< 43 ;i++)
+                    {
+                        printf("%s:[%s]\n",myECRTable[i].FieldName,myECRTable[i].Data);
+                    }
+
+                    printf("***-------------------------***\n");
+                    break;
+                }
+                case 3: 
+                { 
+                    CTOS_LCDTClearDisplay();
+                    CTOS_LCDTPrintXY(1, 1, "Processing....");
+                    inRetVal = inRS232_ECR_8N1_Standard_Send_Packet(pobTran, &gsrECROb);
+                    CTOS_LCDTClearDisplay();
+                    if(  inRetVal == VS_SUCCESS)
+                    {
+                        CTOS_LCDTPrintXY(1,1,"Tx Data Success!!!");
+                        CTOS_Delay(2000);
+                    }
+                    else
+                    {
+                        CTOS_LCDTPrintXY(1,1,"Tx Data Fail!!!");
+                        CTOS_Delay(2000);
+                    }
+                    break;
+                }
             }
         }
     }
+//    while(1)
+//    {
+//        CTOS_LCDTClearDisplay();
+//        CTOS_LCDTPrintXY(1, 1, "Rs232 Menu");
+//        CTOS_LCDTPrintXY(1, 2, "1:Set Config"); 
+//        CTOS_LCDTPrintXY(1, 3, "2:Rx Data");
+//        CTOS_LCDTPrintXY(1, 4, "3:Tx Data");
+//        CTOS_LCDTPrintXY(1, 5, "X:Exit");
+//        CTOS_KBDGet(&key);
+//        switch(key)
+//        { 
+//            case d_KBD_1: 
+//            { 
+//                CTOS_LCDTClearDisplay();               
+//                if(inECR_Initial() == VS_SUCCESS)
+//                {
+//                    CTOS_LCDTPrintXY(1, 1, "RS232ConnSuccess!!!");
+//                    CTOS_Delay(2000);
+//                }
+//                else
+//                {
+//                    CTOS_LCDTPrintXY(1, 1, "RS232ConnFail!!!");
+//                    CTOS_Delay(2000);
+//                }
+//                break;                
+//            }
+//            case d_KBD_2: 
+//            {   
+//                CTOS_LCDTClearDisplay();
+//                CTOS_LCDTPrintXY(1, 1, "Processing....");
+//                inRetVal = inRS232_ECR_8N1_Standard_Receive_Packet(pobTran, &gsrECROb);
+//                CTOS_LCDTClearDisplay();
+//                if( inRetVal == VS_SUCCESS)
+//                {
+//                    CTOS_LCDTPrintXY(1,1,"Rx Data Success!!!");
+//                    CTOS_Delay(2000);
+//                }
+//                else
+//                {
+//                    CTOS_LCDTPrintXY(1,1,"Rx Data Fail!!!");
+//                    CTOS_Delay(2000);
+//                }
+//                printf("***-------------------------***\n");
+//                int i;
+//                for(i= 0; i< 43 ;i++)
+//                {
+//                    printf("%s:[%s]\n",myECRTable[i].FieldName,myECRTable[i].Data);
+//                }
+//
+//                printf("***-------------------------***\n");
+//                break;
+//            }
+//            //BUG:單純做Tx會傳送電文時失敗, 超過重試次數，但做Rx+Tx可以，不確定是否為正常流程
+//            case d_KBD_3: 
+//            {              
+//                CTOS_LCDTClearDisplay();
+//                CTOS_LCDTPrintXY(1, 1, "Processing....");
+//                inRetVal = inRS232_ECR_8N1_Standard_Send_Packet(pobTran, &gsrECROb);
+//                CTOS_LCDTClearDisplay();
+//                if(  inRetVal == VS_SUCCESS)
+//                {
+//                    CTOS_LCDTPrintXY(1,1,"Tx Data Success!!!");
+//                    CTOS_Delay(2000);
+//                }
+//                else
+//                {
+//                    CTOS_LCDTPrintXY(1,1,"Tx Data Fail!!!");
+//                    CTOS_Delay(2000);
+//                }
+//               
+//                break;
+//            }
+//            
+//            case d_KBD_CANCEL: 
+//            { 
+//                return;
+//            }
+//        }
+//    }
 }
 
 void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
@@ -796,6 +957,7 @@ Describe        :列印信用卡
 int inCREDIT_PRINT_Receipt_ByBuffer(TRANSACTION_OBJECT *pobTran)
 {
     int inRetVal = VS_ERROR;
+    memset(uszBuffer,0x00,sizeof(uszBuffer));
     if ((inRetVal = inCREDIT_PRINT_Logo_ByBuffer(pobTran, uszBuffer, &srFont_Attrib, &srBhandle,&gsrBMPHeight)) != VS_SUCCESS)
     {
         printf("inCREDIT_PRINT_Logo_ByBuffer failed, ret=%d\n",inRetVal);
@@ -826,7 +988,8 @@ int inCREDIT_PRINT_Receipt_ByBuffer(TRANSACTION_OBJECT *pobTran)
     {
         printf("inPRINT_Buffer_OutPut failed, ret=%d\n",inRetVal);
         return inRetVal;
-    }   
+    }
+    printf("srBhandle inXcurrent is(%d,%d)\n",srBhandle.inXcurrent,srBhandle.inYcurrent);
     return inRetVal;
 }
 int main(int argc, char *argv[]) {
@@ -887,55 +1050,54 @@ int main(int argc, char *argv[]) {
         return VS_FALSE;
     }
     /*============開啟資料庫============*/
-    
+    char mainMenu[][48+1]={"簽單","乙太","Rs232","_SALE_","Sql"};
+    int cnt = sizeof(mainMenu)/sizeof(mainMenu[0]);
+    int inkey = 0;
+    CTOS_LCDTClearDisplay();
     while(1)
     {
+        inkey = 0;
         /*============LCD設定============*/
         inDISP_Initial();
         /*============LCD設定============*/
-        CTOS_LCDTClearDisplay();
-        CTOS_LCDTPrintXY(1, 1, "Main Menu");
-        CTOS_LCDTPrintXY(1, 2, "1:Print Receipt");
-        CTOS_LCDTPrintXY(1, 3, "2:Ethernet Comm");
-        CTOS_LCDTPrintXY(1, 4, "3:Rs232 Comm");
-        CTOS_LCDTPrintXY(1, 5, "4:__SALE__");
-        CTOS_LCDTPrintXY(1, 6, "5:Sql Operation");
-        CTOS_LCDTPrintXY(1, 16, "X:Exit");
-        CTOS_KBDGet(&key);
-        switch(key)
-        { 
-            case d_KBD_1: 
-            { 
-               inCREDIT_PRINT_Receipt_ByBuffer(&pobTran);
-               break;
-            }
-            //BUG:進入選單直接選擇跳出會因為 跳出做disconnet 但因為沒有open過而顯示diconn fail
-            case d_KBD_2: 
-            {   
-                vdEthernetMenu(&pobTran);
-                break;
-            }
-            case d_KBD_3: 
-            { 
-                vdRS232Menu(&pobTran);
-                break;
-            }
-            case d_KBD_4: 
-            {   
-                //期望做到直接跳到輸入金額 > 組裝封包 > 送電文 > 寫入資料庫 > 列印簽單         
-                vdSALEMenu(&pobTran);
-                break;
-            }
-            case d_KBD_5:
-            {
-                vdSQLOpMenu(&pobTran);
-                break;
-            }
-            case d_KBD_CANCEL: 
-            { 
-               exit(0);
-            }
+        inRetVal = inFunc_GetMenuNum_NewUI(&pobTran,mainMenu,cnt,&inkey);
+
+        if(inRetVal == VS_USER_CANCEL || inRetVal == VS_TIMEOUT)
+        {
+            exit(0);
         }
-    }
-    
+        else
+        {
+            switch(inkey)
+            { 
+                case 1: 
+                { 
+                   inCREDIT_PRINT_Receipt_ByBuffer(&pobTran);
+                   break;
+                }
+                //BUG:進入選單直接選擇跳出會因為 跳出做disconnet 但因為沒有open過而顯示diconn fail
+                case 2: 
+                {   
+                    vdEthernetMenu(&pobTran);
+                    break;
+                }
+                case 3: 
+                { 
+                    vdRS232Menu(&pobTran);
+                    break;
+                }
+                case 4: 
+                {   
+                    //期望做到直接跳到輸入金額 > 組裝封包 > 送電文 > 寫入資料庫 > 列印簽單         
+                    vdSALEMenu(&pobTran);
+                    break;
+                }
+                case 5:
+                {
+                    vdSQLOpMenu(&pobTran);
+                    break;
+                }
+            } 
+        }
+    }  
 }

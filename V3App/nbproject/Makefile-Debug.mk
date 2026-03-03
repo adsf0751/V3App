@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/SOURCE/COMM/Ethernet.o \
 	${OBJECTDIR}/SOURCE/CREDIT/Creditfunc.o \
 	${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o \
+	${OBJECTDIR}/SOURCE/DISPLAY/DisTouch.o \
 	${OBJECTDIR}/SOURCE/DISPLAY/Display.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/Batch.o \
 	${OBJECTDIR}/SOURCE/FUNCTION/ECR.o \
@@ -85,6 +86,10 @@ ${OBJECTDIR}/SOURCE/CREDIT/Creditfunc.o: SOURCE/CREDIT/Creditfunc.c
 ${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o: SOURCE/CREDIT/CreditptrByBuffer.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/CREDIT
 	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/CREDIT/CreditptrByBuffer.o SOURCE/CREDIT/CreditptrByBuffer.c
+
+${OBJECTDIR}/SOURCE/DISPLAY/DisTouch.o: SOURCE/DISPLAY/DisTouch.c
+	${MKDIR} -p ${OBJECTDIR}/SOURCE/DISPLAY
+	$(COMPILE.c) -g -I/cygdrive/C/Program\ Files/Castles/VEGA3000/include -I/cygdrive/C/Program\ Files\ \(x86\)/Castles/VEGA3000/include -o ${OBJECTDIR}/SOURCE/DISPLAY/DisTouch.o SOURCE/DISPLAY/DisTouch.c
 
 ${OBJECTDIR}/SOURCE/DISPLAY/Display.o: SOURCE/DISPLAY/Display.c
 	${MKDIR} -p ${OBJECTDIR}/SOURCE/DISPLAY
