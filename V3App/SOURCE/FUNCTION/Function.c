@@ -400,7 +400,7 @@ int inPRINT_Buffer_GetHeightFlow(BMPHeight* gsrBMPHeight) {
     char szPath[100 + 1];
     char szFileName[50 + 1];
     /* 初始化結構 */
-    memset(gsrBMPHeight, 0x00, sizeof (BMPHeight));
+    memset(gsrBMPHeight, 0x00, sizeof(BMPHeight));
 
     inPreLen = strlen("./fs_data/");
 
@@ -433,46 +433,6 @@ int inPRINT_Buffer_GetHeightFlow(BMPHeight* gsrBMPHeight) {
     memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
 
     inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inTitleNameHeight);
-
-    /* 企業標語高度 */
-//    memset(szPath, 0x00, sizeof (szPath));
-//    inPathLen = strlen(_SLOGAN_LOGO_);
-//    memcpy(szPath, _SLOGAN_LOGO_, inPathLen);
-//
-//    memset(szFileName, 0x00, sizeof (szFileName));
-//    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
-//
-//    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inSloganHeight);
-
-    /* CUP警語高度 */
-//    memset(szPath, 0x00, sizeof (szPath));
-//    inPathLen = strlen(_CUP_LEGAL_LOGO_);
-//    memcpy(szPath, _CUP_LEGAL_LOGO_, inPathLen);
-//
-//    memset(szFileName, 0x00, sizeof (szFileName));
-//    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
-//
-//    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inCupLegalHeight);
-
-    /* 分期警語高度 */
-//    memset(szPath, 0x00, sizeof (szPath));
-//    inPathLen = strlen(_LEGAL_LOGO_);
-//    memcpy(szPath, _LEGAL_LOGO_, inPathLen);
-//
-//    memset(szFileName, 0x00, sizeof (szFileName));
-//    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
-//
-//    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inInstHeight);
-
-    /* 商店提示與高度*/
-//    memset(szPath, 0x00, sizeof (szPath));
-//    inPathLen = strlen(_NOTICE_LOGO_);
-//    memcpy(szPath, _NOTICE_LOGO_, inPathLen);
-//
-//    memset(szFileName, 0x00, sizeof (szFileName));
-//    memcpy(szFileName, &szPath[inPreLen], inPathLen - inPreLen);
-//
-//    inPRINT_Buffer_GetHeight((unsigned char*) szFileName, &gsrBMPHeight->inNoticeHeight);
     return (VS_SUCCESS);
 }
 
@@ -752,7 +712,6 @@ int inFunc_GetMenuNum_NewUI(TRANSACTION_OBJECT *pobTran,char menuText[][49],int 
                 {
                     printf("inkey is %d\n",*inKey);
                     break;
-                    //do nothing
                 }
         }
         /* 清空Touch資料 */

@@ -50,3 +50,4 @@ typedef struct
 int myPackData(BYTE *uszPackBuf);
 int myUnPackData(BYTE *rawDataBuf ,int inReceiveSize);
 int myCusPackData(BYTE *uszPackBuf);
+int mySalePackData(TRANSACTION_OBJECT *pobTran ,BYTE *uszPackBuf);

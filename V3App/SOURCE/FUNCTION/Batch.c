@@ -10,11 +10,11 @@ int inBATCH_Get_Batch_ByCnt_Enormous_Flow(TRANSACTION_OBJECT *pobTran,char* szTa
 	int	inRetVal;
 	char	szSql[300 + 1] = {0};
 	char	szDebugMsg[100 + 1] = {0};
-	SQLITE_ALL_TABLE	srAll;
+	SQLITE_ALL_TABLE    srAll;
 	
 	if (inState == _BYCNT_ENORMMOUS_READ_)
 	{
-            memset(&srAll, 0x00, sizeof(srAll));
+            memset(&srAll, 0x00, sizeof(SQLITE_ALL_TABLE));
             inRetVal = inSqlite_Table_Link_BRec(pobTran, &srAll, _LS_READ_);
             if (inRetVal != VS_SUCCESS)
             {

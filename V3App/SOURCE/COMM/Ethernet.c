@@ -15,6 +15,7 @@
 #include "Ethernet.h"
 #include "../../PrtMsg.h"
 #include "../INCLUDE/Define_1.h"
+#include "../EVENT/MenuMsg.h"
 extern int ginTrans_ClientFd;
 CPT_REC srCPTRec = {
                     .szHostIPPrimary= HOSTIP,
@@ -530,6 +531,7 @@ int inETHERNET_SetConfig(void)
             return (VS_ERROR);
 	}
 
+        inDISP_PutGraphic(_CONNECTING_, 1, _COORDINATE_Y_LINE_8_1_);
 	/* 重置目前重試次數 */
 	inConnectNowCnt = 0;
 	/* 若連線失敗看是否要重試 */
@@ -1628,21 +1630,13 @@ Function        inETHERNET_IsPhysicalOnine
 Date&Time       :2018/3/9 下午 1:27
 Describe        :回傳成功代表有插實體網路線
 */
-int inETHERNET_IsPhysicalOnine()
+int inETHERNET_IsPhysicalOnine(void)
 {
 	unsigned int	uiStatus = 0;	
 	/* Get the status of the Ethernet */
-	inETHERNET_Get_Status(&uiStatus);
-	
+	inETHERNET_Get_Status(&uiStatus);	
 	/* if Ethernet is phyical online */
-	if (uiStatus & d_STATUS_ETHERNET_PHYICAL_ONLINE)
-	{
-		return (VS_SUCCESS);
-	}
-	else
-	{
-		return (VS_ERROR);
-	}
+	return (  (uiStatus & d_STATUS_ETHERNET_PHYICAL_ONLINE) > 0 ? VS_SUCCESS : VS_ERROR);
 }
 /*
 Function        :inETHERNET_Close

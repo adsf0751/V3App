@@ -99,7 +99,6 @@ int inPRINT_Buffer_OutPut(unsigned char *uszBuffer, BufferHandle *srBhandle) {
         usReturnValue = CTOS_PrinterBufferOutput(uszBuffer, ((srBhandle->inYcurrent) / 8 + 1));
     else
         usReturnValue = CTOS_PrinterBufferOutput(uszBuffer, ((srBhandle->inYcover) / 8) + 1);
-    return usReturnValue;
     if (usReturnValue == d_OK) {
         memset(uszBuffer, 0x00, srBhandle->inXbound * srBhandle->inYbound);
         srBhandle->inXcurrent = 0;

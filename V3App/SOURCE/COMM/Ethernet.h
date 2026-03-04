@@ -58,3 +58,4 @@ void vdEthernetGetNetWorkValue(int ethernetTag,unsigned char* uszTemplate);
 int inETHERNET_Close(void);
 int inETHERNET_Flush(void);
 int inETHERNET_Flush_Rx(void);
+int inFunc_Ethernet_Edit(TRANSACTION_OBJECT *pobTran);

@@ -1800,15 +1800,14 @@ typedef struct
 	int		inPenStatus;	/* 1表示PenUp，2表示PenDown */
 	unsigned char	uszClicking;	/* 表示是否要判斷點擊，從Pen Down到第一次SYN判斷為點擊，若超過拖曳距離，也不判斷點擊 */
 }  DISTOUCH_OBJECT;
-
+int inDisTouch_TouchSensor_Click_Slide(int inTouchSensorFunc);
+int inDisTouch_Flush_TouchFile(void);
+int inDisTouch_InArea(DISTOUCH_OBJECT *srDisTouchObj, int inTouchSensorFunc);
 //int inDisTouch_Open_TouchFile(int* inTouch_Handle);
 //int inDisTouch_Close_TouchFile(int *inTouch_Handle);
 //int inDisTouch_Read_TouchFile(int *inTouch_Handle);
-//int inDisTouch_Flush_TouchFile(void);
 //int inDisTouch_Sensor(int inTouchSensorFunc);
-//int inDisTouch_InArea(DISTOUCH_OBJECT *srObj, int inTouchSensorFunc);
 //int inDisTouch_IsSigned(DISTOUCH_OBJECT *srDisTouchObj, int inTouchSensorFunc);
-//int inDisTouch_TouchSensor_Click_Slide(int inTouchSensorFunc);
 //int inDisTouch_IsSlidePage(DISTOUCH_OBJECT *srDisTouchObj, int inTouchSensorFunc);
 //int inDisTouch_Reverse_Back_Area(unsigned short usX, unsigned short usY, unsigned short usXSize, unsigned short usYSize);
 //int inDisTouch_Reverse_Back_Key(int inTouchSensorFunc, int inEvent);

@@ -34,7 +34,9 @@ int inFunc_ls(char* , char* );
 int inFunc_PAD_ASCII(char *, char *, char , int , int );
 int inFunc_Amount_Comma(char *szAmt, char *szCurSymbol, char szPad_char, int inSigned, int inWide, int inAlign);
 int inFunc_GetMenuNum_NewUI(TRANSACTION_OBJECT *pobTran,char menuText[][49],int menuCount,int* inKey);
-
+void vdFunc_Display_Ethernet_Status(void);
+int inETHERNET_IsPhysicalOnine(void);
+int inFunc_Sync_BRec_Date_Time(TRANSACTION_OBJECT *pobTran, RTC_NEXSYS *srRTC);
 
 #ifdef __cplusplus
 }

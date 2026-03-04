@@ -91,8 +91,8 @@
 #define _KEY_8_					d_KBD_8
 #define _KEY_9_					d_KBD_9
 #define _KEY_F1_				d_KBD_F1
-#define _KEY_CANCEL_                            -1000
-#if	(_MACHINE_TYPE_ == _CASTLE_TYPE_V3C_) || (_MACHINE_TYPE_ == _CASTLE_TYPE_V3P_)
+
+//#if	(_MACHINE_TYPE_ == _CASTLE_TYPE_V3C_) || (_MACHINE_TYPE_ == _CASTLE_TYPE_V3P_)
 	#define _KEY_F1_				d_KBD_F1
 	#define _KEY_F2_				d_KBD_F2
 	#define _KEY_F3_				d_KBD_F3
@@ -108,73 +108,73 @@
 	#define _KEY_FUNCTION_				d_KBD_00
 	#define _KEY_ALPHA_				d_KBD_DOT
 	#define _KEY_INVALID_                           d_KBD_INVALID
-#elif	_MACHINE_TYPE_ == _CASTLE_TYPE_V3UL_
-	#define _KEY_F1_				d_KBD_F1
-	#define _KEY_F2_				d_KBD_F2
-	#define _KEY_F3_				d_KBD_F3
-	#define _KEY_UP_				d_KBD_00
-	#define _KEY_DOWN_				d_KBD_DOT
-	#define _KEY_F4_				d_KBD_F4
-	#define _KEY_CLEAR_				d_KBD_CLEAR
-	#define _KEY_ENTER_				d_KBD_ENTER
-	#define _KEY_CANCEL_				d_KBD_CANCEL
-	#define _KEY_DOT_				d_KBD_DOT
-	#define _KEY_FUNCTION_				d_KBD_00
-	#define _KEY_ALPHA_				d_KBD_DOT
-	#define _KEY_INVALID_                           d_KBD_INVALID
-#elif	_MACHINE_TYPE_ == _CASTLE_TYPE_V3M_
-	#define _KEY_F2_				d_KBD_F2
-	#define _KEY_F3_				d_KBD_F3
-	#define _KEY_UP_				d_KBD_00
-	#define _KEY_DOWN_				d_KBD_DOT
-	#define _KEY_F4_				d_KBD_F4
-	#define _KEY_CLEAR_				d_KBD_CLEAR
-	#define _KEY_ENTER_				d_KBD_ENTER
-	#define _KEY_CANCEL_				d_KBD_CANCEL
-	#define _KEY_DOT_				d_KBD_DOT
-	#define _KEY_FUNCTION_				d_KBD_00
-	#define _KEY_ALPHA_				d_KBD_DOT
-	#define _KEY_INVALID_                           d_KBD_INVALID
-#elif	_MACHINE_TYPE_ == _CASTLE_TYPE_MP200_
-	#define _KEY_F2_				d_KBD_F2
-	#define _KEY_F3_				d_KBD_F3
-	#define _KEY_UP_				d_KBD_UP
-	#define _KEY_DOWN_				d_KBD_DOWN
-	#define _KEY_F4_				d_KBD_F4
-	#define _KEY_CLEAR_				d_KBD_CLEAR
-	#define _KEY_ENTER_				d_KBD_ENTER
-	#define _KEY_CANCEL_				d_KBD_CANCEL
-	#define _KEY_DOT_				d_KBD_DOWN
-	#define _KEY_FUNCTION_				d_KBD_00
-	#define _KEY_ALPHA_				d_KBD_DOWN
-	#define _KEY_INVALID_                           d_KBD_INVALID
-#elif	(_MACHINE_TYPE_ == _CASTLE_TYPE_UPT1000_) || (_MACHINE_TYPE_ == _CASTLE_TYPE_UPT1000F_)
-	#define _KEY_F2_				d_KBD_F2
-	#define _KEY_F3_				d_KBD_F3
-	#define _KEY_UP_				d_KBD_UP
-	#define _KEY_DOWN_				d_KBD_DOWN
-	#define _KEY_F4_				d_KBD_F4
-	#define _KEY_CLEAR_				d_KBD_CLEAR
-	#define _KEY_ENTER_				d_KBD_ENTER
-	#define _KEY_CANCEL_				d_KBD_CANCEL
-	#define _KEY_DOT_				d_KBD_DOWN
-	#define _KEY_FUNCTION_				d_KBD_00
-	#define _KEY_ALPHA_				d_KBD_DOWN
-	#define _KEY_INVALID_                           d_KBD_INVALID
-#else
-	#define _KEY_F2_				d_KBD_F2
-	#define _KEY_F3_				d_KBD_F3
-	#define _KEY_UP_				d_KBD_0
-	#define _KEY_DOWN_				d_KBD_DOT
-	#define _KEY_F4_				d_KBD_F4
-	#define _KEY_CLEAR_				d_KBD_CLEAR
-	#define _KEY_ENTER_				d_KBD_ENTER
-	#define _KEY_CANCEL_				d_KBD_CANCEL
-	#define _KEY_DOT_				d_KBD_DOT
-	#define _KEY_FUNCTION_				d_KBD_00
-	#define _KEY_ALPHA_				d_KBD_DOT
-	#define _KEY_INVALID_                           d_KBD_INVALID
-#endif
+//#elif	_MACHINE_TYPE_ == _CASTLE_TYPE_V3UL_
+//	#define _KEY_F1_				d_KBD_F1
+//	#define _KEY_F2_				d_KBD_F2
+//	#define _KEY_F3_				d_KBD_F3
+//	#define _KEY_UP_				d_KBD_00
+//	#define _KEY_DOWN_				d_KBD_DOT
+//	#define _KEY_F4_				d_KBD_F4
+//	#define _KEY_CLEAR_				d_KBD_CLEAR
+//	#define _KEY_ENTER_				d_KBD_ENTER
+//	#define _KEY_CANCEL_				d_KBD_CANCEL
+//	#define _KEY_DOT_				d_KBD_DOT
+//	#define _KEY_FUNCTION_				d_KBD_00
+//	#define _KEY_ALPHA_				d_KBD_DOT
+//	#define _KEY_INVALID_                           d_KBD_INVALID
+//#elif	_MACHINE_TYPE_ == _CASTLE_TYPE_V3M_
+//	#define _KEY_F2_				d_KBD_F2
+//	#define _KEY_F3_				d_KBD_F3
+//	#define _KEY_UP_				d_KBD_00
+//	#define _KEY_DOWN_				d_KBD_DOT
+//	#define _KEY_F4_				d_KBD_F4
+//	#define _KEY_CLEAR_				d_KBD_CLEAR
+//	#define _KEY_ENTER_				d_KBD_ENTER
+//	#define _KEY_CANCEL_				d_KBD_CANCEL
+//	#define _KEY_DOT_				d_KBD_DOT
+//	#define _KEY_FUNCTION_				d_KBD_00
+//	#define _KEY_ALPHA_				d_KBD_DOT
+//	#define _KEY_INVALID_                           d_KBD_INVALID
+//#elif	_MACHINE_TYPE_ == _CASTLE_TYPE_MP200_
+//	#define _KEY_F2_				d_KBD_F2
+//	#define _KEY_F3_				d_KBD_F3
+//	#define _KEY_UP_				d_KBD_UP
+//	#define _KEY_DOWN_				d_KBD_DOWN
+//	#define _KEY_F4_				d_KBD_F4
+//	#define _KEY_CLEAR_				d_KBD_CLEAR
+//	#define _KEY_ENTER_				d_KBD_ENTER
+//	#define _KEY_CANCEL_				d_KBD_CANCEL
+//	#define _KEY_DOT_				d_KBD_DOWN
+//	#define _KEY_FUNCTION_				d_KBD_00
+//	#define _KEY_ALPHA_				d_KBD_DOWN
+//	#define _KEY_INVALID_                           d_KBD_INVALID
+//#elif	(_MACHINE_TYPE_ == _CASTLE_TYPE_UPT1000_) || (_MACHINE_TYPE_ == _CASTLE_TYPE_UPT1000F_)
+//	#define _KEY_F2_				d_KBD_F2
+//	#define _KEY_F3_				d_KBD_F3
+//	#define _KEY_UP_				d_KBD_UP
+//	#define _KEY_DOWN_				d_KBD_DOWN
+//	#define _KEY_F4_				d_KBD_F4
+//	#define _KEY_CLEAR_				d_KBD_CLEAR
+//	#define _KEY_ENTER_				d_KBD_ENTER
+//	#define _KEY_CANCEL_				d_KBD_CANCEL
+//	#define _KEY_DOT_				d_KBD_DOWN
+//	#define _KEY_FUNCTION_				d_KBD_00
+//	#define _KEY_ALPHA_				d_KBD_DOWN
+//	#define _KEY_INVALID_                           d_KBD_INVALID
+//#else
+//	#define _KEY_F2_				d_KBD_F2
+//	#define _KEY_F3_				d_KBD_F3
+//	#define _KEY_UP_				d_KBD_0
+//	#define _KEY_DOWN_				d_KBD_DOT
+//	#define _KEY_F4_				d_KBD_F4
+//	#define _KEY_CLEAR_				d_KBD_CLEAR
+//	#define _KEY_ENTER_				d_KBD_ENTER
+//	#define _KEY_CANCEL_				d_KBD_CANCEL
+//	#define _KEY_DOT_				d_KBD_DOT
+//	#define _KEY_FUNCTION_				d_KBD_00
+//	#define _KEY_ALPHA_				d_KBD_DOT
+//	#define _KEY_INVALID_                           d_KBD_INVALID
+//#endif
 
 #define _SAM_SLOT_1_				d_SC_SAM1
 #define _SAM_SLOT_2_				d_SC_SAM2

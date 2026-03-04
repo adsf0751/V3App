@@ -329,7 +329,7 @@ Describe        :參考myPackData，把原先金額和日期帶入pobTran的值�
 int mySalePackData(TRANSACTION_OBJECT *pobTran ,BYTE *uszPackBuf)
 {
     RTC_NEXSYS		srRTC;			/* Date & Time */
-    inFunc_Sync_BRec_Date_Time(&pobTran, &srRTC);
+    inFunc_Sync_BRec_Date_Time(pobTran, &srRTC);
     
     int FieldSz = sizeof(srNCCC_SALE_ISOFieldType)/sizeof(srNCCC_SALE_ISOFieldType[0]);
     printf("fieldSz is %d\n",FieldSz);
