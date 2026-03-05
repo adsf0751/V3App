@@ -439,12 +439,12 @@ int inFuncInsertTxnRecord_By_Sqlite(TRANSACTION_OBJECT *pobTran)
 }
 void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
 {
-    int inRetVal = VS_ERROR;
+    int i,inRetVal = VS_ERROR;
     BYTE uszPackBuf[984];
     BYTE uszRecvPacket[_NCCC_ATS_ISO_SEND_ + 1];
     int  inReceiveTimeout = 10;
     int	 inReceiveSize = _COMM_RECEIVE_MAX_LENGTH_;
-    char ethernetMenu[][48+1] = {"Config","Connect","TxData","RxData"};
+    char ethernetMenu[][48+1] = {"Config","Connect","TxData","RxData","Export"};
     int  menuItem = sizeof(ethernetMenu) / sizeof(ethernetMenu[0]);
     int inKey = 0;
     CTOS_LCDTClearDisplay();
@@ -512,7 +512,9 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                 case 3: 
                 { 
                     memset(uszPackBuf,0x00,sizeof(uszPackBuf));
-                    int inCnt = myPackData(uszPackBuf);
+//                    int inCnt = myPackData(uszPackBuf);
+                    int inCnt = mySalePackData(pobTran,uszPackBuf);
+                    
                     /*
                      * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
                      * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length，
@@ -553,7 +555,117 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                     } 
                     break;
                 }
-            }
+               case 5:
+               {
+                    int inTableCnt = -1;
+                    inRetVal = inSqlite_Get_Table_Count(gszTranDBPath,szTableName,&inTableCnt);
+                    if(inRetVal == VS_SUCCESS)
+                    {
+                        if(inTableCnt == 0)
+                        {
+                            CTOS_LCDTClearDisplay();    
+                            CTOS_LCDTPrintXY(1, 1, "No records found");
+                            CTOS_Delay(2000);
+                        }
+                        else
+                        {
+                            unsigned char szColBuffer[BUFF_SIZE];
+                            int  szColLen = 0;
+                            unsigned char szValBuffer[BUFF_SIZE];
+                            int  szValLen = 0;
+                            SQLITE_ALL_TABLE srAll;
+                            printf("Get Table Count Successed,inTableCnt is %d\n",inTableCnt);
+                            inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_SEARCH_,&srAll);
+                            for(i=0; i<inTableCnt; i++)
+                            {
+                                inRetVal = inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_READ_,&srAll);
+                                if(inRetVal == VS_SUCCESS)
+                                {
+                                    inDISP_PutGraphic(_SEND_, 1, _COORDINATE_Y_LINE_8_1_); 
+                                    inSqlite_GetTableData(&srAll,szColBuffer,&szColLen,szValBuffer,&szValLen,INT_TABLE);
+//                                    printf("szColBuffer is :\n");
+//                                    printf("%s\n",(char*)szColBuffer);
+                                    printf("szColLen is %d\n",szColLen);
+                                    if(szColLen > 0)
+                                    {     
+                                        if( inETHERNET_Send(szColBuffer,szColLen,0) != VS_SUCCESS)
+                                        {
+                                            CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");        
+                                            break;
+                                        }
+                                        CTOS_Delay(2000);
+                                        if( inETHERNET_Send(szValBuffer,szValLen,0) != VS_SUCCESS)
+                                        {
+                                            CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");    
+                                            break;
+                                        }
+                                        CTOS_Delay(2000);                                       
+                                    }
+                                   
+                                    inSqlite_GetTableData(&srAll,szColBuffer,&szColLen,szValBuffer,&szValLen,INT64_TABLE);
+                                    printf("szColLen is %d\n",szColLen);
+                                    if(szColLen > 0)
+                                    {
+                                        if( inETHERNET_Send(szColBuffer,szColLen,0) != VS_SUCCESS)
+                                        {
+                                            CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
+                                            break;
+                                        }
+                                        CTOS_Delay(2000);
+                                        if( inETHERNET_Send(szValBuffer,szValLen,0) != VS_SUCCESS)
+                                        {
+                                            CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");    
+                                            break;
+                                        }
+                                        CTOS_Delay(2000);
+                                    }
+                                        
+                                    inSqlite_GetTableData(&srAll,szColBuffer,&szColLen,szValBuffer,&szValLen,CHAR_TABLE);
+                                    printf("szColLen is %d\n",szColLen);
+                                    if(szColLen > 0)
+                                    {
+                                      if( inETHERNET_Send(szColBuffer,szColLen,0) != VS_SUCCESS)
+                                        {
+                                            CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!"); 
+                                            break;
+                                        }
+                                        CTOS_Delay(2000);
+                                        if( inETHERNET_Send(szValBuffer,szValLen,0) != VS_SUCCESS)
+                                        {
+                                            CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
+                                            break;
+                                        }
+                                        CTOS_Delay(2000);  
+                                    }
+                                    
+                                    inSqlite_GetTableData(&srAll,szColBuffer,&szColLen,szValBuffer,&szValLen,TEXT_TABLE);
+                                    printf("szColLen is %d\n",szColLen);
+                                    if(szColLen > 0)
+                                    {
+                                      if( inETHERNET_Send(szColBuffer,szColLen,0) != VS_SUCCESS)
+                                        {
+                                            CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
+                                            break;
+                                        }
+                                        CTOS_Delay(2000);
+                                        if( inETHERNET_Send(szValBuffer,szValLen,0) != VS_SUCCESS)
+                                        {
+                                            CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
+                                            break;
+                                        }
+                                        CTOS_Delay(2000);  
+                                    }                                      
+                                }
+                            }
+                            inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_FREE_,&srAll);
+//                            CTOS_LCDTClearDisplay();    
+//                            CTOS_LCDTPrintXY(1, 1, "Select All Records Success!!!");
+//                            CTOS_Delay(2000);
+                        }
+                    }
+                    break;
+                }
+           }
         }
         CTOS_LCDTClearDisplay();//清除選單選項的畫面
         if (pthread_create(&thread, NULL, vdThreadDispPysicalOnline, NULL) != 0) 
@@ -660,14 +772,19 @@ void vdSQLOpMenu(TRANSACTION_OBJECT* pobTran)
                         }
                         else
                         {
+                            SQLITE_ALL_TABLE srAll;
                             printf("Get Table Count Successed,inTableCnt is %d\n",inTableCnt);
-                            inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_SEARCH_);
+                            inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_SEARCH_,&srAll);
 
                             for(i=0; i<inTableCnt; i++)
                             {
-                                inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_READ_);
+                                inRetVal = inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_READ_,&srAll);
+                                if(inRetVal == VS_SUCCESS)
+                                {
+                                    inSqlite_Table_Show(&srAll);
+                                }
                             }
-                            inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_FREE_);             
+                            inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_FREE_,&srAll);
                             CTOS_LCDTClearDisplay();    
                             CTOS_LCDTPrintXY(1, 1, "Select All Records Success!!!");
                             CTOS_Delay(2000);
@@ -675,7 +792,9 @@ void vdSQLOpMenu(TRANSACTION_OBJECT* pobTran)
                     }
                     else
                     {
-                        printf("Get Table Count Failed\n");
+                        CTOS_LCDTClearDisplay();    
+                        CTOS_LCDTPrintXY(1, 1, "Select All Record Fail!!!");
+                        CTOS_Delay(2000); 
                     }
                     break;
                 }
@@ -813,7 +932,6 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
     int	 inReceiveSize = _COMM_RECEIVE_MAX_LENGTH_;
     unsigned char uszKey = 0;
     int inRetVal = 0;
-    SQLITE_ALL_TABLE	srAll;
     CTOS_LCDTClearDisplay();
     CTOS_LCDTPrintXY(1,1,"請輸入數字:");
     while(1)
@@ -930,9 +1048,6 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
     }
 }
 int main(int argc, char *argv[]) {
-    BYTE key;
-    CTOS_LCDTClearDisplay();
-    int i;
     int  inRetVal = 0;
     TRANSACTION_OBJECT pobTran;
     memset(&pobTran, 0, sizeof(TRANSACTION_OBJECT));
@@ -1013,7 +1128,6 @@ int main(int argc, char *argv[]) {
                    inCREDIT_PRINT_Receipt_ByBuffer(&pobTran);
                    break;
                 }
-                //BUG:進入選單直接選擇跳出會因為 跳出做disconnet 但因為沒有open過而顯示diconn fail
                 case 2: 
                 {   
                     vdEthernetMenu(&pobTran);

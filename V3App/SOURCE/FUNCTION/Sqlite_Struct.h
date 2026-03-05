@@ -66,6 +66,12 @@ typedef struct
 	SQLITE_CHAR_TABLE	srText[_TAG_TEXT_MAX_NUM_];	/* 用BLOB的API塞進去的資料無法用字串比對，所以再生一個Table，EMV參數則維持使用BLOB塞*/
 }SQLITE_ALL_TABLE;
 
+enum TableType{
+    INT_TABLE,
+    INT64_TABLE,
+    CHAR_TABLE,
+    TEXT_TABLE
+};
 /* 避免大量查詢的方法 */
 typedef struct
 {

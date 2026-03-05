@@ -2632,3 +2632,196 @@ int inSqlite_Get_Data_Enormous_Free()
 
 	return (VS_SUCCESS);
 }
+/*
+Function        :
+Date&Time       :
+Describe        :
+*/
+int inSqlite_GetTableData(SQLITE_ALL_TABLE *srAll,unsigned char *szColBuffer,int* szColLen,unsigned char *szValBuffer,int* szValLen,int tableType)
+{
+	int		i = 0;
+	char		szDebugMsg[100 + 1] = {0};
+	unsigned char	uszFailBit = VS_FALSE;
+        memset(szColBuffer,0x00,BUFF_SIZE);
+        memset(szValBuffer ,0x00,BUFF_SIZE);
+        printf("%s\n", "inSqlite_GetTableData()_START");
+        *szColLen = 0;
+        *szValLen  = 0;
+	do
+	{
+            if(tableType == INT_TABLE)
+            {
+                for (i = 0;; i++)
+		{
+			if (srAll->srInt == NULL)
+			{
+				break;
+			}
+			
+			/* 碰到Table底部，設定Tag數並跳出 */
+			if (strlen(srAll->srInt[i].szTag) == 0)
+			{
+				break;
+			}
+
+			/* pointer為空，則跳過 */
+			if (srAll->srInt[i].pTagValue == NULL)
+				continue;
+			/* Tag 名稱過長 */
+			if (strlen(srAll->srInt[i].szTag) > _TAG_MAX_LENGRH_)
+			{
+			
+                                memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+                                sprintf(szDebugMsg, "Tag 名稱過長");
+                                printf("%s\n", szDebugMsg);
+				
+				return (VS_ERROR);
+			}
+                        if (i > 0)
+                        {
+                            szColBuffer[(*szColLen)++] = ',';
+                            szValBuffer[(*szValLen)++] = ',';
+                        }
+
+                        *szColLen += snprintf((char*)szColBuffer + *szColLen,
+                                              BUFF_SIZE - *szColLen,
+                                              "%s",
+                                              srAll->srInt[i].szTag);
+                    
+                        *szValLen += snprintf((char*)szValBuffer + *szValLen,
+                                            BUFF_SIZE - *szValLen,
+                                            "%d",
+                                            *(int32_t*)srAll->srInt[i].pTagValue); 
+		}
+            }
+            else if(tableType ==INT64_TABLE)
+            {
+                for (i = 0;; i++)
+		{
+			if (srAll->srInt64t == NULL)
+			{
+				break;
+			}
+			
+			/* 碰到Table底部，設定Tag數並跳出 */
+			if (strlen(srAll->srInt64t[i].szTag) == 0)
+			{
+				break;
+			}
+			/* pointer為空，則跳過 */
+			if (srAll->srInt64t[i].pTagValue == NULL)
+                            continue;
+			/* Tag 名稱過長 */
+			if (strlen(srAll->srInt64t[i].szTag) > _TAG_MAX_LENGRH_)
+			{	
+                                memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+                                sprintf(szDebugMsg, "Tag 名稱過長");
+                                printf("%s\n", szDebugMsg);		
+				return (VS_ERROR);
+			}
+                    if (i > 0)
+                    {
+                        szColBuffer[(*szColLen)++] = ',';
+                        szValBuffer[(*szValLen)++] = ',';
+                    }
+                    *szColLen += snprintf((char*)szColBuffer + *szColLen,
+                                              BUFF_SIZE - *szColLen,
+                               "%s",
+                               srAll->srInt64t[i].szTag);
+                    *szValLen += snprintf((char*)szValBuffer + *szValLen,
+                                            BUFF_SIZE - *szValLen,
+                                "%lld",
+                                *(int64_t*)srAll->srInt64t[i].pTagValue);
+		}
+            }
+            else if(tableType ==CHAR_TABLE)
+            {
+                for (i = 0;; i++)
+		{
+			if (srAll->srChar == NULL)
+			{
+				break;
+			}
+			
+			/* 碰到Table底部，設定Tag數並跳出 */
+			if (strlen(srAll->srChar[i].szTag) == 0)
+			{
+				break;
+			}
+
+			/* pointer為空，則跳過 */
+			if (srAll->srChar[i].pCharVariable == NULL)
+				continue;
+			/* Tag 名稱過長 */
+			if (strlen(srAll->srChar[i].szTag) > _TAG_MAX_LENGRH_)
+			{
+                                memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+                                sprintf(szDebugMsg, "Tag 名稱過長");
+                                printf("%s\n", szDebugMsg);	
+				return (VS_ERROR);
+			}
+                        if (i > 0)
+                        {
+                            szColBuffer[(*szColLen)++] = ',';
+                            szValBuffer[(*szValLen)++] = ',';
+                        }
+                        *szColLen += snprintf(szColBuffer + *szColLen,
+                                   BUFF_SIZE - *szColLen,
+                                   "%s",
+                                   srAll->srChar[i].szTag);
+                        *szValLen += snprintf(szValBuffer + *szValLen,
+                                    BUFF_SIZE - *szValLen,
+                                    "%s",
+                                    (char *)srAll->srChar[i].pCharVariable);  
+		}
+            }
+            else
+            {
+                for (i = 0;; i++)
+		{
+			if (srAll->srText == NULL)
+			{
+				break;
+			}
+			/* 碰到Table底部，設定Tag數並跳出 */
+			if (strlen(srAll->srText[i].szTag) == 0)
+			{
+				break;
+			}
+
+			/* pointer為空，則跳過 */
+			if (srAll->srText[i].pCharVariable == NULL)
+				continue;
+			/* Tag 名稱過長 */
+			if (strlen(srAll->srText[i].szTag) > _TAG_MAX_LENGRH_)
+			{
+                                memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+                                sprintf(szDebugMsg, "Tag 名稱過長");
+                                printf("%s\n", szDebugMsg);	
+				return (VS_ERROR);
+			}
+                        if (i > 0)
+                        {
+                            szColBuffer[(*szColLen)++] = ',';
+                            szValBuffer[(*szValLen)++] = ',';
+                        }
+                        *szColLen += snprintf(szColBuffer + *szColLen,
+                                   BUFF_SIZE - *szColLen,
+                                   "%s",
+                                   srAll->srText[i].szTag);
+                        *szValLen += snprintf(szValBuffer + *szValLen,
+                                    BUFF_SIZE - *szValLen,
+                                    "%s",
+                                    (char *)srAll->srText[i].pCharVariable);  
+
+//			strcat(srAll->srText[srAll->inTextNum].szTag, srLink->psrText[i].szTag);
+//			srAll->srText[srAll->inTextNum].pCharVariable = srLink->psrText[i].pCharVariable;
+//			srAll->srText[srAll->inTextNum].inTagValueLen = srLink->psrText[i].inTagValueLen;
+//			srAll->inTextNum++;
+		}
+            }
+            break;
+	}while(1);
+
+	return (VS_SUCCESS);
+}

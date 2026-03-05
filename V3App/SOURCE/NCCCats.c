@@ -329,7 +329,7 @@ Describe        :參考myPackData，把原先金額和日期帶入pobTran的值�
 int mySalePackData(TRANSACTION_OBJECT *pobTran ,BYTE *uszPackBuf)
 {
     RTC_NEXSYS		srRTC;			/* Date & Time */
-    inFunc_Sync_BRec_Date_Time(pobTran, &srRTC);
+//    inFunc_Sync_BRec_Date_Time(pobTran, &srRTC);
     
     int FieldSz = sizeof(srNCCC_SALE_ISOFieldType)/sizeof(srNCCC_SALE_ISOFieldType[0]);
     printf("fieldSz is %d\n",FieldSz);
@@ -391,16 +391,16 @@ int mySalePackData(TRANSACTION_OBJECT *pobTran ,BYTE *uszPackBuf)
             }
             case 12:
             {   //Time, Local Transaction 
-                inFunc_ASCII_to_BCD(&uszBCD[0],pobTran->srBRec.szTime,Length );
-                memcpy((char*)&uszPackBuf[inCnt], (char *)&uszBCD[0],Length);
+                inFunc_ASCII_to_BCD(&uszBCD[0],pobTran->srBRec.szTime,3);
+                memcpy((char*)&uszPackBuf[inCnt], (char *)&uszBCD[0],3);
                 inCnt +=3;
                 break;
             }
             case 13:
             {   //Date, Local Transaction (MMDD)
-                inFunc_ASCII_to_BCD(&uszBCD[0],&pobTran->srBRec.szDate[4],Length );
-                memcpy((char*)&uszPackBuf[inCnt], (char *)&uszBCD[0],Length);
-                inCnt +=3;
+                inFunc_ASCII_to_BCD(&uszBCD[0],&pobTran->srBRec.szDate[4],2);
+                memcpy((char*)&uszPackBuf[inCnt], (char *)&uszBCD[0],2);
+                inCnt +=2;
                 break;
             }
             case 22:
@@ -731,7 +731,6 @@ int mySalePackData(TRANSACTION_OBJECT *pobTran ,BYTE *uszPackBuf)
     uszPackBuf[1] = (inCnt - 2) % 256;  
     printf("uszPackBuf[0] is 0x%02x\n",uszPackBuf[0]);
     printf("uszPackBuf[1] is 0x%02x\n",uszPackBuf[1]);
-    
     return inCnt;
 }
 
