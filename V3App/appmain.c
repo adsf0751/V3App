@@ -485,15 +485,15 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
            switch(inKey)
             { 
                 case 1: 
-                {                
+                {
                     inFunc_Ethernet_Edit(pobTran);
                     /*============開啟Ethernet設定============*/
                     inRetVal = inETHERNET_Initial();
                     /*============開啟Ethernet設定============*/                    
-                    break; 
+                    break;
                 }
                 case 2: 
-                {    
+                {
                     inDISP_PutGraphic(_CONNECTING_, 1, _COORDINATE_Y_LINE_8_1_);
                     CTOS_Delay(1000);
                     CTOS_LCDTClearDisplay();
@@ -510,11 +510,11 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                     break;
                 }
                 case 3: 
-                { 
+                {
                     memset(uszPackBuf,0x00,sizeof(uszPackBuf));
 //                    int inCnt = myPackData(uszPackBuf);
                     int inCnt = mySalePackData(pobTran,uszPackBuf);
-                    
+
                     /*
                      * 原先傳到主機的長度對不起來，原因是inCnt已包含電文前面的長度
                      * 但inETHERNET_Send預設傳入inSendSize 是未包含Message Length，
@@ -552,7 +552,7 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                     {
                        CTOS_LCDTPrintXY(1,1,"EthernetRx Fail!!!");
                        CTOS_Delay(2000); 
-                    } 
+                    }
                     break;
                 }
                case 5:
@@ -624,7 +624,7 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                                     printf("szColLen is %d\n",szColLen);
                                     if(szColLen > 0)
                                     {
-                                      if( inETHERNET_Send(szColBuffer,szColLen,0) != VS_SUCCESS)
+                                        if( inETHERNET_Send(szColBuffer,szColLen,0) != VS_SUCCESS)
                                         {
                                             CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!"); 
                                             break;
@@ -642,7 +642,7 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                                     printf("szColLen is %d\n",szColLen);
                                     if(szColLen > 0)
                                     {
-                                      if( inETHERNET_Send(szColBuffer,szColLen,0) != VS_SUCCESS)
+                                        if( inETHERNET_Send(szColBuffer,szColLen,0) != VS_SUCCESS)
                                         {
                                             CTOS_LCDTPrintXY(1,1,"EthernetTx Fail!!!");
                                             break;
@@ -1037,7 +1037,43 @@ void vdSALEMenu(TRANSACTION_OBJECT* pobTran)
                     break;
                 }
                 inFuncInsertTxnRecord_By_Sqlite(pobTran);
-                inCREDIT_PRINT_Receipt_ByBuffer(pobTran);
+                int inChoice = 0;
+                unsigned char  uszkey;
+                CTOS_LCDTClearDisplay();
+                CTOS_LCDTPrintXY(1,1,"是否列印簽單?");
+                inDISP_PutGraphic(_MSG_ENTER_OR_CANCEL_, 0, _COORDINATE_Y_LINE_8_8_);
+                inDISP_Timer_Start(_TIMER_NEXSYS_1_, 30);
+                while (1)
+                {
+                        uszkey = -1;
+                        inChoice = inDisTouch_TouchSensor_Click_Slide(_Touch_OX_LINE8_8_);
+                        uszkey = uszKBD_Key();
+                        if (inChoice == _Touch_OX_LINE8_8_ENTER_BUTTON_)
+                        {
+                                uszkey = _KEY_ENTER_;
+                        }
+                        else if (inChoice == _Touch_OX_LINE8_8_CANCEL_BUTTON_)
+                        {
+                                uszkey = _KEY_CANCEL_;
+                        }
+
+                        /* Timeout */
+                        if (inTimerGet(_TIMER_NEXSYS_1_) == VS_SUCCESS)
+                        {
+                                uszkey = _KEY_TIMEOUT_;
+                        }
+                        if(uszkey == _KEY_ENTER_)
+                        {
+                                //列印簽單
+                                inCREDIT_PRINT_Receipt_ByBuffer(pobTran);
+                                break;
+                        }
+                        else if(uszkey == _KEY_CANCEL_ || uszkey == _KEY_TIMEOUT_)
+                        {
+                                
+                                break;
+                        }
+                }	      
                 break;
             }
             else if(uszKey == _KEY_CANCEL_)

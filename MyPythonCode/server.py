@@ -1,6 +1,7 @@
 import socket
 import csv
-HOST = "10.105.108.30"
+from datetime import datetime
+HOST = "10.105.108.35"
 PORT = 5000
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,7 +18,7 @@ try:
         except socket.timeout:
             continue  # 沒連線就重新檢查 Ctrl+C
         print(f"Client connected from {client_addr}")
-
+        filename = f"output_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.csv"
         client_socket.settimeout(1)  # recv 阻塞時間 1 秒
         while True:
             try:
@@ -31,7 +32,7 @@ try:
             print(f"Received: {message}")
             # 轉成 CSV
             row = message.split(',')
-            with open("output.csv", "a", newline='') as f:
+            with open(filename, "a", newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow(row)
             #client_socket.send(f"Server received: {message}".encode("utf-8"))

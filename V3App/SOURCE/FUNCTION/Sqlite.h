@@ -34,3 +34,4 @@ int inSqlite_Get_Data_Enormous_Search(char* szDBPath, char* szQuerySql);
 int inSqlite_Get_Data_Enormous_Get(SQLITE_ALL_TABLE *srAll);
 int inSqlite_Delete_Record(TRANSACTION_OBJECT *pobTran, char* szTableName);
 int inSqlite_Get_Data_Enormous_Free(void);
+int inSqlite_GetTableData(SQLITE_ALL_TABLE *srAll,unsigned char *szColBuffer,int* szColLen,unsigned char *szValBuffer,int* szValLen,int tableType);

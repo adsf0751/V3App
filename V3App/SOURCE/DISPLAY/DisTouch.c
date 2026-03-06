@@ -3216,42 +3216,42 @@ int inDisTouch_InArea(DISTOUCH_OBJECT *srDisTouchObj, int inTouchSensorFunc)
 //                 }
 // 	}
 // 	
-// 	if (inTouchSensorFunc == _Touch_OX_LINE8_8_)
-// 	{
-// 		/* 初步檢核，XY座標不為零，且為下筆狀態 */
-// 		if ((srDisTouchObj->inX_Temp != 0) && (srDisTouchObj->inY_Temp != 0))
-//                 {
-// 			if ((srDisTouchObj->inX_Temp > _Distouch_TOUCH_OX_LINE8_8_ENTER_BUTTON_X1_)	&& 
-// 			    (srDisTouchObj->inX_Temp < _Distouch_TOUCH_OX_LINE8_8_ENTER_BUTTON_X2_)	&& 
-// 			    (srDisTouchObj->inY_Temp > _Distouch_TOUCH_OX_LINE8_8_ENTER_BUTTON_Y1_)	&& 
-// 			    (srDisTouchObj->inY_Temp < _Distouch_TOUCH_OX_LINE8_8_ENTER_BUTTON_Y2_))
-//                         {
-//                                 inFlag = _Touch_OX_LINE8_8_ENTER_BUTTON_;
-//                                 srDisTouchObj->inPenStatus = _DisTouch_PenStatus_Up_;
-//                                 inDisTouch_Close_TouchFile(&ginTouch_Handle);
-//                                 
-//                                 return (inFlag);
-//                         }
-//                         
-//                 }
-// 		
-// 		/* 初步檢核，XY座標不為零，且為下筆狀態 */
-// 		if ((srDisTouchObj->inX_Temp != 0) && (srDisTouchObj->inY_Temp != 0))
-//                 {
-// 			if ((srDisTouchObj->inX_Temp > _Distouch_TOUCH_OX_LINE8_8_CANCEL_BUTTON_X1_)	&& 
-// 			    (srDisTouchObj->inX_Temp < _Distouch_TOUCH_OX_LINE8_8_CANCEL_BUTTON_X2_)	&& 
-// 			    (srDisTouchObj->inY_Temp > _Distouch_TOUCH_OX_LINE8_8_CANCEL_BUTTON_Y1_)	&& 
-// 			    (srDisTouchObj->inY_Temp < _Distouch_TOUCH_OX_LINE8_8_CANCEL_BUTTON_Y2_))
-//                         {
-//                                 inFlag = _Touch_OX_LINE8_8_CANCEL_BUTTON_;
-//                                 srDisTouchObj->inPenStatus = _DisTouch_PenStatus_Up_;
-//                                 inDisTouch_Close_TouchFile(&ginTouch_Handle);
-//                                 
-//                                 return (inFlag);
-//                         }
-//                         
-//                 }
-// 	}
+ 	if (inTouchSensorFunc == _Touch_OX_LINE8_8_)
+ 	{
+ 		/* 初步檢核，XY座標不為零，且為下筆狀態 */
+ 		if ((srDisTouchObj->inX_Temp != 0) && (srDisTouchObj->inY_Temp != 0))
+                 {
+ 			if ((srDisTouchObj->inX_Temp > _Distouch_TOUCH_OX_LINE8_8_ENTER_BUTTON_X1_)	&& 
+ 			    (srDisTouchObj->inX_Temp < _Distouch_TOUCH_OX_LINE8_8_ENTER_BUTTON_X2_)	&& 
+ 			    (srDisTouchObj->inY_Temp > _Distouch_TOUCH_OX_LINE8_8_ENTER_BUTTON_Y1_)	&& 
+ 			    (srDisTouchObj->inY_Temp < _Distouch_TOUCH_OX_LINE8_8_ENTER_BUTTON_Y2_))
+                         {
+                                 inFlag = _Touch_OX_LINE8_8_ENTER_BUTTON_;
+                                 srDisTouchObj->inPenStatus = _DisTouch_PenStatus_Up_;
+                                 inDisTouch_Close_TouchFile(&ginTouch_Handle);
+                                 
+                                 return (inFlag);
+                         }
+                         
+                 }
+ 		
+ 		/* 初步檢核，XY座標不為零，且為下筆狀態 */
+ 		if ((srDisTouchObj->inX_Temp != 0) && (srDisTouchObj->inY_Temp != 0))
+                 {
+ 			if ((srDisTouchObj->inX_Temp > _Distouch_TOUCH_OX_LINE8_8_CANCEL_BUTTON_X1_)	&& 
+ 			    (srDisTouchObj->inX_Temp < _Distouch_TOUCH_OX_LINE8_8_CANCEL_BUTTON_X2_)	&& 
+ 			    (srDisTouchObj->inY_Temp > _Distouch_TOUCH_OX_LINE8_8_CANCEL_BUTTON_Y1_)	&& 
+ 			    (srDisTouchObj->inY_Temp < _Distouch_TOUCH_OX_LINE8_8_CANCEL_BUTTON_Y2_))
+                         {
+                                 inFlag = _Touch_OX_LINE8_8_CANCEL_BUTTON_;
+                                 srDisTouchObj->inPenStatus = _DisTouch_PenStatus_Up_;
+                                 inDisTouch_Close_TouchFile(&ginTouch_Handle);
+                                 
+                                 return (inFlag);
+                         }
+                         
+                 }
+ 	}
 // 	
 // 	if (inTouchSensorFunc == _Touch_O_LINE8_8_)
 // 	{

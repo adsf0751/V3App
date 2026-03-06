@@ -1037,26 +1037,36 @@ int inETHERNET_Send_Data_By_Native(int inFileHandle, unsigned char* uszData, uns
 	int	inTempLen = 0;
 	char	szDebugMsg[100 + 1];
 	
+
+        while(inTempLen < usLen)
+        {
+            int szSendLen = send(inFileHandle, uszData +inTempLen, usLen -inTempLen, 0);
+            inTempLen += szSendLen;
+            if(szSendLen < 0)
+            {
+                return (VS_ERROR);
+            }
+        }
+        return (VS_SUCCESS);
 	/* Send message */  
-	inTempLen = send(inFileHandle, uszData, usLen, 0);
-	
-	if (inTempLen >= 0)
-	{
-            
-		return (VS_SUCCESS);
-	}
-	else
-	{
-//		if (ginDebug == VS_TRUE)
-//		{
-//			memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
-//			sprintf(szDebugMsg, "send Errno: %d", errno);
-//			inLogPrintf(AT, szDebugMsg);
-//		}
-//		inUtility_StoreTraceLog_OneStep("inETHERNET_Send_Data_By_Native Fail, Errno: %d", errno);
-//		
-		return (VS_ERROR);
-	}
+//	inTempLen = send(inFileHandle, uszData, usLen, 0);
+//	if (inTempLen >= 0)
+//	{
+//            
+//		return (VS_SUCCESS);
+//	}
+//	else
+//	{
+////		if (ginDebug == VS_TRUE)
+////		{
+////			memset(szDebugMsg, 0x00, sizeof(szDebugMsg));
+////			sprintf(szDebugMsg, "send Errno: %d", errno);
+////			inLogPrintf(AT, szDebugMsg);
+////		}
+////		inUtility_StoreTraceLog_OneStep("inETHERNET_Send_Data_By_Native Fail, Errno: %d", errno);
+////		
+//		return (VS_ERROR);
+//	}
 	
 }
 /*
