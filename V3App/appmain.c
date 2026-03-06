@@ -487,10 +487,6 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                 case 1: 
                 {
                     inFunc_Ethernet_Edit(pobTran);
-                    /*
-                    * inCREDIT_Func_Get_OPT_Amount > inDISP_EnglishFont_Color會改到字型和大小，
-                    *  這邊重新呼叫inDISP_Initial()
-                    */
                     inDISP_Initial();
                     /*============開啟Ethernet設定============*/
                     inRetVal = inETHERNET_Initial();
