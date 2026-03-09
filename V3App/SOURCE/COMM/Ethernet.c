@@ -502,18 +502,8 @@ int inETHERNET_SetConfig(void)
                 = 1 : DHCP. Retrieve the dynamic IP from the DHCP server.
         */
         /* DHCP預設0 */
-//	memset(szConfig, 0x00, sizeof(szConfig));
-//	memset(szDHCPMode, 0x00, sizeof(szDHCPMode));
-//	inGetDHCP_Mode(szDHCPMode);
-//	if (memcmp(szDHCPMode, "Y", strlen("Y")) == 0)
-//	{
-//		szConfig[0] = 0x31;
-//	}
-//	else
-//	{
-		szConfig[0] = 0x30;
-//	}
-        
+        memset(szConfig, 0x00, sizeof(szConfig));
+        szConfig[0] = 0x31;       
 	if (inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_DHCP, (unsigned char*)szConfig, 1) != VS_SUCCESS)
 	{
             printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_DHCP failed\n");
@@ -550,19 +540,20 @@ int inETHERNET_SetConfig(void)
 		/* 如果是DHCP，*/
 //		if (memcmp(szDHCPMode, "Y", strlen("Y")) == 0)
 //		{
-//			memset(szTemplate, 0x00, sizeof(szTemplate));
-//			uszLen = sizeof(szTemplate);
-//			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_IP, (unsigned char*)szTemplate, &uszLen);
+			memset(szTemplate, 0x00, sizeof(szTemplate));
+			uszLen = sizeof(szTemplate);
+			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_IP, (unsigned char*)szTemplate, &uszLen);
 //			inSetTermIPAddress(szTemplate);
-//			
-//			memset(szTemplate, 0x00, sizeof(szTemplate));
-//			uszLen = sizeof(szTemplate);
-//			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_MASK, (unsigned char*)szTemplate, &uszLen);
+			printf("ip is %s\n",szTemplate);
+			memset(szTemplate, 0x00, sizeof(szTemplate));
+			uszLen = sizeof(szTemplate);
+			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_MASK, (unsigned char*)szTemplate, &uszLen);
 //			inSetTermMASKAddress(szTemplate);
-//			
-//			memset(szTemplate, 0x00, sizeof(szTemplate));
-//			uszLen = sizeof(szTemplate);
-//			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_GATEWAY, (unsigned char*)szTemplate, &uszLen);
+			printf("mask is %s\n",szTemplate);
+			memset(szTemplate, 0x00, sizeof(szTemplate));
+			uszLen = sizeof(szTemplate);
+			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_GATEWAY, (unsigned char*)szTemplate, &uszLen);
+                        printf("gateway is %s\n",szTemplate);
 //			inSetTermGetewayAddress(szTemplate);
 //			
 //			inSaveEDCRec(0);
@@ -713,7 +704,7 @@ int inETHERNET_Send_Ready_By_Native(int inFileHandle)
 
 /*
 Function        :inETHERNET_Initial
-Date&Time       :2017/7/18 下午 3:37
+DinETHERNET_Initialate&Time       :2017/7/18 下午 3:37
 Describe        :
  */
 int inETHERNET_Initial(void) {
@@ -726,7 +717,7 @@ int inETHERNET_Initial(void) {
     unsigned short usRetVal = 0x00;
     char szDispMsg[16 + 1] = {0};
     unsigned char uszLen = 0;
-
+    printf("inETHERNET_Initial Begin\n");
     //暫不實現
     //	inDISP_ClearAll();
     //	inFunc_Display_LOGO( 0,  _COORDINATE_Y_LINE_16_2_);				/* 第一層顯示 LOGO */
@@ -795,6 +786,7 @@ int inETHERNET_Initial(void) {
     }
     /* 魔法，勿動 End */
     //	}
+    printf("inETHERNET_Initial End\n");
     return (VS_SUCCESS);
 }
 
