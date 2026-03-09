@@ -1088,6 +1088,10 @@ int main(int argc, char *argv[]) {
     int  inRetVal = 0;
     TRANSACTION_OBJECT pobTran;
     memset(&pobTran, 0, sizeof(TRANSACTION_OBJECT));
+    /*============設定端末機日期============*/
+    inRetVal =  inFunc_SetEDCDateTime("20260309","152430");
+    /*============設定端末機日期============*/
+    
     /*============假資料============*/
     pobTran.srBRec.inCode = _SALE_;
     pobTran.srBRec.inPrintOption = _PRT_MERCH_;
@@ -1145,7 +1149,12 @@ int main(int argc, char *argv[]) {
     CTOS_LCDTClearDisplay();
 
     while(1)
-    {
+    {   
+        //同步BRec日期和時間
+        inFunc_GetSystemDateAndTime(&srRTC);
+        inFunc_Sync_BRec_Date_Time(&pobTran, &srRTC);
+        printf("BRec Date is %s\n",pobTran.srBRec.szDate);
+        printf("BRec Time is %s\n",pobTran.srBRec.szTime);
         inkey = 0;
         /*============LCD設定============*/
         inDISP_Initial();

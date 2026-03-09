@@ -718,3 +718,62 @@ int inFunc_GetMenuNum_NewUI(TRANSACTION_OBJECT *pobTran,char menuText[][49],int 
         inDisTouch_Flush_TouchFile();
 	return (inRetVal);
 }
+
+/*
+Function        :inFunc_SetEDCDateTime
+Date&Time       :
+Describe        :更新端末機日期時間 輸入YYYYMMDD HHMMSS
+*/
+int inFunc_SetEDCDateTime(char *szDate, char *szTime)
+{
+        int		inYear, inMonth, inDay, inHour, inMinute, inSecond;
+	char		szTemplate[8 + 1];
+	char		szDebugMsg[100 + 1];
+	unsigned short	usRet;
+        CTOS_RTC	SetRTC;
+        
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        /* 年 */
+        memcpy(&szTemplate[0], &szDate[2], 2);
+        inYear = atoi(szTemplate);
+        SetRTC.bYear = inYear;
+        /* 月 */
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        memcpy(&szTemplate[0], &szDate[4], 2);
+        inMonth = atoi(szTemplate);
+        SetRTC.bMonth = inMonth;
+        /* 日 */
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        memcpy(&szTemplate[0], &szDate[6], 2);
+        inDay = atoi(szTemplate);
+        SetRTC.bDay = inDay;
+        /* 小時 */
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        memcpy(&szTemplate[0], &szTime[0], 2);
+        inHour = atoi(szTemplate);
+        SetRTC.bHour = inHour;
+        /* 分鐘 */
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        memcpy(&szTemplate[0], &szTime[2], 2);
+        inMinute = atoi(szTemplate);
+        SetRTC.bMinute = inMinute;
+        /* 秒 */
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        memcpy(&szTemplate[0], &szTime[4], 2);
+        inSecond = atoi(szTemplate);
+        SetRTC.bSecond = inSecond;
+        
+        /* 更改EDC時間 */
+        usRet = CTOS_RTCSet(&SetRTC);
+	
+	if (usRet != d_OK)
+	{
+		
+                memset(szDebugMsg, 0x00, sizeof (szDebugMsg));
+                sprintf(szDebugMsg, "時間同步失敗 錯誤代碼：%x", usRet);
+                printf("%s\n", szDebugMsg);	
+		return (VS_ERROR);
+	}
+
+        return (VS_SUCCESS);
+}

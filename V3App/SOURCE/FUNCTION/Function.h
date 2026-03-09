@@ -37,7 +37,8 @@ int inFunc_GetMenuNum_NewUI(TRANSACTION_OBJECT *pobTran,char menuText[][49],int 
 void vdFunc_Display_Ethernet_Status(void);
 int inETHERNET_IsPhysicalOnine(void);
 int inFunc_Sync_BRec_Date_Time(TRANSACTION_OBJECT *pobTran, RTC_NEXSYS *srRTC);
-
+int inFunc_SetEDCDateTime(char *szDate, char *szTime);
+int inFunc_GetSystemDateAndTime(RTC_NEXSYS *srRTC);
 #ifdef __cplusplus
 }
 #endif
