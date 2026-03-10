@@ -502,13 +502,13 @@ int inETHERNET_SetConfig(void)
                 = 1 : DHCP. Retrieve the dynamic IP from the DHCP server.
         */
         /* DHCP預設0 */
-        memset(szConfig, 0x00, sizeof(szConfig));
-        szConfig[0] = 0x31;       
-	if (inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_DHCP, (unsigned char*)szConfig, 1) != VS_SUCCESS)
-	{
-            printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_DHCP failed\n");
-            return (VS_ERROR);
-	}
+//        memset(szConfig, 0x00, sizeof(szConfig));
+//        szConfig[0] = 0x31;       
+//	if (inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_DHCP, (unsigned char*)szConfig, 1) != VS_SUCCESS)
+//	{
+//            printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_DHCP failed\n");
+//            return (VS_ERROR);
+//	}
 
         /*
                 d_ETHERNET_CONFIG_UPDATE_EXIT
@@ -540,20 +540,20 @@ int inETHERNET_SetConfig(void)
 		/* 如果是DHCP，*/
 //		if (memcmp(szDHCPMode, "Y", strlen("Y")) == 0)
 //		{
-			memset(szTemplate, 0x00, sizeof(szTemplate));
-			uszLen = sizeof(szTemplate);
-			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_IP, (unsigned char*)szTemplate, &uszLen);
-//			inSetTermIPAddress(szTemplate);
-			printf("ip is %s\n",szTemplate);
-			memset(szTemplate, 0x00, sizeof(szTemplate));
-			uszLen = sizeof(szTemplate);
-			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_MASK, (unsigned char*)szTemplate, &uszLen);
-//			inSetTermMASKAddress(szTemplate);
-			printf("mask is %s\n",szTemplate);
-			memset(szTemplate, 0x00, sizeof(szTemplate));
-			uszLen = sizeof(szTemplate);
-			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_GATEWAY, (unsigned char*)szTemplate, &uszLen);
-                        printf("gateway is %s\n",szTemplate);
+//			memset(szTemplate, 0x00, sizeof(szTemplate));
+//			uszLen = sizeof(szTemplate);
+//			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_IP, (unsigned char*)szTemplate, &uszLen);
+////			inSetTermIPAddress(szTemplate);
+//			printf("ip is %s\n",szTemplate);
+//			memset(szTemplate, 0x00, sizeof(szTemplate));
+//			uszLen = sizeof(szTemplate);
+//			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_MASK, (unsigned char*)szTemplate, &uszLen);
+////			inSetTermMASKAddress(szTemplate);
+//			printf("mask is %s\n",szTemplate);
+//			memset(szTemplate, 0x00, sizeof(szTemplate));
+//			uszLen = sizeof(szTemplate);
+//			inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_GATEWAY, (unsigned char*)szTemplate, &uszLen);
+//                        printf("gateway is %s\n",szTemplate);
 //			inSetTermGetewayAddress(szTemplate);
 //			
 //			inSaveEDCRec(0);
@@ -716,6 +716,7 @@ int inETHERNET_Initial(void) {
     char szDHCPMode[2 + 1];
     unsigned short usRetVal = 0x00;
     char szDispMsg[16 + 1] = {0};
+    char szTemplate[50 + 1] = {0};
     unsigned char uszLen = 0;
     printf("inETHERNET_Initial Begin\n");
     //暫不實現
@@ -786,7 +787,27 @@ int inETHERNET_Initial(void) {
     }
     /* 魔法，勿動 End */
     //	}
-    printf("inETHERNET_Initial End\n");
+        memset(szConfig, 0x00, sizeof(szConfig));
+        szConfig[0] = 0x31;       
+	if (inETHERNET_Cofig_Set(d_ETHERNET_CONFIG_DHCP, (unsigned char*)szConfig, 1) != VS_SUCCESS)
+	{
+            printf("inETHERNET_Cofig_Set d_ETHERNET_CONFIG_DHCP failed\n");
+            return (VS_ERROR);
+	}
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        uszLen = sizeof(szTemplate);
+        inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_IP, (unsigned char*)szTemplate, &uszLen);
+        printf("ip is %s\n",szTemplate);
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        uszLen = sizeof(szTemplate);
+        inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_MASK, (unsigned char*)szTemplate, &uszLen);
+        printf("mask is %s\n",szTemplate);
+        memset(szTemplate, 0x00, sizeof(szTemplate));
+        uszLen = sizeof(szTemplate);
+        inETHERNET_Cofig_Get(d_ETHERNET_CONFIG_GATEWAY, (unsigned char*)szTemplate, &uszLen);
+        printf("gateway is %s\n",szTemplate);
+        
+        printf("inETHERNET_Initial End\n");
     return (VS_SUCCESS);
 }
 

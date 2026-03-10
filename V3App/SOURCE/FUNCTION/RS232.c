@@ -198,7 +198,6 @@ int inRS232_ECR_8N1_Standard_Receive_Packet(TRANSACTION_OBJECT *pobTran, ECR_TAB
         
 	inRetVal = inECR_Receive(pobTran, srECROb, szDataBuffer, _ECR_8N1_Standard_Data_Size_);
 
-	printf("Insert data into the table columns... \n");
         int i;
         int szECRTable = sizeof(myECRTable) / sizeof(myECRTable[0]);
         for(i= 0; i<szECRTable ;i++)

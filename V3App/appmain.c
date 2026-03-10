@@ -574,6 +574,7 @@ void vdEthernetMenu(TRANSACTION_OBJECT* pobTran)
                             int  szColLen = 0;
                             unsigned char szValBuffer[BUFF_SIZE];
                             int  szValLen = 0;
+                             //inBATCH_Get_Batch_ByCnt_Enormous_Flow(_BYCNT_ENORMMOUS_READ_)會先做memset初始化結構體
                             SQLITE_ALL_TABLE srAll;
                             printf("Get Table Count Successed,inTableCnt is %d\n",inTableCnt);
                             inBATCH_Get_Batch_ByCnt_Enormous_Flow(pobTran,szTableName,_BYCNT_ENORMMOUS_SEARCH_,&srAll);
@@ -1133,9 +1134,9 @@ int main(int argc, char *argv[]) {
     //    CTOS_FontTTFSelectFontFile(d_FONT_DEVICE_PRINTER, "ca_default.ttf", 0);
     CTOS_FontTTFSelectFontFile(d_FONT_DEVICE_PRINTER, "tsuyuan.ttf", 0);
     CTOS_FontTTFSelectStyle(d_FONT_DEVICE_PRINTER, d_FONT_STYLE_NORMAL);
-    /*============印表機設定============*/
     inPRINT_Buffer_Initial(uszBuffer, _BUFFER_MAX_LINE_, &srFont_Attrib, &srBhandle);
-  
+    /*============印表機設定============*/
+      
     /*============開啟資料庫============*/
     if(inSqlite_Initial() != VS_SUCCESS)
     {
